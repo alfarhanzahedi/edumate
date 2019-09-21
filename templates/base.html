@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Alfarhan Zahedi">
+    {% block meta %} {% endblock %}
+    <meta name="theme-color" content="#007bff">
+    <meta name="msapplication-navbutton-color" content="#007bff">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#007bff">
+    <title>{% block title %} {% endblock %}</title>
+
+    <!-- Bootstrap v4.0.0 -->
+    <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Font Awesome v5.5 -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    <!-- jQuery v3.3.1 -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    {% load static %}
+    <!-- Base stylesheets -->
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/fonts.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/scroll-bar.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/footer.css' %}">
+
+    <!-- Webpage specific stylesheet(s)-->
+    {% block css %} {% endblock %}
+    <!-- End of webpage specific stylesheet(s) -->
+
+    <!-- Webpage specific JS -->
+    {% block pre-js %} {% endblock %}
+    <!-- End of webpage specific JS-->
+</head>
+
+<body class="font-open-sans">
+    <!-- Navbar -->
+    {% include 'navbar.html' %}
+    <!--End of navbar -->
+
+    <!-- Main content/body -->
+    {% block body %} {% endblock %}
+    <!-- End of main content/body -->
+
+    <!-- Footer -->
+    {% include 'footer.html' %}
+    <!--End of footer -->
+
+    <script src="{% static 'js/navbar.js' %}"></script>
+    <!-- Webpage specific JS -->
+    {% block post-js %} {% endblock %}
+    <!-- End of webpage specific JS -->
+</body>
+
+</html>

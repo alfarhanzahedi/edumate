@@ -1,0 +1,113 @@
+/*
+registration.css
+Description: registration.css contains the css required by the pages related to user registration
+such as 'signin', 'signup', 'password reset', etc.
+Author: Alfarhan Zahedi
+Date: 7th September, 2019
+*/
+
+:root {
+	--input-padding-x: 1.5rem;
+	--input-padding-y: .75rem;
+}
+
+.card-signin {
+	border: 0;
+	border-radius: 1rem;
+	box-shadow: 0 0.2rem .5rem 0 rgba(0, 0, 0, 0.1);
+}
+
+.card-signin .card-title {
+	margin-bottom: 2rem;
+	font-weight: 300;
+	font-size: 1.5rem;
+}
+
+.card-signin .card-body {
+	padding: 2rem;
+}
+
+.form-signin {
+	width: 100%;
+}
+
+.form-signin .btn {
+	font-size: 80%;
+	border-radius: 5rem;
+	letter-spacing: .1rem;
+	font-weight: bold;
+	padding: 1rem;
+	transition: all 0.2s;
+}
+
+.form-label-group {
+	position: relative;
+	margin-bottom: 1rem;
+}
+
+.form-label-group input {
+	border-radius: 2rem;
+}
+
+.form-label-group>input,
+.form-label-group>label {
+	padding: var(--input-padding-y) var(--input-padding-x);
+}
+
+.form-label-group>label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	width: 100%;
+	margin-bottom: 0;
+	line-height: 1.5;
+	color: #495057;
+	border: 1px solid transparent;
+	border-radius: .25rem;
+	transition: all .1s ease-in-out;
+}
+
+.form-label-group input:not(:placeholder-shown) {
+	padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
+	padding-bottom: calc(var(--input-padding-y) / 3);
+}
+
+.form-label-group input:not(:placeholder-shown)~label {
+	padding-top: calc(var(--input-padding-y) / 3);
+	padding-bottom: calc(var(--input-padding-y) / 3);
+	font-size: 12px;
+	color: #777;
+}
+
+.mb-3 {
+	padding: 0 var(--input-padding-x);
+}
+
+.help-text,
+.error {
+	padding-left: 1.6rem;
+	padding-top: 0.6rem;
+	font-size: 12px;
+	color: #777;
+}
+
+.help-text ul {
+	margin: 0px;
+	padding: 0px;
+	padding-left: 0.8rem;
+}
+
+.error {
+	padding-left: 1.4rem;
+	color: #ff0000;
+}
+
+.alert {
+	font-size: 12px;
+}
+
+#user-role ul {
+	padding-left: 23px;
+	list-style-type: none;
+}

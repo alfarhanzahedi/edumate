@@ -1,0 +1,42 @@
+/*
+footer.css
+Description: footer.css contains the css required by the footer.
+Author: Alfarhan Zahedi
+Date: 7th September, 2019
+*/
+
+footer {
+    margin-top: 50px;
+    padding-bottom: 10px;
+    background-color: #262626;
+    color: #ffffff;
+}
+
+footer a i {
+    margin-left: 10px;
+    font-size: 18px;
+}
+
+@media (min-width: 1100px) {
+    footer .container {
+        margin-left: 110px;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1100px) {
+    footer .container {
+        margin-left: 50px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    footer .container {
+        margin-left: 35px;
+    }
+}
+
+footer .footer-hr {
+    margin: 5px 80% 12px 0px;
+    border-width: 2px;
+    border-color: #007bff;
+}

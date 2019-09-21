@@ -1,0 +1,71 @@
+{% load static %}
+<header id="banner">
+    <div class="text-center">
+        <div class="navbar-brand">
+            <h3 class="banner-logo logo">EduMate
+                <small class="text-muted" style="font-size: 0.6em; display: block;">Some catchy phrase</small>
+            </h3>
+            <p>
+                <a href=""><i class="fab fa-facebook-f"></i></a>
+                <a href=""><i class="fab fa-twitter"></i></a>
+                <a href=""><i class="fab fa-instagram"></i></a>
+            </p>
+        </div>
+    </div>
+</header>
+<nav class="navbar navbar-expand-md navbar-white sticky-top">
+    <div id="navbar-logo">
+        <a class="navbar-brand" href="/">
+            <h3 class="logo">EduMate</h3>
+        </a>
+    </div>
+    <div class="ml-auto">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
+            aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon">
+                <i class="fas fa-bars"></i>
+            </span>
+        </button>
+    </div>
+    <div class="collapse navbar-collapse flex-column " id="navbar">
+        <ul class="navbar-nav justify-content-center">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="/">Dashboard</a>
+            </li>
+            {% endif %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Option 1
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="#">
+                        <span class="dropdown-icon"> > </span>
+                        Sub Option 1
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <span class="dropdown-icon"> > </span>
+                        Sub Option 2
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">Option 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">Option 3</a>
+            </li>
+            {% if not user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="/accounts/signin/">Sign In</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="/accounts/signout/">Sign Out</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+{% include 'messages.html' %}

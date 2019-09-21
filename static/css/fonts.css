@@ -1,0 +1,13 @@
+/*
+fonts.css
+Description: fonts.css contains the css (for fonts) required throughout the website.
+Author: Alfarhan Zahedi
+Date: 7th September, 2019
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Cabin+Sketch&display=swap');
+
+.font-open-sans {
+    font-family: 'Open Sans', sans-serif;
+}
