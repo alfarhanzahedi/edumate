@@ -47,15 +47,11 @@ var handler = onVisibilityChange(element, function() {
     // contents of the navbar.
     if (isElementInViewport(element)) {
         $('#navbar-logo').fadeOut(0);
-        $('.navbar-nav').removeClass('ml-auto');
-        $('.navbar-nav').addClass('justify-content-center');
     } 
     // If the banner is not in the viewport, show the logo in the navbar and right-align the 
     // contents of the navbar.
     else {
         $('#navbar-logo').fadeIn(0);
-        $('.navbar-nav').addClass('ml-auto');
-        $('.navbar-nav').removeClass('justify-content-center');
     }
 });
 

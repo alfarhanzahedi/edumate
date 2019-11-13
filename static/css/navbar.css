@@ -10,6 +10,7 @@ Date: 7th September, 2019
 }
 
 .dropdown .dropdown-menu {
+    text-align: left !important;
     border-radius: 0;
     border: 1px solid #eeeeee;
 }
@@ -35,7 +36,7 @@ Date: 7th September, 2019
 .navbar #navbar-logo {
     position: relative;
     left: 10px;
-    top: 5px;
+    top: 3px;
 }
 
 /*
