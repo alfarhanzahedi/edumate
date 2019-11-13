@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
 
     'apps.accounts',
+    'apps.classroom',
     'apps.pages',
 ]
 

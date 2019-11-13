@@ -1,5 +1,7 @@
 from django.db import models
 
+import uuid
+
 from apps.accounts.models import Student
 from apps.accounts.models import Teacher
 

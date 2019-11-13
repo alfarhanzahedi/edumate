@@ -26,7 +26,7 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', LandingPage.as_view()),
-    path('classrooms', include('apps.classrooms.urls')),
+    path('classroom/', include('apps.classroom.urls')),
 ]
 
 admin.site.site_header = 'EduMate Administration'                    
