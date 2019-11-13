@@ -30,7 +30,7 @@ class SignUp(View):
             user.is_active = False
             user.save()
 
-            role = form.cleaned_data.get('role')
+            role = int(form.cleaned_data.get('role'))
             if role == Role.STUDENT:
                 user.is_student = True
                 Student.objects.create(user = user)
