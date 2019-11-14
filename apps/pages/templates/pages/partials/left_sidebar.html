@@ -1,0 +1,73 @@
+<div class="profile-card">
+    <div class="float-left">
+        <div class="float-left">
+            {% load static %}
+            <img src="{% static 'img/default_avatar.jpg' %}" class="profile-card-avatar" alt="User avatar">
+        </div>
+        <div class="float-left">
+            <a href="#"> {{ user.first_name }} {{ user.last_name }} </a><br>
+            {% if user.is_student %}
+            <span class="text-muted">Student</span>
+            {% else %}
+            <span class="text-muted">Teacher</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="navigation-list-container">
+    <div class="navigation-list-header">
+        <div class="navigation-list-title">
+            <span>My Classes</span>
+        </div>
+    </div>
+    <div class="list-group">
+        {% for classroom in left_sidebar.classrooms %}
+        <a href="{% url 'classroom_detail' id=classroom.id %}" class="list-group-item list-group-item-action">{{ classroom.title }}</a>
+        {% endfor %}
+    </div>
+</div>
+{% if left_sidebar.classroom_create_form %}
+<div class="navigation-list-container">
+    <div class="navigation-list-header">
+        <div class="navigation-list-title">
+            <span>Create Classroom</span>
+        </div>
+    </div>
+    <div class="list-group">
+        <div>
+            {% if left_sidebar.classroom_create_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"> &nbsp; &times;</span>
+                    </button>
+                    {% for error in left_sidebar.classroom_create_form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}                        
+                </div>
+            {% endif %}
+            {% load widget_tweaks %}
+            <form class="list-group-item" method="POST" action="{% url 'classroom_create' %}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ request.path }}" name="next" />
+                {% for field in left_sidebar.classroom_create_form.visible_fields %}
+                    <div class="form-label-group">
+                        <label for={{field.id_for_label}}>
+                            {{ field.label }} <br> 
+                            <span class="text-muted"> {{ field.help_text }} </span> 
+                        </label>
+                        {% if field.errors %}
+                            {% render_field field class="form-control is-invalid" %}
+                            <div class="error">
+                                {% for error in field.errors %}{{ error }}<br/>{% endfor %}
+                            </div>
+                        {% else %}
+                            {% render_field field class="form-control" %}
+                        {% endif %}    
+                    </div>
+                {% endfor %}
+                <button class="btn btn-primary text-uppercase font-bold" type="submit">Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}

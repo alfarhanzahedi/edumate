@@ -1,0 +1,45 @@
+{% if right_sidebar.classroom_join_form %}
+<div class="navigation-list-container">
+    <div class="navigation-list-header">
+        <div class="navigation-list-title">
+            <span>Join Classroom</span>
+        </div>
+    </div>
+    <div class="list-group">
+        <div class="">
+            {% if right_sidebar.classroom_join_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"> &nbsp; &times;</span>
+                    </button>
+                    {% for error in right_sidebar.classroom_join_form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}                        
+                </div>
+            {% endif %}
+            {% load widget_tweaks %}
+            <form class="list-group-item" method="POST" action="{% url 'classroom_join' %}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ request.path }}" name="next" />
+                {% for field in right_sidebar.classroom_join_form.visible_fields %}
+                    <div class="form-label-group">
+                        <label for={{field.id_for_label}}>
+                            {{ field.label }} <br> 
+                            <span class="text-muted"> {{ field.help_text }} </span> 
+                        </label>
+                        {% if field.errors %}
+                            {% render_field field class="form-control is-invalid" %}
+                            <div class="error">
+                                {% for error in field.errors %}{{ error }}<br/>{% endfor %}
+                            </div>
+                        {% else %}
+                            {% render_field field class="form-control" %}
+                        {% endif %}    
+                    </div>
+                {% endfor %}
+                <button class="btn btn-primary text-uppercase font-bold" type="submit">Join</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}

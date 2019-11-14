@@ -10,7 +10,7 @@ from .constants import Role
 
 class CustomUserCreationForm(UserCreationForm):
     ROLES = [(Role.STUDENT, 'Student'), (Role.TEACHER, 'Teacher')]
-    role = forms.ChoiceField(widget = forms.RadioSelect, choices = ROLES)
+    role = forms.ChoiceField(widget = forms.RadioSelect, choices = ROLES, required = True)
 
     first_name = forms.CharField(max_length = 256, required = True)
     last_name = forms.CharField(max_length = 256, required = True)
