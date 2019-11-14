@@ -1,0 +1,35 @@
+<article class="timeline-card">
+    <header class="timeline-header">
+        <div>
+            <a href="">
+            {% load static %}
+            <img alt="profile picture" class="timeline-header-profile-photo" src="{% static 'img/default_avatar.jpg' %}">
+            </a>		
+        </div>
+        <div class="flex-vertical">
+            <div class="timeline-header-profile-name">
+                <a href="">{{ post.user.first_name }} {{post.user.last_name}}</a>
+            </div>
+            <div class="timeline-header-time">
+                <span class="timeline-header-timestamp">{{ post.updated_at }}</span>
+            </div>
+            
+        </div>
+        {% if classroom.permissions.can_remove_posts or post.user == user %}
+        <div style="position: absolute; right: 30px; margin-top: 7px;">
+            <form action="{% url 'classroom_post_delete' classroom_id=classroom.details.id post_id=post.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="student-remove-button" title="Delete post.">
+                <i class="fas fa-trash-alt"></i>                
+            </button>
+            </form>
+        </div>
+        {% endif %}
+    </header>
+    <hr class="custom-ruler">
+    <section class="timeline-card-content">
+        <p class="timeline-card-content-text">
+            {{ post.post }}
+        </p>
+    </section>
+</article>

@@ -6,6 +6,9 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import Http404
+from django.core.paginator import Paginator
+from django.core.paginator import PageNotAnInteger
+from django.core.paginator import EmptyPage
 
 import uuid
 
@@ -14,8 +17,15 @@ from apps.accounts.decorators import teacher_required
 from apps.pages.common_functions import get_sidebar_context
 
 from .models import Classroom
+from .models import Post
 from .forms import ClassroomCreationForm
 from .forms import ClassroomJoinForm
+from .forms import ClassroomPostCreateForm
+
+def in_classroom(classroom, user):
+    if classroom.teacher != user and (not classroom.students.filter(username = user.username).exists()):
+        return False
+    return True
 
 class ClassroomCreateView(View):
     
@@ -36,7 +46,7 @@ class ClassroomDetailView(View):
     @method_decorator(login_required)
     def get(self, request, id):
         classroom = get_object_or_404(Classroom, id = id)
-        if classroom.teacher != request.user and (not classroom.students.filter(username = request.user.username).exists()):
+        if not in_classroom(classroom, request.user):
             raise Http404
         context = get_sidebar_context(request)
         context['classroom'] = {}
@@ -44,6 +54,22 @@ class ClassroomDetailView(View):
         context['classroom']['students'] = classroom.students.prefetch_related().all()[:5]
         context['classroom']['permissions'] = {}
         context['classroom']['permissions']['can_remove_users'] = (classroom.teacher == request.user)
+        context['classroom']['permissions']['can_remove_posts'] = (classroom.teacher == request.user)
+        context['classroom']['forms'] = {}
+        context['classroom']['forms']['post_create_form'] = ClassroomPostCreateForm()
+        
+        post_list = Post.objects.select_related('user').filter(classroom = classroom).order_by('-updated_at')
+        page = request.GET.get('page', 1)
+
+        paginator = Paginator(post_list, 2)
+        try:
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            posts = paginator.page(1)
+        except EmptyPage:
+            posts = paginator.page(paginator.num_pages)
+
+        context['classroom']['posts'] = posts
         return render(request, 'classroom/classroom_detail.html', context)
 
 class ClassroomUpdateView(View):
@@ -82,3 +108,36 @@ class ClassroomStudentRemoveView(View):
         except Exception:
             messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
         return redirect('classroom_detail', id = id)
+
+class ClassroomPostCreateView(View):
+    
+    @method_decorator(login_required)
+    def post(self, request, classroom_id):
+        form = ClassroomPostCreateForm(request.POST)
+        print("Here")
+        if form.is_valid():
+            try:
+                classroom = Classroom.objects.get(id = classroom_id)
+                if not in_classroom(classroom, request.user):
+                    raise Exception()
+                Post.objects.create(
+                    classroom = classroom,
+                    user = request.user,
+                    post = form.cleaned_data.get('post')
+                )
+                messages.success(request, f'Post added successfully!')
+            except Exception:
+                messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
+            return redirect('classroom_detail', id = classroom_id)
+
+        messages.error(request, f'Empty posts are not allowed!')
+        return redirect('classroom_detail', id = classroom_id)
+
+class ClassroomPostDeleteView(View):
+    pass
+
+class ClassroomPostCommentCreateView(View):
+    pass
+
+class ClassroomPostCommendDeleteView(View):
+    pass

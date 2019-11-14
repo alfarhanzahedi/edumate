@@ -1,6 +1,8 @@
 from django import forms
 
 from .models import Classroom
+from .models import Post
+from .models import Comment
 
 class ClassroomCreationForm(forms.ModelForm):
 
@@ -26,3 +28,13 @@ class ClassroomJoinForm(forms.Form):
         except Classroom.DoesNotExist:
             raise forms.ValidationError('The code is not associated with any classroom!')
         return unique_code
+
+class ClassroomPostCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = Post
+        fields = ('post', )
+        help_texts = {
+            'post': 'Keep it simple and brief!'
+        }
+        

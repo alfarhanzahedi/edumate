@@ -1,0 +1,42 @@
+<div class="navigation-list-container">
+    <div class="navigation-list-header">
+        <div class="navigation-list-title">
+            <span>Post an update</span>
+        </div>
+    </div>
+    <div class="list-group">
+        <div>
+            {% if classroom.forms.post_create_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"> &nbsp; &times;</span>
+                    </button>
+                    {% for error in classroom.forms.post_create_form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}                        
+                </div>
+            {% endif %}
+            {% load widget_tweaks %}
+            <form class="list-group-item" method="POST" action="{% url 'classroom_post_create' classroom_id=classroom.details.id %}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ request.path }}" name="next" />
+                {% for field in classroom.forms.post_create_form.visible_fields %}
+                    <div class="form-label-group">
+                        <label for={{field.id_for_label}}> 
+                            <span class="text-muted"> {{ field.help_text }} </span> 
+                        </label>
+                        {% if field.errors %}
+                            {% render_field field class="form-control is-invalid" %}
+                            <div class="error">
+                                {% for error in field.errors %}{{ error }}<br/>{% endfor %}
+                            </div>
+                        {% else %}
+                            {% render_field field class="form-control" %}
+                        {% endif %}    
+                    </div>
+                {% endfor %}
+                <button class="btn btn-primary text-uppercase font-bold" type="submit">POST</button>
+            </form>
+        </div>
+    </div>
+</div>

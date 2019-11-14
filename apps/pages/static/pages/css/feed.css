@@ -274,3 +274,28 @@ button.student-remove-button {
 .classroom-description {
     font-size: 15px;
 }
+
+.pagination-div {
+    display: table; 
+    margin: 0px auto;
+    font-size: 12px;
+}
+
+
+.pagination-div .pagination .active .page-link {
+    padding: 8px 10px;
+    color: #ffffff;
+}
+
+.pagination-div .pagination .page-link {
+    padding: 8px 10px;
+    color: inherit;
+}
+
+.pagination-div .pagination .page-link:hover {
+    color: inherit;
+}
+
+.pagination-div .pagination .active .page-link:hover {
+    color: #ffffff;
+}

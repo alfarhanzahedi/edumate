@@ -20,7 +20,33 @@
     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
         <h5 class="classroom-title">{{ classroom.details.title }}</h5>
         <p class="classroom-description text-muted">{{ classroom.details.description }}</p>
-        
+        {% include 'classroom/partials/post_create_form.html' %}
+        {% for post in classroom.posts %}
+        {% include 'classroom/partials/post.html' %}
+        {% endfor %}
+        {% if classroom.posts.has_other_pages %}
+        <div class="pagination-div font-bold">
+        <ul class="pagination">
+            {% if classroom.posts.has_previous %}
+                <li><a class="page-link" href="?page={{ classroom.posts.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li><span class="page-link disabled">&laquo;</span></li>
+            {% endif %}
+            {% for i in classroom.posts.paginator.page_range %}
+                {% if classroom.posts.number == i %}
+                    <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if classroom.posts.has_next %}
+                <li><a class="page-link" href="?page={{ classroom.posts.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li><span class="page-link disabled">&raquo;</span></li>
+            {% endif %}
+        </ul>
+        </div>
+        {% endif %}
     </div>
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
         {% include 'classroom/partials/students.html' %}
