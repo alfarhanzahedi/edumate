@@ -5,6 +5,7 @@ from .views import ClassroomDetailView
 from .views import ClassroomUpdateView
 from .views import ClassroomDeleteView
 from .views import ClassroomJoinView
+from .views import ClassroomStudentRemoveView
 
 urlpatterns = [
     path('create/', ClassroomCreateView.as_view(), name = 'classroom_create'),
@@ -12,4 +13,5 @@ urlpatterns = [
     path('<int:id>/update/', ClassroomUpdateView.as_view(), name = 'classroom_update'),
     path('<int:id>/delete/', ClassroomDeleteView.as_view(), name = 'classroom_delete'),
     path('join/', ClassroomJoinView.as_view(), name = 'classroom_join'),
+    path('<int:id>/<str:username>/delete/', ClassroomStudentRemoveView.as_view(), name = 'classroom_student_remove')
 ]

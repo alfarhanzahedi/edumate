@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block title %}
-{{ classroom.title }} | Edumate
+{{ classroom.details.title }} | Edumate
 {% endblock %}
 
 {% block css %}
@@ -18,9 +18,12 @@
         {% include 'pages/partials/left_sidebar.html' %}
     </div>
     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-        <h1>{{ classroom.title }}</h1>
+        <h5 class="classroom-title">{{ classroom.details.title }}</h5>
+        <p class="classroom-description text-muted">{{ classroom.details.description }}</p>
+        
     </div>
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'classroom/partials/students.html' %}
         {% include 'pages/partials/right_sidebar.html' %}
     </div>
 </div>

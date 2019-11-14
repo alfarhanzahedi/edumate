@@ -262,3 +262,15 @@
 #task {
     margin-left: 5px;
 }
+
+button.student-remove-button {
+    margin: 0px; 
+    padding: 0px; 
+    border: 0px;
+    cursor: pointer;
+    background: white; 
+}
+
+.classroom-description {
+    font-size: 15px;
+}
