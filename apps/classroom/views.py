@@ -24,9 +24,9 @@ from .forms import ClassroomJoinForm
 from .forms import ClassroomPostCreateForm
 
 def in_classroom(classroom, user):
-    if classroom.teacher != user and (not classroom.students.filter(username = user.username).exists()):
-        return False
-    return True
+    if classroom.teacher == user or classroom.students.filter(username = user.username).exists():
+        return True
+    return False
 
 class ClassroomCreateView(View):
     
@@ -46,7 +46,7 @@ class ClassroomDetailView(View):
 
     @method_decorator(login_required)
     def get(self, request, id):
-        classroom = get_object_or_404(Classroom, id = id)
+        classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = id)
         if not in_classroom(classroom, request.user):
             raise Http404
         context = get_sidebar_context(request)
@@ -87,7 +87,10 @@ class ClassroomJoinView(View):
         form = ClassroomJoinForm(request.POST)
         if form.is_valid():
             unique_code = form.cleaned_data.get('unique_code')
-            classroom = Classroom.objects.get(unique_code = unique_code)
+            classroom = Classroom.objects.prefetch_related('students').get(unique_code = unique_code)
+            if in_classroom(classroom, request.user):
+                messages.success(request, f'You are already a member of the classroom - {classroom.title}.')
+                return redirect('classroom_detail', id = classroom.id)    
             classroom.students.add(request.user)
             classroom.save()
             messages.success(request, f'You have been added to classroom - {classroom.title}. You now have access to all its conversations and notes!')
