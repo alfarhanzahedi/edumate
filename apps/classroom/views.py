@@ -18,6 +18,7 @@ from apps.pages.common_functions import get_sidebar_context
 
 from .models import Classroom
 from .models import Post
+from .models import Comment
 from .forms import ClassroomCreationForm
 from .forms import ClassroomJoinForm
 from .forms import ClassroomPostCreateForm
@@ -114,7 +115,6 @@ class ClassroomPostCreateView(View):
     @method_decorator(login_required)
     def post(self, request, classroom_id):
         form = ClassroomPostCreateForm(request.POST)
-        print("Here")
         if form.is_valid():
             try:
                 classroom = Classroom.objects.get(id = classroom_id)
@@ -134,7 +134,21 @@ class ClassroomPostCreateView(View):
         return redirect('classroom_detail', id = classroom_id)
 
 class ClassroomPostDeleteView(View):
-    pass
+    
+    @method_decorator(login_required)
+    def post(self, request, classroom_id, post_id):
+        redirect_to = request.POST.get('next', '/')
+        try:
+            classroom = Classroom.objects.get(id = classroom_id)
+            post = Post.objects.get(id = post_id)
+            if post.user == request.user or classroom.teacher == request.user:
+                post.delete()
+                messages.success(request, f'The post was deleted successfully!')
+                return redirect(redirect_to)
+            raise Exception()
+        except Exception:
+            messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
+        return redirect(redirect_to)
 
 class ClassroomPostCommentCreateView(View):
     pass

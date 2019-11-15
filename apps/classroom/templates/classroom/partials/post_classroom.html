@@ -19,6 +19,7 @@
         <div style="position: absolute; right: 30px; margin-top: 7px;">
             <form action="{% url 'classroom_post_delete' classroom_id=classroom.details.id post_id=post.id %}" method="POST">
             {% csrf_token %}
+            <input type="hidden" value="{{ request.path }}" name="next"/>
             <button type="submit" class="student-remove-button" title="Delete post.">
                 <i class="fas fa-trash-alt"></i>                
             </button>
