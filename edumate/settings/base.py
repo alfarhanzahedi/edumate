@@ -28,6 +28,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'widget_tweaks',
+    'markdownx',
+    'pagedown',
+    'mdeditor',
+    'ckeditor',
 
     'apps.accounts',
     'apps.classroom',
@@ -132,4 +136,33 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'alert-success',
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
+}
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_URL = '/media/'
+
+MDEDITOR_CONFIGS = {
+    'default':{
+        'width': '100% ',  # Custom edit box width
+        'heigth': 500,  # Custom edit box height
+        'toolbar': ["bold", "del", "italic", "quote", "|",
+                    "list-ul", "list-ol", "hr", "|",
+                    "link", "image", "code", "code-block", "table",
+                    "emoji", "||",
+                    "preview", "watch", "fullscreen"],  # custom edit box toolbar 
+        'upload_image_formats': ["jpg", "jpeg", "gif", "png", "bmp", "webp"],  # image upload format type
+        'image_folder': 'editor',  # image save the folder name
+        'theme': 'default',  # edit box theme, dark / default
+        'preview_theme': 'default',  # Preview area theme, dark / default
+        'editor_theme': 'default',  # edit area theme, pastel-on-dark / default
+        'toolbar_autofixed': True,  # Whether the toolbar capitals
+        'search_replace': True,  # Whether to open the search for replacement
+        'emoji': True,  # whether to open the expression function
+        'tex': True,  # whether to open the tex chart function
+        'flow_chart': True,  # whether to open the flow chart function
+        'sequence': True, # Whether to open the sequence diagram function
+        'watch': True,  # Live preview
+        'lineWrapping': False,  # lineWrapping
+        'lineNumbers': False,  # lineNumbers
+    }   
 }

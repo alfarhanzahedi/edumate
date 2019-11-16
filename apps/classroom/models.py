@@ -1,5 +1,7 @@
 from django.db import models
 
+from mdeditor.fields import MDTextField
+
 from apps.accounts.models import User
 
 class Classroom(models.Model):
@@ -17,7 +19,7 @@ class Classroom(models.Model):
 class Post(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete = models.CASCADE, related_name = 'posts')
     user = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'author_of_posts')
-    post = models.TextField()
+    post = MDTextField()
 
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)

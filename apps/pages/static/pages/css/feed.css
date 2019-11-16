@@ -1,5 +1,5 @@
 .custom-row{
-    width: 80%;
+    width: 95%;
     margin: 20px auto;
     padding-top: 20px;
 }
@@ -298,4 +298,55 @@ button.student-remove-button {
 
 .pagination-div .pagination .active .page-link:hover {
     color: #ffffff;
+}
+
+.markdownx-preview {
+    margin-top: 10px;
+    border: 1px solid #cccccc !important;
+    height: 100px;
+    overflow-y: scroll;
+    overflow-x: auto;
+}
+/* 
+.wmd-panel {
+    margin: 0px !important;
+    width: 100% !important;
+    min-width: auto !important;
+}
+
+.wmd-button-bar {
+    background-color: #ffffff !important;
+}
+
+.wmd-preview {
+    background-color: #ffffff !important;
+    margin-top: 10px;
+    border: 1px solid #cccccc !important;
+    height: 100px;
+    overflow-y: scroll;
+    overflow-x: auto;
+}
+
+.wmd-wrapper {
+    height: auto !important;
+}
+
+.CodeMirror {
+    width: 100% !important;
+    height: 200px !important;
+}
+
+.editormd-preview {
+    position: relative !important;
+    top: 0px !important;
+    height: 200px !important;
+    width: 100% !important;
+} */
+
+.editormd-toolbar {
+    position: absolute !important;
+}
+
+.CodeMirror-placeholder {
+    color: transparent !important;
 }

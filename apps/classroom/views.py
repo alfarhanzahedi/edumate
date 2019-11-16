@@ -118,15 +118,17 @@ class ClassroomPostCreateView(View):
     @method_decorator(login_required)
     def post(self, request, classroom_id):
         form = ClassroomPostCreateForm(request.POST)
+        html_post = request.POST.get('html_data')
         if form.is_valid():
             try:
                 classroom = Classroom.objects.get(id = classroom_id)
+                print(form.cleaned_data.get('post'))
                 if not in_classroom(classroom, request.user):
                     raise Exception()
                 Post.objects.create(
                     classroom = classroom,
                     user = request.user,
-                    post = form.cleaned_data.get('post')
+                    post = html_post
                 )
                 messages.success(request, f'Post added successfully!')
             except Exception:

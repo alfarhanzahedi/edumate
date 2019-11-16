@@ -29,12 +29,15 @@ class ClassroomJoinForm(forms.Form):
             raise forms.ValidationError('The code is not associated with any classroom!')
         return unique_code
 
-class ClassroomPostCreateForm(forms.ModelForm):
+from mdeditor.fields import MDTextFormField
 
+class ClassroomPostCreateForm(forms.ModelForm):
+    post = MDTextFormField(widget=forms.TextInput(attrs={'placeholder': 'Search'}))
+    
     class Meta:
         model = Post
         fields = ('post', )
         help_texts = {
-            'post': 'Keep it simple and brief!'
+            'post': 'Keep it simple and brief! Support MarkDown.'
         }
         

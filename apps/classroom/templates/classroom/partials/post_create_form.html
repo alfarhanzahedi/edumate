@@ -17,7 +17,7 @@
                 </div>
             {% endif %}
             {% load widget_tweaks %}
-            <form class="list-group-item" method="POST" action="{% url 'classroom_post_create' classroom_id=classroom.details.id %}">
+            <form class="list-group-item" method="POST" action="{% url 'classroom_post_create' classroom_id=classroom.details.id %}" id="hoga">
                 {% csrf_token %}
                 <input type="hidden" value="{{ request.path }}" name="next" />
                 {% for field in classroom.forms.post_create_form.visible_fields %}
@@ -40,3 +40,17 @@
         </div>
     </div>
 </div>
+<script>
+    $("document").ready(function() {
+        $("#hoga").submit(function(){
+            var modified = $(".editormd-preview")[0].innerHTML;
+            console.log(modified);
+            console.log($("#id_post").val());
+            $("#id_post").text(modified);
+            $("#id_post").val(modified);
+            console.log($("#id_post").val());
+            $('<input>').attr('type', 'hidden').attr('name', 'html_data').attr('value', modified).appendTo('#hoga');
+            return true;
+        });
+    });
+</script>

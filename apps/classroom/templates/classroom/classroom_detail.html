@@ -10,9 +10,11 @@
 {% block css %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'pages/css/feed.css' %}">
+<link rel="stylesheet" href="{% static 'css/editormd.css'%}" media="all">
 {% endblock %}
 
 {% block body %}
+<script src="{% static 'js/editormd.js' %}"></script>
 <div class="row custom-row">
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
         {% include 'pages/partials/left_sidebar.html' %}
@@ -57,4 +59,28 @@
         {% include 'pages/partials/right_sidebar.html' %}
     </div>
 </div>
+{% endblock %}
+
+{% block post-js %}
+
+<script src="/static/mdeditor/languages/en.js"></script>
+
+</script>
+<script>
+    renderMathInElement(
+        document.body,
+        {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false}
+            ]
+        }
+    );
+
+  </script>
+  <script>
+    </script>
+
 {% endblock %}

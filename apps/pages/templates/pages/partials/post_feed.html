@@ -3,7 +3,7 @@
         <div>
             <a href="">
             {% load static %}
-            <img alt="profile picture" class="timeline-header-profile-photo" src="{% static 'img/default_avatar.jpg' %}">
+            <img alt="profile picture" class="timeline-header-profile-photo" src="{% static 'images/default_avatar.jpg' %}">
             </a>		
         </div>
         <div class="flex-vertical">
@@ -32,7 +32,7 @@
     <hr class="custom-ruler">
     <section class="timeline-card-content">
         <p class="timeline-card-content-text">
-            {{ post.post }}
+            {{ post.post | safe }}
         </p>
     </section>
 </article>
