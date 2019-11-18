@@ -17,7 +17,7 @@
                 </div>
             {% endif %}
             {% load widget_tweaks %}
-            <form class="list-group-item" method="POST" action="{% url 'classroom_post_create' classroom_id=classroom.details.id %}">
+            <form class="list-group-item" method="POST" action="{% url 'classroom_post_create' classroom_id=classroom.details.id %}" id="post-create-form">
                 {% csrf_token %}
                 <input type="hidden" value="{{ request.path }}" name="next" />
                 {% for field in classroom.forms.post_create_form.visible_fields %}
@@ -40,3 +40,12 @@
         </div>
     </div>
 </div>
+<script>
+    $("document").ready(function() {
+        $("#post-create-form").submit(function(){
+            let html = $(".editormd-preview")[0].innerHTML;
+            $('<input>').attr('type', 'hidden').attr('name', 'html').attr('value', html).appendTo('#post-create-form');
+            return true;
+        });
+    });
+</script>

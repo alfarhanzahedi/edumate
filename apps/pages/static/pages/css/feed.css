@@ -1,5 +1,5 @@
 .custom-row{
-    width: 80%;
+    width: 95%;
     margin: 20px auto;
     padding-top: 20px;
 }
@@ -298,4 +298,12 @@ button.student-remove-button {
 
 .pagination-div .pagination .active .page-link:hover {
     color: #ffffff;
+}
+
+.editormd-toolbar {
+    position: absolute !important;
+}
+
+.CodeMirror-placeholder {
+    color: transparent !important;
 }

@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'widget_tweaks',
+    'mdeditor',
 
     'apps.accounts',
     'apps.classroom',
@@ -132,4 +133,33 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'alert-success',
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
+}
+
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+MEDIA_URL = '/media/'
+
+MDEDITOR_CONFIGS = {
+    'default':{
+        'width': '100%',
+        'heigth': 500,
+        'toolbar': ["bold", "del", "italic", "quote", "|",
+                    "list-ul", "list-ol", "hr", "|",
+                    "link", "image", "code", "code-block", "table",
+                    "emoji", "||",
+                    "preview", "watch", "fullscreen"],
+        'upload_image_formats': ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+        'image_folder': 'editor',
+        'theme': 'default',
+        'preview_theme': 'default',
+        'editor_theme': 'default',
+        'toolbar_autofixed': True,
+        'search_replace': True,
+        'emoji': True,
+        'tex': True,
+        'flow_chart': True,
+        'sequence': True,
+        'watch': True,
+        'lineWrapping': False,
+        'lineNumbers': False,
+    }   
 }

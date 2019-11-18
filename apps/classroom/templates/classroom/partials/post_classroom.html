@@ -29,8 +29,8 @@
     </header>
     <hr class="custom-ruler">
     <section class="timeline-card-content">
-        <p class="timeline-card-content-text">
-            {{ post.post }}
+        <p>
+            {{ post.post_html | safe }}
         </p>
     </section>
 </article>

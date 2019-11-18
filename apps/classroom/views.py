@@ -126,7 +126,8 @@ class ClassroomPostCreateView(View):
                 Post.objects.create(
                     classroom = classroom,
                     user = request.user,
-                    post = form.cleaned_data.get('post')
+                    post_raw = form.cleaned_data.get('post_raw'),
+                    post_html = request.POST.get('html')
                 )
                 messages.success(request, f'Post added successfully!')
             except Exception:
