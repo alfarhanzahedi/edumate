@@ -9,7 +9,26 @@ Edumate
 
 {% block css %}
 {% load static %}
+<link rel="stylesheet" href="{% static 'pages/css/landing_page.css' %}">
 {% endblock %}
 
 {% block body %}
+<div class="site-blocks-cover">
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-md-12" style="position: relative;">
+                <div class="row mb-4">
+                    <div class="col-lg-4 mr-auto">
+                        <h1>Learn Better Together.</h1><br>
+                        <p class="mb-5">EduMate gives teachers the tools to share engaging lessons, take examinations,
+                            and build a vibrant classroom community.</p>
+                        <div>
+                            <a href="{% url 'signup' %}" class="btn btn-primary mr-2 mb-2 font-bold">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
