@@ -29,6 +29,28 @@
   margin-right: auto !important;
 }
 
+.img-absolute {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    top: 50%;
+    width: 700px !important;
+    -webkit-transform: translateY(-50%) translateX(30%);
+    -ms-transform: translateY(-50%) translateX(30%);
+    transform: translateY(-50%) translateX(5%);
+}
+
+@media (max-width: 991px) {
+    .img-absolute {
+        display: none;
+    }
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
 @media (min-width: 992px) {
   .col-lg-4 {
     -webkit-box-flex: 0;
