@@ -285,11 +285,17 @@ button.student-remove-button {
 .pagination-div .pagination .active .page-link {
     padding: 8px 10px;
     color: #ffffff;
+    background-color: rgba(0, 210, 181) !important;
+    border-color: rgba(0, 210, 181) !important;
 }
 
 .pagination-div .pagination .page-link {
     padding: 8px 10px;
     color: inherit;
+}
+
+.pagination-div .pagination .page-link:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 210, 181, 0.25) !important;
 }
 
 .pagination-div .pagination .page-link:hover {
