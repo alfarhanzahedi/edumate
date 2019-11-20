@@ -13,6 +13,16 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = User
     list_display = ['email', 'username',]
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {
+            'fields': ('role',),
+        }),
+    )
+    fieldsets = UserAdmin.fieldsets + (
+        ('Role', {
+            'fields': ('is_student', 'is_teacher', ),
+        }),
+    )
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
