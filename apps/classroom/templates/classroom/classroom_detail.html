@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
+{% comment %}
+
+    This template acts as the detail view of a classroom. 
+    The details consists of - posts(paginated), students, teacher, etc. 
+
+{% endcomment %}
+
 {% block meta %}
 {% endblock %}
 
@@ -9,7 +16,7 @@
 
 {% block css %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'pages/css/feed.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/css/feed.css' %}">
 {% endblock %}
 
 {% block body %}
@@ -18,33 +25,41 @@
         {% include 'pages/partials/left_sidebar.html' %}
     </div>
     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-        <h5 class="classroom-title">{{ classroom.details.title }}</h5>
-        <p class="classroom-description text-muted">{{ classroom.details.description }}</p>
+        <h5 class="classroom-title"> {{ classroom.details.title }} </h5>
+        <p class="classroom-description text-muted"> {{ classroom.details.description }} </p>
         {% include 'classroom/partials/post_create_form.html' %}
+        
         {% for post in classroom.posts %}
-        {% include 'classroom/partials/post_classroom.html' %}
+            {% include 'classroom/partials/post_classroom.html' %}
         {% endfor %}
+        
+        {% comment %}
+
+            The following 'if' block contains the logic for displaying the navigation bar 
+            to access the various different 'pages' of posts.
+        
+        {% endcomment %}
         {% if classroom.posts.has_other_pages %}
         <div class="pagination-div font-bold">
-        <ul class="pagination">
-            {% if classroom.posts.has_previous %}
-                <li><a class="page-link" href="?page={{ classroom.posts.previous_page_number }}">&laquo;</a></li>
-            {% else %}
-                <li><span class="page-link disabled">&laquo;</span></li>
-            {% endif %}
-            {% for i in classroom.posts.paginator.page_range %}
-                {% if classroom.posts.number == i %}
-                    <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+            <ul class="pagination">
+                {% if classroom.posts.has_previous %}
+                    <li><a class="page-link" href="?page={{ classroom.posts.previous_page_number }}">&laquo;</a></li>
                 {% else %}
-                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    <li><span class="page-link disabled">&laquo;</span></li>
                 {% endif %}
-            {% endfor %}
-            {% if classroom.posts.has_next %}
-                <li><a class="page-link" href="?page={{ classroom.posts.next_page_number }}">&raquo;</a></li>
-            {% else %}
-                <li><span class="page-link disabled">&raquo;</span></li>
-            {% endif %}
-        </ul>
+                {% for i in classroom.posts.paginator.page_range %}
+                    {% if classroom.posts.number == i %}
+                        <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if classroom.posts.has_next %}
+                    <li><a class="page-link" href="?page={{ classroom.posts.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                    <li><span class="page-link disabled">&raquo;</span></li>
+                {% endif %}
+            </ul>
         </div>
         {% endif %}
     </div>

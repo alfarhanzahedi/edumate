@@ -1,28 +1,33 @@
+{% comment %}
+
+    This template acts as container where the individual posts are rendered.
+
+{% endcomment %}
+
 <article class="timeline-card">
     <header class="timeline-header">
         <div>
-            <a href="">
+            <a href="/accounts/{{ post.user.username }}/">
             {% load static %}
-            <img alt="profile picture" class="timeline-header-profile-photo" src="{% static 'img/default_avatar.jpg' %}">
+                <img alt="profile picture" class="timeline-header-profile-photo" src="{% static 'img/default_avatar.jpg' %}">
             </a>		
         </div>
         <div class="flex-vertical">
             <div class="timeline-header-profile-name">
-                <a href="">{{ post.user.first_name }} {{post.user.last_name}}</a>
+                <a href="/accounts/{{ post.user.username }}/">{{ post.user.first_name }} {{post.user.last_name}}</a>
             </div>
             <div class="timeline-header-time">
                 <span class="timeline-header-timestamp">{{ post.updated_at }}</span>
             </div>
-            
         </div>
         {% if classroom.permissions.can_remove_posts or post.user == user %}
         <div style="position: absolute; right: 30px; margin-top: 7px;">
             <form action="{% url 'classroom_post_delete' classroom_id=classroom.details.id post_id=post.id %}" method="POST">
-            {% csrf_token %}
-            <input type="hidden" value="{{ request.path }}" name="next"/>
-            <button type="submit" class="student-remove-button" title="Delete post.">
-                <i class="fas fa-trash-alt"></i>                
-            </button>
+                {% csrf_token %}
+                <input type="hidden" value="{{ request.path }}" name="next"/>
+                <button type="submit" class="student-remove-button" title="Delete post.">
+                    <i class="fas fa-trash-alt"></i>                
+                </button>
             </form>
         </div>
         {% endif %}
