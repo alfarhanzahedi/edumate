@@ -41,3 +41,4 @@ class CustomUserChangeForm(UserChangeForm):
         except User.DoesNotExist:
             return email
         raise forms.ValidationError('This email address is already in use.')
+    
