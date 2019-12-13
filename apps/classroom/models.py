@@ -14,7 +14,7 @@ class Classroom(models.Model):
     updated_at = models.DateTimeField(auto_now = True)
 
     def __str__(self):
-        return self.title
+        return f'{self.title}'
 
 class Post(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete = models.CASCADE, related_name = 'posts')
@@ -37,5 +37,5 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now = True)
 
     def __str__(self):
-        return f'{self.comment[:20]}...'
+        return f'{self.id}'
     

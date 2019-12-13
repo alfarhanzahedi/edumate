@@ -21,6 +21,7 @@ class ClassroomJoinForm(forms.Form):
                     required = True,
                     help_text = 'The unique code shared by your teacher.'
                 )
+
     def clean_unique_code(self):
         unique_code = self.cleaned_data.get('unique_code')
         try:
@@ -37,4 +38,3 @@ class ClassroomPostCreateForm(forms.ModelForm):
         help_texts = {
             'post': 'Keep it simple and brief!'
         }
-        
