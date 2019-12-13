@@ -1,32 +1,13 @@
-
-.container {
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-@media (max-width: 576px) {
-  .container {
-    max-width: 540px;
-  }
-}
+/*
+landing_page.css
+Description: landing.css contains the css required by the ladning page of the webiste.
+Author: Jatin Pandey
+*/
 
 .site-blocks-cover,
 .site-blocks-cover > .container > .row {
   min-height: 600px;
   height: calc(100vh);
-}
-
-.mb-4,
-.my-4 {
-  margin-bottom: 1.5rem !important;
-}
-
-.mr-auto,
-.mx-auto {
-  margin-right: auto !important;
 }
 
 .img-absolute {
@@ -44,20 +25,6 @@
     .img-absolute {
         display: none;
     }
-}
-
-.img-fluid {
-    max-width: 100%;
-    height: auto;
-}
-
-@media (min-width: 992px) {
-  .col-lg-4 {
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 33.33333%;
-    flex: 0 0 33.33333%;
-    max-width: 33.33333%;
-  }
 }
 
 .site-blocks-cover h1 {

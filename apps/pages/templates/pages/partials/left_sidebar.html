@@ -1,19 +1,25 @@
+{% comment %}
+    This template acts the left sidebar, common to the various
+    different pages of the website - feed, classroom, user profile, etc.
+{% endcomment %}
+
 <div class="profile-card">
     <div class="float-left">
         <div class="float-left">
             {% load static %}
-            <img src="{% static 'img/default_avatar.jpg' %}" class="profile-card-avatar" alt="User avatar">
+            <img src="{% static 'img/default_avatar.jpg' %}" class="profile-card-avatar" alt="{{ user.first_name }}'s avatar">
         </div>
         <div class="float-left">
-            <a href="#"> {{ user.first_name }} {{ user.last_name }} </a><br>
+            <a href="/accounts/{{ user.username }}/"> {{ user.first_name }} {{ user.last_name }} </a><br>
             {% if user.is_student %}
-            <span class="text-muted">Student</span>
+                <span class="text-muted">Student</span>
             {% else %}
-            <span class="text-muted">Teacher</span>
+                <span class="text-muted">Teacher</span>
             {% endif %}
         </div>
     </div>
 </div>
+
 <div class="navigation-list-container">
     <div class="navigation-list-header">
         <div class="navigation-list-title">
@@ -23,17 +29,18 @@
     <div class="list-group">
         {% if left_sidebar.classrooms.count > 0 %}
             {% for classroom in left_sidebar.classrooms %}
-            <a href="{% url 'classroom_detail' id=classroom.id %}" class="list-group-item list-group-item-action">{{ classroom.title }}</a>
+                <a href="{% url 'classroom_detail' id=classroom.id %}" class="list-group-item list-group-item-action">{{ classroom.title }}</a>
             {% endfor %}
         {% else %}
             {% if user.is_student %}
-            <span class="list-group-item"> You have not joined any classrooms yet! </span>
+                <span class="list-group-item"> You have not joined any classrooms yet! </span>
             {% else %}
-            <span class="list-group-item"> You have not created any classrooms yet! </span>
+                <span class="list-group-item"> You have not created any classrooms yet! </span>
             {% endif %}
         {% endif %}
     </div>
 </div>
+
 {% if left_sidebar.classroom_create_form %}
 <div class="navigation-list-container">
     <div class="navigation-list-header">
@@ -59,14 +66,16 @@
                 <input type="hidden" value="{{ request.path }}" name="next" />
                 {% for field in left_sidebar.classroom_create_form.visible_fields %}
                     <div class="form-label-group">
-                        <label for={{field.id_for_label}}>
+                        <label for="{{ field.id_for_label }}">
                             {{ field.label }} <br> 
                             <span class="text-muted"> {{ field.help_text }} </span> 
                         </label>
                         {% if field.errors %}
                             {% render_field field class="form-control is-invalid" %}
                             <div class="error">
-                                {% for error in field.errors %}{{ error }}<br/>{% endfor %}
+                                {% for error in field.errors %}
+                                    {{ error }}<br/>
+                                {% endfor %}
                             </div>
                         {% else %}
                             {% render_field field class="form-control" %}
