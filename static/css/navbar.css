@@ -6,142 +6,142 @@ Date: 7th September, 2019
 */
 
 .navbar {
-    padding: 0rem;
+  padding: 0rem;
 }
 
 .dropdown .dropdown-menu {
-    text-align: left !important;
-    border-radius: 0;
-    border: 1px solid #eeeeee;
+  text-align: left !important;
+  border-radius: 0;
+  border: 1px solid #eeeeee;
 }
 
-.dropdown .dropdown-menu .dropdown-item:active{
-    background-color: #ffffff;
-    color: inherit;
+.dropdown .dropdown-menu .dropdown-item:active {
+  background-color: #ffffff;
+  color: inherit;
 }
 
 .dropdown .dropdown-menu .dropdown-icon {
-    display: none;
+  display: none;
 }
 
 #banner .banner-logo {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
-#banner .banner-logo, .navbar .navbar-logo {
-    height: 50px;
-    width: auto;
+#banner .banner-logo,
+.navbar .navbar-logo {
+  height: 50px;
+  width: auto;
 }
 
 .navbar #navbar-logo {
-    position: relative;
-    left: 10px;
-    top: 3px;
+  position: relative;
+  left: 10px;
+  top: 3px;
 }
 
 .navbar-avatar {
-    position: relative;
-    top: -5px;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    margin-right: 2px;
+  position: relative;
+  top: -5px;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  margin-right: 2px;
 }
 
 /*
 The navbar toggle appears at this breakpoint 
 */
 @media (min-width: 768px) {
-    .dropdown:hover .dropdown-menu {
-        display: block;
-        margin-top: 0;
-        border-radius: 0;
-    }
+  .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+    border-radius: 0;
+  }
 
-    .dropdown .dropdown-menu {
-        margin-top: 0px;
-        position: absolute;
-        transform: translateX(-40%);
-        text-align: center;
-    }
+  .dropdown .dropdown-menu {
+    margin-top: 0px;
+    position: absolute;
+    transform: translateX(-40%);
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {
-    .dropdown .dropdown-menu {
-        text-align: left;
-        border: 0px;
-        padding-bottom: 0px;
-    }
+  .dropdown .dropdown-menu {
+    text-align: left;
+    border: 0px;
+    padding-bottom: 0px;
+  }
 
-    .dropdown .dropdown-menu .dropdown-item:hover{
-        background-color: #ffffff;
-    }
+  .dropdown .dropdown-menu .dropdown-item:hover {
+    background-color: #ffffff;
+  }
 
-    .navbar .navbar-nav .nav-item:first-child {
-        border-top: 0.5px solid #eeeeee; 
-    }
+  .navbar .navbar-nav .nav-item:first-child {
+    border-top: 0.5px solid #eeeeee;
+  }
 
-    .navbar .navbar-nav .nav-item {
-        border-bottom: 0.5px solid #eeeeee; 
-    }
+  .navbar .navbar-nav .nav-item {
+    border-bottom: 0.5px solid #eeeeee;
+  }
 
-    .navbar .navbar-logo {
-        height: 30px;
-        width: auto;
-    }
-    .navbar-toggler .navbar-toggler-icon {
-        margin-top: 7px;
-    }
-    
-    .navbar-white {
-        border-top: 1px solid #eeeeee;
-    }
+  .navbar .navbar-logo {
+    height: 30px;
+    width: auto;
+  }
+  .navbar-toggler .navbar-toggler-icon {
+    margin-top: 7px;
+  }
 
-    #banner .banner-hr {
-        display: none;
-    }
+  .navbar-white {
+    border-top: 1px solid #eeeeee;
+  }
 
-    .dropdown .dropdown-toggle[aria-expanded="true"] {
-        border-bottom: 1px solid #eeeeee;
-    }
+  #banner .banner-hr {
+    display: none;
+  }
 
-    .dropdown .dropdown-item:not(:last-child) {
-        border-bottom: 1px solid #eeeeee;
-    }
+  .dropdown .dropdown-toggle[aria-expanded="true"] {
+    border-bottom: 1px solid #eeeeee;
+  }
 
-    .dropdown .dropdown-menu .dropdown-icon {
-        display: inline;
-        font-weight: bold;
-        padding-right: 5px;
-    }
+  .dropdown .dropdown-item:not(:last-child) {
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .dropdown .dropdown-menu .dropdown-icon {
+    display: inline;
+    font-weight: bold;
+    padding-right: 5px;
+  }
 }
 
 .navbar .navbar-nav .nav-item {
-    padding: 10px;
+  padding: 10px;
 }
 
 .navbar .navbar-toggler:active {
-    outline: none;
+  outline: none;
 }
 
 .navbar .navbar-toggler:focus {
-    outline: none;
+  outline: none;
 }
 
 .navbar-white {
-    background-color: #ffffff;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.16);
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
 }
 
-.navbar #navbar-logo{
-    display: none;
+.navbar #navbar-logo {
+  display: none;
 }
 
 #banner .fab {
-    padding: 0px 5px;
+  padding: 0px 5px;
 }
 
 #banner .banner-hr {
-    margin: 0px;
+  margin: 0px;
 }
-

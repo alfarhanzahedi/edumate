@@ -53,14 +53,16 @@
 </head>
 
 <body class="font-open-sans">
-    <!-- Navbar -->
-    {% include 'navbar.html' %}
-    <!--End of navbar -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        {% include 'navbar.html' %}
+        <!--End of navbar -->
 
-    <!-- Main content/body -->
-    {% block body %} {% endblock %}
-    <!-- End of main content/body -->
-
+        <!-- Main content/body -->
+        {% block body %} {% endblock %}
+        <!-- End of main content/body -->
+    </div>
+    
     <!-- Footer -->
     {% include 'footer.html' %}
     <!--End of footer -->
@@ -75,7 +77,7 @@
     <script src="{% static 'mdeditor/js/lib/sequence-diagram.min.js' %}"></script>
     <script src="{% static 'mdeditor/js/lib/flowchart.min.js' %}"></script>
     <script src="{% static 'mdeditor/js/lib/jquery.flowchart.min.js' %}"></script>
-    <script src="/static/mdeditor/languages/en.js"></script>
+    <script src="{% static 'mdeditor/languages/en.js' %}"></script>
     <!-- Webpage specific JS -->
     {% block post-js %} {% endblock %}
     <!-- End of webpage specific JS -->
