@@ -7,110 +7,110 @@ Date: 7th September, 2019
 */
 
 :root {
-	--input-padding-x: .8rem;
-	--input-padding-y: .75rem;
+  --input-padding-x: 0.8rem;
+  --input-padding-y: 0.75rem;
 }
 
 .card {
-	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
 .card-signin {
-	border: 0;
-	border-radius: 0.5rem; 
+  border: 0;
+  border-radius: 0.5rem;
 }
 
 .card-signin .card-title {
-	margin-bottom: 2rem;
-	font-weight: 300;
-	font-size: 1.5rem;
+  margin-bottom: 2rem;
+  font-weight: 300;
+  font-size: 1.5rem;
 }
 
 .card-signin .card-body {
-	padding: 2rem;
+  padding: 2rem;
 }
 
 .form-signin {
-	width: 100%;
+  width: 100%;
 }
 
 .form-signin .btn {
-	font-size: 80%;
-	border-radius: 0.5rem;
-	letter-spacing: .1rem;
-	font-weight: bold;
-	padding: 1rem;
-	transition: all 0.2s;
+  font-size: 80%;
+  border-radius: 0.5rem;
+  letter-spacing: 0.1rem;
+  font-weight: bold;
+  padding: 1rem;
+  transition: all 0.2s;
 }
 
 .form-label-group {
-	position: relative;
-	margin-bottom: 1rem;
+  position: relative;
+  margin-bottom: 1rem;
 }
 
 .form-label-group input {
-	border-radius: 0.5rem;
+  border-radius: 0.5rem;
 }
 
-.form-label-group>input,
-.form-label-group>label {
-	padding: var(--input-padding-y) var(--input-padding-x);
+.form-label-group > input,
+.form-label-group > label {
+  padding: var(--input-padding-y) var(--input-padding-x);
 }
 
-.form-label-group>label {
-	position: absolute;
-	top: 0;
-	left: 0;
-	display: block;
-	width: 100%;
-	margin-bottom: 0;
-	line-height: 1.5;
-	color: #495057;
-	border: 1px solid transparent;
-	border-radius: .25rem;
-	transition: all .1s ease-in-out;
+.form-label-group > label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  margin-bottom: 0;
+  line-height: 1.5;
+  color: #495057;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  transition: all 0.1s ease-in-out;
 }
 
 .form-label-group input:not(:placeholder-shown) {
-	padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
-	padding-bottom: calc(var(--input-padding-y) / 3);
+  padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
+  padding-bottom: calc(var(--input-padding-y) / 3);
 }
 
-.form-label-group input:not(:placeholder-shown)~label {
-	padding-top: calc(var(--input-padding-y) / 3);
-	padding-bottom: calc(var(--input-padding-y) / 3);
-	font-size: 12px;
-	color: #777;
+.form-label-group input:not(:placeholder-shown) ~ label {
+  padding-top: calc(var(--input-padding-y) / 3);
+  padding-bottom: calc(var(--input-padding-y) / 3);
+  font-size: 12px;
+  color: #777777;
 }
 
 .mb-3 {
-	padding: 0 var(--input-padding-x);
+  padding: 0 var(--input-padding-x);
 }
 
 .help-text,
 .error {
-	padding-left: 1.6rem;
-	padding-top: 0.6rem;
-	font-size: 12px;
-	color: #777;
+  padding-left: 1.6rem;
+  padding-top: 0.6rem;
+  font-size: 12px;
+  color: #777777;
 }
 
 .help-text ul {
-	margin: 0px;
-	padding: 0px;
-	padding-left: 0.8rem;
+  margin: 0px;
+  padding: 0px;
+  padding-left: 0.8rem;
 }
 
 .error {
-	padding-left: 1.4rem;
-	color: #ff0000;
+  padding-left: 1.4rem;
+  color: #ff0000;
 }
 
 .alert {
-	font-size: 12px;
+  font-size: 12px;
 }
 
 #user-role ul {
-	padding-left: 23px;
-	list-style-type: none;
+  padding-left: 23px;
+  list-style-type: none;
 }

@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
+{% comment %}
+
+    This template acts as the 'Account Activation Invalid' page (the page that comes if the account activate link is invalid) 
+    for the website.
+
+{% endcomment %}
+
 {% block meta %}
 {% endblock %}
 
@@ -9,6 +16,8 @@ Sign Up | EduMate
 
 {% block body %}
 <div class="container custom-container font-open-sans">
-    <p>The confirmation link was invalid, possibly because it has already been used.</p>
+    <p>
+        The confirmation link was invalid, possibly because it has already been used.
+    </p>
 </div>
 {% endblock %}

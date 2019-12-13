@@ -24,22 +24,6 @@ Date: 7th September, 2019
   display: none;
 }
 
-#banner .banner-logo {
-  margin-top: 10px;
-}
-
-#banner .banner-logo,
-.navbar .navbar-logo {
-  height: 50px;
-  width: auto;
-}
-
-.navbar #navbar-logo {
-  position: relative;
-  left: 10px;
-  top: 3px;
-}
-
 .navbar-avatar {
   position: relative;
   top: -5px;
@@ -86,20 +70,12 @@ The navbar toggle appears at this breakpoint
     border-bottom: 0.5px solid #eeeeee;
   }
 
-  .navbar .navbar-logo {
-    height: 30px;
-    width: auto;
-  }
   .navbar-toggler .navbar-toggler-icon {
     margin-top: 7px;
   }
 
   .navbar-white {
     border-top: 1px solid #eeeeee;
-  }
-
-  #banner .banner-hr {
-    display: none;
   }
 
   .dropdown .dropdown-toggle[aria-expanded="true"] {
@@ -132,16 +108,4 @@ The navbar toggle appears at this breakpoint
 .navbar-white {
   background-color: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
-}
-
-.navbar #navbar-logo {
-  display: none;
-}
-
-#banner .fab {
-  padding: 0px 5px;
-}
-
-#banner .banner-hr {
-  margin: 0px;
 }

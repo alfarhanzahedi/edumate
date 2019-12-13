@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% comment %}
+
+    This template acts as the 'Sign In' page for the website.
+
+{% endcomment %}
+
 {% block meta %}
 {% endblock %}
 
@@ -36,13 +42,15 @@ Sign In | EduMate
                         <div class="form-label-group">
                             {% if field.errors %}
                                 {% render_field field class="form-control is-invalid" placeholder=field.label %}                            
-                                <label for={{field.id_for_label}}>{{ field.label }}</label>
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                                 <div class="error">
-                                    {% for error in field.errors %}{{ error }}<br/>{% endfor %}
+                                    {% for error in field.errors %}
+                                        {{ error }} <br/>
+                                    {% endfor %}
                                 </div>                                
                             {% else %}
                                 {% render_field field class="form-control" placeholder=field.label %}
-                                <label for={{field.id_for_label}}>{{ field.label }}</label>
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                             {% endif %}                            
                         </div>
                         {% endfor %}

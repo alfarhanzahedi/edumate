@@ -53,6 +53,16 @@ textarea:focus {
   box-shadow: 0 0 0 0.2rem rgba(0, 210, 181, 0.25) !important;
 }
 
+input:-webkit-autofill {
+  -webkit-box-shadow:0 0 0 50px white inset !important;
+  -webkit-text-fill-color: #333;
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 50px white inset, 0 0 0 0.2rem rgba(0, 210, 181, 0.25) !important;
+  -webkit-text-fill-color: #333;
+} 
+
 /*
 CSS classes used throughout the website.
 */
