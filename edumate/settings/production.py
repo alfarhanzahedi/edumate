@@ -1,21 +1,13 @@
 from .base import *
 
-INSTALLED_APPS += [
-    'storages',
-]
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-AZURE_ACCOUNT_NAME = config('AZURE_ACCOUNT_NAME')
-AZURE_ACCOUNT_KEY = config('AZURE_ACCOUNT_KEY')
+STATIC_ROOT = '/var/www/edumate/static/'
+STATIC_URL = '/static/'
 
-DEFAULT_FILE_STORAGE = 'edumate.azure.AzureMediaStorage'
-STATICFILES_STORAGE = 'edumate.azure.AzureStaticStorage'
-
-STATIC_LOCATION = 'static'
-MEDIA_LOCATION = 'media'
-
-AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
-STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
+MEDIA_ROOT = '/var/www/edumate/media/'
+MEDIA_URL = '/media/'
 
 # Email 
 # https://docs.djangoproject.com/en/2.2/topics/email/#email-backends
