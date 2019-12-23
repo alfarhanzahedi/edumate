@@ -1,0 +1,50 @@
+.classroom{
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    padding: 20px;
+    background-color: #fff;
+}
+
+.classroom-section-header{
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.student-list{
+    list-style: none;
+    padding: 0;;
+}
+
+.student{
+    display: flex;
+    flex-direction: row;
+    height: 60px;
+    padding: 4px 12px;
+}
+
+.student-list-profile-photo{
+    width: 42px;
+    height: 42px;
+    margin: auto;
+    border-radius: 50%;
+}
+
+.student-name{
+    font-size: 13px; 
+    font-weight: 600; 
+    color: rgb(51, 51, 51);
+    margin-left: 12px;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+
+.role-text{
+    font-size: 13px; 
+    font-weight: 400; 
+    color: rgb(51, 51, 51);
+    margin-left: 12px;
+    margin-bottom: 0;
+}
