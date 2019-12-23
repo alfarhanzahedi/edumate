@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset='utf-8'>
+        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Edumate</title>
+        <meta name="description" content="Landing page of Edumate">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="css/navbar.css">
+        <link rel="stylesheet" type="text/css" href="css/base.css">
+        <link rel="stylesheet" type="text/css" href="css/classroom.css">
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #FFFFFF">
+            <a class="navbar-brand" href="#">edumate</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#"><i class="fas fa-home"></i> Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-users"></i> Classes</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-bell fa-lg"></i>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <h6 class="dropdown-item"><strong>Notifications</strong></h6>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/fox.jpg" width="30" height="30" class="rounded-circle">
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i> Dashboard</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-user-edit"></i>  Edit Profile</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <a href="#">
+                        <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/fox.jpg" class="Avatar" alt="Username">
+                        </a>
+                    </div>
+                    <div class="profile-card-details">
+                        <div class="profile-card-name">John Doe</div>
+                        <a href="#" class="profile-card-link"><span>View Profile</span></a>
+                    </div>
+                </div>
+                <div class="navigation-list-container">
+                    <div class="navigation-list-header">
+                        <div class="navigation-list-title">
+                            <span>My Classes</span>
+                        </div>
+                        <div>
+                            <a href="#" title="Join Classroom" role="button">
+                            <i class="fas fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                        Chemistry 101
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">Physics 302</a>
+                        <a href="#" class="list-group-item list-group-item-action">Mathematics 102</a>
+                        <a href="#" class="list-group-item list-group-item-action">Mechanics 202</a>
+                        <a href="#" class="list-group-item list-group-item-action">Algorithms 103</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="classroom">
+                    <div>
+                        <label class="classroom-section-header">Students in Physics 101</label>
+                        <hr class="custom-ruler">
+                        <ul class="student-list">
+                        <li class="student">
+                                <div>
+                                    <a href="#">
+                                    <img alt="profile picture" class="student-list-profile-photo" src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/fox.jpg">
+                                    </a>		
+                                </div>
+                                <div class="flex-vertical">
+                                    <div class="student-name">
+                                        <a href="#">John Doe</a>
+                                    </div>
+                                    <div class="role">
+                                        <span class="role-text">Teacher</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="student">
+                                <div>
+                                    <a href="#">
+                                    <img alt="profile picture" class="student-list-profile-photo" src="img/avatar.png">
+                                    </a>		
+                                </div>
+                                <div class="flex-vertical">
+                                    <div class="student-name">
+                                        <a href="#">Jatin Pandey</a>
+                                    </div>
+                                    <div class="role">
+                                        <span class="role-text">Student</span>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                        </ul>
+                    </div>  
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="navigation-list-container">
+                    <div class="navigation-list-header">
+                        <div class="navigation-list-title">
+                            <i class="fas fa-tasks"></i><span id="task">Upcoming Task</span>
+                        </div>
+                        <div>
+                            <a href="#" title="Create New Task" role="button">
+                            <i class="fas fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                        Chemistry 101 classtest on 8th December
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">Physics 302 assignment submission on 16th November</a>
+                        <a href="#" class="list-group-item list-group-item-action">Mathematics 102 assignment deadline crossed!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script type="text/javascript" src = "js/script.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>
+</html>
