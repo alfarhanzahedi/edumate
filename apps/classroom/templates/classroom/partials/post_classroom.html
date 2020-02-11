@@ -20,17 +20,24 @@
                 <span class="timeline-header-timestamp">{{ post.updated_at }}</span>
             </div>
         </div>
-        {% if classroom.permissions.can_remove_posts or post.user == user %}
+        
         <div style="position: absolute; right: 30px; margin-top: 7px;">
-            <form action="{% url 'classroom_post_delete' classroom_id=classroom.details.id post_id=post.id %}" method="POST">
-                {% csrf_token %}
-                <input type="hidden" value="{{ request.path }}" name="next"/>
-                <button type="submit" class="student-remove-button" title="Delete post.">
-                    <i class="fas fa-trash-alt"></i>                
-                </button>
-            </form>
+            <a href="{% url 'classroom_post_detail' classroom_id=classroom.details.id post_id=post.id %}" title="External link to post." style="margin: 2px;">
+                <i class="fas fa-external-link-alt"></i>
+            </a>
+            {% if classroom.permissions.can_remove_posts or post.user == user %}
+                <a href="{% url 'classroom_post_update' classroom_id=classroom.details.id post_id=post.id %}" title="Update post." style="margin: 2px;">
+                    <i class="fas fa-edit"></i>                
+                </a>
+                <form action="{% url 'classroom_post_delete' classroom_id=classroom.details.id post_id=post.id %}" method="POST" style="display:inline; margin: 2px;">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.path }}" name="next"/>
+                    <button type="submit" class="student-remove-button" title="Delete post.">
+                        <i class="fas fa-trash-alt"></i>                
+                    </button>
+                </form>
+            {% endif %}
         </div>
-        {% endif %}
     </header>
     <hr class="custom-ruler">
     <section class="timeline-card-content">

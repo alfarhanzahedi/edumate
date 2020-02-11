@@ -137,6 +137,67 @@ class ClassroomPostCreateView(View):
         messages.error(request, f'Empty posts are not allowed!')
         return redirect('classroom_detail', id = classroom_id)
 
+
+class ClassroomPostDetailView(View):
+
+    @method_decorator(login_required)
+    def get(self, request, classroom_id, post_id):
+        classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
+        post = get_object_or_404(Post, id = post_id, classroom = classroom)
+        if not in_classroom(classroom, request.user):
+            raise Http404
+        context = get_sidebar_context(request)
+        context['classroom'] = {}
+        context['classroom']['details'] = classroom
+        context['classroom']['permissions'] = {}
+        context['classroom']['permissions']['can_remove_posts'] = (classroom.teacher == request.user)
+        context['post'] = post
+        return render(request, 'classroom/classroom_post_detail.html', context)
+
+class ClassroomPostUpdateView(View):
+    
+    @method_decorator(login_required)
+    def get(self, request, classroom_id, post_id):
+        classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
+        post = get_object_or_404(Post, id = post_id, classroom = classroom)
+        
+        
+        context = get_sidebar_context(request)
+        context['classroom'] = {}
+        context['classroom']['details'] = classroom
+        context['classroom']['permissions'] = {}
+        context['classroom']['permissions']['can_remove_posts'] = (classroom.teacher == request.user)
+        context['classroom']['forms'] = {}
+        context['classroom']['forms']['post_create_form'] = ClassroomPostCreateForm(instance = post)
+
+        context['post'] = post
+        return render(request, 'classroom/classroom_post_update.html', context)
+
+
+    @method_decorator(login_required)
+    def post(self, request, classroom_id, post_id):
+        form = ClassroomPostCreateForm(request.POST)
+        if form.is_valid():
+            try:
+                classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
+                post = get_object_or_404(Post, id = post_id, classroom = classroom)
+                
+                # ToDo: A better HTTP response for unauthorised users.
+                if post.user != request.user and classroom.teacher != request.user:
+                    raise Http404
+                
+                post.post_raw = form.cleaned_data.get('post_raw')
+                post.post_html = request.POST.get('html')
+                post.save()
+                
+                messages.success(request, f'Post updated successfully!')
+            except Exception:
+                messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
+            return redirect('classroom_post_detail', classroom_id = classroom_id, post_id = post_id)
+
+        messages.error(request, f'Empty posts are not allowed!')
+        return redirect('classroom_post_update', classroom_id = classroom_id, post_id = post_id)
+
 class ClassroomPostDeleteView(View):
     
     @method_decorator(login_required)

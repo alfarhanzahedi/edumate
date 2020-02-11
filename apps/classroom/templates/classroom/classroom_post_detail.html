@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% comment %}
+
+    This template acts as the detail view of a post. 
+
+{% endcomment %}
+
+{% block meta %}
+{% endblock %}
+
+{% block title %}
+{{ classroom.details.title }} | Edumate
+{% endblock %}
+
+{% block css %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'pages/css/feed.css' %}">
+{% endblock %}
+
+{% block body %}
+<div class="row custom-row">
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/left_sidebar.html' %}
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/post_feed.html' %}
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% if classroom.details.teacher == user %}
+            {% include 'classroom/partials/code.html' %}
+        {% endif %}
+        {% include 'pages/partials/right_sidebar.html' %}
+    </div>
+</div>
+{% endblock %}
