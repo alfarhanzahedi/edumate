@@ -25,7 +25,14 @@
         {% include 'pages/partials/left_sidebar.html' %}
     </div>
     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-        <h5 class="classroom-title"> {{ classroom.details.title }} </h5>
+        <h5 class="classroom-title">
+            {{ classroom.details.title }}
+            {% if user == classroom.details.teacher %}
+            <a href="{% url 'classroom_update' classroom_id=classroom.details.id %}" title="Update classroom." style="margin: 2px;">
+                <i class="fas fa-edit"></i>
+            </a>
+            {% endif %}
+        </h5>
         <p class="classroom-description text-muted"> {{ classroom.details.description }} </p>
         {% include 'classroom/partials/post_create_form.html' %}
         

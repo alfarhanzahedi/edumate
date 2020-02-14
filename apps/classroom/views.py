@@ -74,7 +74,44 @@ class ClassroomDetailView(View):
         return render(request, 'classroom/classroom_detail.html', context)
 
 class ClassroomUpdateView(View):
-    pass
+
+    @method_decorator(login_required)
+    def get(self, request, classroom_id):
+        classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
+
+        if (classroom.teacher != request.user):
+            raise Http404
+
+        context = get_sidebar_context(request)
+        context['classroom'] = {}
+        context['classroom']['details'] = classroom
+        context['classroom']['permissions'] = {}
+        context['classroom']['permissions']['can_remove_posts'] = (classroom.teacher == request.user)
+        context['classroom']['forms'] = {}
+        context['classroom']['forms']['classroom_create_form'] = ClassroomCreationForm(instance = classroom)
+        return render(request, 'classroom/classroom_update.html', context)
+
+    @method_decorator(login_required)
+    def post(self, request, classroom_id):
+        classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
+
+        # ToDo: A better HTTP response for unauthorised users.
+        if classroom.teacher != request.user:
+            raise Http404
+
+        form = ClassroomCreationForm(request.POST)
+        if form.is_valid():
+            try:
+                updated_classroom = form.save(commit = False)
+                classroom.title = updated_classroom.title
+                classroom.description = updated_classroom.description
+                classroom.save()
+                messages.success(request, f'Classroom updated successfully!')
+            except Exception:
+                messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
+            return redirect('classroom_detail', id = classroom_id)
+
+        return redirect('classroom_update', classroom_id = classroom_id)
 
 class ClassroomDeleteView(View):
     pass
@@ -160,7 +197,6 @@ class ClassroomPostUpdateView(View):
     def get(self, request, classroom_id, post_id):
         classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
         post = get_object_or_404(Post, id = post_id, classroom = classroom)
-        
         
         context = get_sidebar_context(request)
         context['classroom'] = {}

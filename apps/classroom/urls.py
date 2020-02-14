@@ -16,7 +16,7 @@ from .views import ClassroomPostCommendDeleteView
 urlpatterns = [
     path('create/', ClassroomCreateView.as_view(), name = 'classroom_create'),
     path('<int:id>/', ClassroomDetailView.as_view(), name = 'classroom_detail'),
-    path('<int:id>/update/', ClassroomUpdateView.as_view(), name = 'classroom_update'),
+    path('<int:classroom_id>/update/', ClassroomUpdateView.as_view(), name = 'classroom_update'),
     path('<int:id>/delete/', ClassroomDeleteView.as_view(), name = 'classroom_delete'),
     path('join/', ClassroomJoinView.as_view(), name = 'classroom_join'),
     path('<int:id>/<str:username>/delete/', ClassroomStudentRemoveView.as_view(), name = 'classroom_student_remove'),

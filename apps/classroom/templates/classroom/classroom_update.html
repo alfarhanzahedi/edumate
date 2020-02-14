@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% comment %}
+
+    This template acts as the view responsible for the updation of a classroom. 
+
+{% endcomment %}
+
+{% block meta %}
+{% endblock %}
+
+{% block title %}
+Update Post | {{ classroom.details.title }} | Edumate
+{% endblock %}
+
+{% block css %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'pages/css/feed.css' %}">
+{% endblock %}
+
+{% block body %}
+<div class="row custom-row">
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/left_sidebar.html' %}
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="navigation-list-container">
+            <div class="navigation-list-header">
+                <div class="navigation-list-title">
+                    <span>Update Classroom</span>
+                    <span>&nbsp;</span>
+                    (
+                    <a href="{% url 'classroom_detail' id=classroom.details.id %}"> {{ classroom.details.title }} </a>
+                    )
+                </div>
+            </div>
+            <div class="list-group">
+                <div>
+                    {% if classroom.forms.classroom_create_form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true"> &nbsp; &times;</span>
+                            </button>
+                            {% for error in classroom.forms.classroom_create_form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}                        
+                        </div>
+                    {% endif %}
+                    {% load widget_tweaks %}
+                    <form class="list-group-item" method="POST" action="{% url 'classroom_update' classroom_id=classroom.details.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ request.path }}" name="next" />
+                        {% for field in classroom.forms.classroom_create_form.visible_fields %}
+                            <div class="form-label-group">
+                                <label for="{{ field.id_for_label }}"> 
+                                    <span class="text-muted"> {{ field.help_text }} </span> 
+                                </label>
+                                {% if field.errors %}
+                                    {% render_field field class="form-control is-invalid" %}
+                                    <div class="error">
+                                        {% for error in field.errors %}{{ error }}<br/>{% endfor %}
+                                    </div>
+                                {% else %}
+                                    {% render_field field class="form-control" %}
+                                {% endif %}    
+                            </div>
+                        {% endfor %}
+                        <button class="btn btn-primary text-uppercase font-bold" type="submit">UPDATE</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% if classroom.details.teacher == user %}
+            {% include 'classroom/partials/code.html' %}
+        {% endif %}
+        {% include 'pages/partials/right_sidebar.html' %}
+    </div>
+</div>
+{% endblock %}
