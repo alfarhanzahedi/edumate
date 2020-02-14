@@ -33,7 +33,7 @@
             <a href="{% url 'classroom_post_detail' classroom_id=post.classroom.id post_id=post.id %}" title="External link to post." style="margin: 2px;">
                 <i class="fas fa-external-link-alt"></i>
             </a>
-            {% if classroom.permissions.can_remove_posts or post.user == user %}
+            {% if post.classroom.teacher == user or post.user == user %}
                 <a href="{% url 'classroom_post_update' classroom_id=post.classroom.id post_id=post.id %}" title="Update post." style="margin: 2px;">
                     <i class="fas fa-edit"></i>                
                 </a>
