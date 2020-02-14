@@ -17,7 +17,7 @@
         {% for student in classroom.students %}
             <div class="list-group-item">
                 <div class="float-left">
-                    <a href="{% url 'user_profile' username=user.username %}">{{ student.first_name }} {{ student.last_name }}</a>
+                    <a href="{% url 'user_profile' username=student.username %}">{{ student.first_name }} {{ student.last_name }}</a>
                 </div>
                 {% if classroom.permissions.can_remove_users %}
                     <div class="float-right">
