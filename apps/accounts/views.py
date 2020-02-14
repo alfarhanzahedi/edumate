@@ -85,6 +85,7 @@ class UserProfileView(View):
     
     @method_decorator(login_required)
     def get(self, request, username):
+        required_user = None
         try:
             required_user = User.objects.get(username = username)
         except User.DoesNotExist:
@@ -93,7 +94,12 @@ class UserProfileView(View):
         context = get_sidebar_context(request)
         context['context_user'] = required_user
 
-        post_list = Post.objects.select_related('user', 'classroom').filter(Q(user = required_user) & Q(classroom__students__in = [request.user]) | Q(classroom__teacher = request.user)).order_by('-updated_at')
+        post_list = None
+        if required_user == request.user:
+            post_list = Post.objects.select_related('user', 'classroom').filter(user = required_user).order_by('-updated_at')
+        else:
+            post_list = Post.objects.distinct().select_related('user', 'classroom').filter(Q(user = required_user) & (Q(classroom__students__in = [request.user]) | Q(classroom__teacher = request.user))).order_by('-updated_at')
+
         page = request.GET.get('page', 1)
 
         paginator = Paginator(post_list, 2)
