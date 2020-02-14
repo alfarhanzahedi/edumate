@@ -13,7 +13,7 @@
     </div>
     <div class="list-group">
         <div class="list-group-item">
-            {{ classroom.details.teacher.first_name }} {{ classroom.details.teacher.last_name }}
+            <a href="{% url 'user_profile' username=classroom.details.teacher.username %}">{{ classroom.details.teacher.first_name }} {{ classroom.details.teacher.last_name }}</a>
         </div>
     </div>
 </div>
