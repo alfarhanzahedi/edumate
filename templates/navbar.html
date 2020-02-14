@@ -32,21 +32,24 @@
                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div class="float-left">
                     <div class="float-left">
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" class="navbar-avatar" alt="User avatar">
+                        {% else %}
                         {% load static %}
                         <img src="{% static 'img/default_avatar.jpg' %}" class="navbar-avatar" alt="User avatar">        
+                        {% endif %}
                     </div>
                     <div class="float-left">
                         Me
-                        
                     </div>
                 </div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{% url 'user_profile' username=user.username %}">
                         <span class="dropdown-icon"> > </span>
                         <i class="fas fa-user"></i> &nbsp; Profile
                     </a>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{% url 'user_profile_change' username=user.username %}">
                         <span class="dropdown-icon"> > </span>
                         <i class="fas fa-cogs"></i> &nbsp;Settings
                     </a>

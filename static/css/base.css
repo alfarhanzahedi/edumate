@@ -103,3 +103,42 @@ CSS classes used throughout the website.
 .cursor-pointer {
   cursor: pointer;
 }
+
+/*
+CSS classes used by the forms in most of the pages.
+*/
+
+.common-form label {
+  margin-top: 5px;
+  float: left
+}
+.common-form span {
+  display: block;
+  overflow: hidden;
+  padding: 0 4px 0 6px
+}
+
+.common-form input {
+  float: right;
+}
+
+.common-form .form-label-group {
+  margin: 0px !important;
+}
+
+.common-form .list-group-item {
+  border: none;
+}
+
+.common-form .list-group-item:first-of-type {
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.common-form .list-group-item:last-of-type {
+  padding-top: 20px;
+}
+
+.common-form .help-text {
+  margin: 50px 0px 0px -20px;
+}

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% comment %}
+
+    This template acts as the profile page for a context_user of the website.
+
+{% endcomment %}
+
+{% block meta %}
+{% endblock %}
+
+{% block title %}
+{{ context_user.username }} | EduMate
+{% endblock %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'pages/css/feed.css' %}">
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'accounts/css/user-profile.css' %}">
+{% endblock %}
+
+{% block body %}
+<div class="row custom-row">
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/left_sidebar.html' %}
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <div class="profile-pic-container">
+                {% if context_user.profile_picture %}
+                    <img class="profile-pic" src="/media/{{ context_user.profile_picture }}">
+                {% else %}
+                    <img class="profile-pic" src="{% static 'img/default_avatar.jpg' %}">
+                {% endif %}
+                </div>
+                <div class="dashboard-info-section">
+                    <div>
+                        <div class="dashboard-name">
+                            <span class="name">
+                                {{ context_user.first_name }} {{ context_user.last_name }}
+                                {% if user.username in request.path %}
+                                <a href="{% url 'user_profile_change' username=user.username%}" title="Update account information." style="margin-left: 10px;">
+                                    <i class="fas fa-edit"></i>                
+                                </a>
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% if context_user.is_student %}
+                        <p class="text"><span>Student</span></p>
+                        {% elif context_user.is_teacher %}
+                        <p class="text"><span>Teacher</span></p>
+                        {% endif %}
+                        <p class="text"><span>@{{ context_user.username }}</span></p>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+            {% for post in posts %}
+                {% include 'pages/partials/post_feed.html' %}
+            {% endfor %}
+            
+            {% comment %}
+
+                The following 'if' block contains the logic for displaying the navigation bar 
+                to access the various different 'pages' of posts.
+            
+            {% endcomment %}
+            {% if posts.has_other_pages %}
+            <div class="pagination-div font-bold">
+                <ul class="pagination">
+                    {% if posts.has_previous %}
+                        <li><a class="page-link" href="?page={{ posts.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                        <li><span class="page-link disabled">&laquo;</span></li>
+                    {% endif %}
+                    {% for i in posts.paginator.page_range %}
+                        {% if posts.number == i %}
+                            <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if posts.has_next %}
+                        <li><a class="page-link" href="?page={{ posts.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                        <li><span class="page-link disabled">&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/right_sidebar.html' %}
+    </div>
+</div>
+{% endblock %}

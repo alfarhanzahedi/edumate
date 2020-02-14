@@ -42,3 +42,12 @@ class CustomUserChangeForm(UserChangeForm):
             return email
         raise forms.ValidationError('This email address is already in use.')
     
+class UserProfileChangeForm(forms.ModelForm):
+    
+    class Meta:
+        model = User
+        fields = ('profile_picture', 'first_name', 'last_name', )
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(UserProfileChangeForm, self).__init__(*args, **kwargs)

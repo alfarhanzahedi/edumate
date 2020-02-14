@@ -7,9 +7,13 @@
 <article class="timeline-card">
     <header class="timeline-header">
         <div>
-            <a href="/accounts/{{ post.user.username }}/">
-            {% load static %}
+            <a href="{% url 'user_profile' username=post.user.username %}">
+            {% if post.user.profile_picture %}
+                <img alt="profile picture" class="timeline-header-profile-photo" src="{{ post.user.profile_picture.url }}">
+            {% else %}
+                {% load static %}
                 <img alt="profile picture" class="timeline-header-profile-photo" src="{% static 'img/default_avatar.jpg' %}">
+            {% endif %}
             </a>		
         </div>
         <div class="flex-vertical">

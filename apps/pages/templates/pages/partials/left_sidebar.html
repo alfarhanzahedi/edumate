@@ -4,15 +4,19 @@
     different pages of the website - feed, classroom, user profile, etc.
 
 {% endcomment %}
-
+{% if not request.path == '/accounts/'|add:user.username|add:'/' %}
 <div class="profile-card">
     <div class="float-left">
         <div class="float-left">
-            {% load static %}
-            <img src="{% static 'img/default_avatar.jpg' %}" class="profile-card-avatar" alt="{{ user.first_name }}'s avatar">
+            {% if user.profile_picture %}
+                <img src = {{ user.profile_picture.url }} class="profile-card-avatar" alt="{{ user.first_name }}'s avatar">
+            {% else %}
+                {% load static %}
+                <img src="{% static 'img/default_avatar.jpg' %}" class="profile-card-avatar" alt="{{ user.first_name }}'s avatar">
+            {% endif %}
         </div>
         <div class="float-left">
-            <a href="/accounts/{{ user.username }}/"> {{ user.first_name }} {{ user.last_name }} </a><br>
+            <a href={% url 'user_profile' username=user.username %}> {{ user.first_name }} {{ user.last_name }} </a><br>
             {% if user.is_student %}
                 <span class="text-muted">Student</span>
             {% else %}
@@ -21,6 +25,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <div class="navigation-list-container">
     <div class="navigation-list-header">

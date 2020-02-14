@@ -1,0 +1,60 @@
+/*
+user-profile.css
+Description: user-profile.css contains the css required by the dahsboard page.
+Author: Jatin Pandey
+Date: 14th February, 2019
+*/
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  padding: 20px;
+  background-color: #fff;
+}
+
+.profile-pic-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+}
+
+.dashboard-info-section {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 20px;
+}
+
+.name {
+  margin: 10px 0 0;
+  font-weight: 700;
+  text-transform: capitalize;
+  word-break: break-all;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.text {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  color: #0e141e;
+  font-size: 14px;
+}
+
+.section {
+  margin-top: 15px;
+}
+
+.section-text-header {
+  font-weight: 600;
+  font-size: 16px;
+}
