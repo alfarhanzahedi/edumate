@@ -10,6 +10,8 @@ from .views import ClassroomPostCreateView
 from .views import ClassroomPostDeleteView
 from .views import ClassroomPostCommentCreateView
 from .views import ClassroomPostCommendDeleteView
+from django.urls import include
+
 
 urlpatterns = [
     path('create/', ClassroomCreateView.as_view(), name = 'classroom_create'),
@@ -22,4 +24,5 @@ urlpatterns = [
     path('<int:classroom_id>/post/<int:post_id>/delete/', ClassroomPostDeleteView.as_view(), name = 'classroom_post_delete'),
     path('<int:classroom_id>/post/<int:post_id>/comment/create/', ClassroomPostCommentCreateView.as_view(), name = 'classroom_post_comment_create'),
     path('<int:classroom_id>/post/<int:post_id>/comment/<int:comment_id>/delete/', ClassroomPostCommendDeleteView.as_view(), name = 'classroom_post_comment_delete'),
+    path('<int:id>/exam/', include('apps.exams.urls')),
 ]

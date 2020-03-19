@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset='utf-8'>
+        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Edumate</title>
+        <meta name="description" content="Landing page of Edumate">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'exams/css/exam_create.css' %}">
+        <link rel="stylesheet" href="{% static 'pages/css/feed.css' %}">
+    </head>
+    <body>
+        <!-- Navigation -->
+       {% include 'navbar.html' %}
+        <div class="row">
+            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                <div class="profile-card">
+                    <div class="float-left">
+                        <div class="float-left">
+                            {% load static %}
+                            <img src="{% static 'img/default_avatar.jpg' %}" class="profile-card-avatar" alt="User avatar">
+                        </div>
+                        <div class="float-left">
+                            <a href="#"> {{ user.first_name }} {{ user.last_name }} </a><br>
+                            {% if user.is_student %}
+                            <span class="text-muted">Student</span>
+                            {% else %}
+                            <span class="text-muted">Teacher</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="navigation-list-container">
+                    <div class="navigation-list-header">
+                        <div class="navigation-list-title">
+                            <span>Current Class</span>
+                        </div>
+                    </div>
+                    <div class="list-group">
+                    
+                      <a href="{% url 'classroom_detail' id=current_classroom.id %}" class="list-group-item list-group-item-action">{{ current_classroom.title }}</a>
+                     
+                   </div>
+                </div>
+            </div>
+
+            
+
+            <div class="col-sm-6">
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"> &nbsp; &times;</span>
+                </button>
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}                        
+                </div>
+                {% endif %}
+                {% load widget_tweaks %}
+
+                <!-- multistep form -->
+                <form id="msform" method="POST">
+                    <!-- fieldsets -->
+                    {% csrf_token %}
+                    
+                    <fieldset>
+                        <h2 class="fs-title">Create Exam</h2>
+                        <h3 class="fs-subtitle">Enter details regarding the exam</h3>
+                        <hr class="custom-ruler">
+                        {% for field in form.visible_fields %} 
+                        {% if forloop.counter < 5 %}
+                        <div class="form-label-group">
+                            {% if field.errors %}
+                                {% render_field field  placeholder=field.label %}                           
+                                <div class="error">
+                                    {% for error in field.errors %}{{ error }}<br/>{% endfor %}
+                                </div>                                
+                            {% else %}
+                                {% if field.label == 'Duration'%}
+                                {% render_field field  placeholder="Enter the duration in hh:mm:ss" %}
+                                {%else%}
+                                {% render_field field placeholder=field.label rows="5" cols="20"%}
+                                {% endif %}
+                            {% endif %}  
+                           
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                    </fieldset>
+                  
+                    <fieldset>
+                        <h2 class="fs-title">Add Students</h2>
+                        <hr class="custom-ruler">
+                        {% if form.students.errors %}
+                        {% render_field form.students class="form-control is-invalid" %}                            
+                        <label for={{form.students.id_for_label}}>{{form.students.label }}</label>
+                        <div class="error">
+                            {% for error in form.students.errors %}{{ error }}<br/>{% endfor %}
+                        </div>                                
+                        {% else %}
+                        {% if students %}
+                        <select name="students" required id="id_students" multiple>
+                            {% for i,j in students %}
+                            <option value={{i}}>{{j}}</option>
+                            {% endfor %}
+                        </select>
+                       
+                        <br> <br>
+                        <h2 class="fs-title">Enter the test activation date and time</h2>
+                        <hr class="custom-ruler">
+                        <div id="input-same-line">
+                            {% if form.active_date.errors or form.active_time.errors %}
+                            <div class="error">
+                                Please enter a valid date and time!
+                            </div>                                
+                            {% else %}
+                            <input id="half-input1" type="date" name="active_date"required/>
+                            <input id="half-input2" type="time" name="active_time" placeholder="Duration" required/> 
+                            {% endif %}
+                        </div>  
+                        <input type="button" name="previous" class="previous action-button" value="Previous" />
+                        <input type="submit" name="submit" class="submit action-button" value="Submit" />
+                        {% else %}
+                        <h3 class="fs-subtitle">No students in this classroom!! Add students in the classroom and try again :( </h2>
+                        <a href="{% url 'classroom_detail' id=current_classroom.id %}">
+                            <input type="button" name="GoBack" class="submit action-button" value="Go to Class" />
+                        </a>
+                        {% endif %}
+                        {% endif %}
+                    </fieldset>
+                </form>
+            </div>
+            <div class="col-sm-3">
+                <div class="navigation-list-container">
+                    <div class="navigation-list-header">
+                        <div class="navigation-list-title">
+                            <i class="fas fa-tasks"></i><span id="task">Upcoming Task</span>
+                        </div>
+                        <div>
+                            <a href="#" title="Create New Task" role="button">
+                            <i class="fas fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                        Chemistry 101 classtest on 8th December
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">Physics 302 assignment submission on 16th November</a>
+                        <a href="#" class="list-group-item list-group-item-action">Mathematics 102 assignment deadline crossed!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"  crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"  crossorigin="anonymous"></script>
+        {%load static %}
+        <script type="text/javascript" src = "{% static 'exams/js/script.js' %}"></script>
+       
+        <script type="text/javascript" src = "{% static 'exams/js/exam_create.js' %}"></script> 
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>
+</html>
