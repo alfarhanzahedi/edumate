@@ -76,7 +76,7 @@
                         <h3 class="fs-subtitle">Enter details regarding the exam</h3>
                         <hr class="custom-ruler">
                         {% for field in form.visible_fields %} 
-                        {% if forloop.counter < 5 %}
+                        {% if forloop.counter < 4 %}
                         <div class="form-label-group">
                             {% if field.errors %}
                                 {% render_field field  placeholder=field.label %}                           
@@ -84,11 +84,7 @@
                                     {% for error in field.errors %}{{ error }}<br/>{% endfor %}
                                 </div>                                
                             {% else %}
-                                {% if field.label == 'Duration'%}
-                                {% render_field field  placeholder="Enter the duration in hh:mm:ss" %}
-                                {%else%}
                                 {% render_field field placeholder=field.label rows="5" cols="20"%}
-                                {% endif %}
                             {% endif %}  
                            
                         </div>
@@ -115,18 +111,21 @@
                         </select>
                        
                         <br> <br>
-                        <h2 class="fs-title">Enter the test activation date and time</h2>
+                        
+                        <h2 class="fs-title">Enter the test activation date and time </h2>
                         <hr class="custom-ruler">
                         <div id="input-same-line">
-                            {% if form.active_date.errors or form.active_time.errors %}
-                            <div class="error">
-                                Please enter a valid date and time!
-                            </div>                                
-                            {% else %}
                             <input id="half-input1" type="date" name="active_date"required/>
-                            <input id="half-input2" type="time" name="active_time" placeholder="Duration" required/> 
-                            {% endif %}
-                        </div>  
+                            <input id="half-input2" type="time" name="active_time" required/> 
+                        </div> 
+                        <br> 
+                        <h2 class="fs-title">Enter the test end date and time</h2>
+                        <hr class="custom-ruler">
+                        <div id="input-same-line">
+                            <input id="half-input1" type="date" name="end_date"required/>
+                            <input id="half-input2" type="time" name="end_time" required/> 
+                        </div> 
+                         
                         <input type="button" name="previous" class="previous action-button" value="Previous" />
                         <input type="submit" name="submit" class="submit action-button" value="Submit" />
                         {% else %}

@@ -15,9 +15,8 @@ class Exams(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
     total_marks = models.IntegerField(null=True)
-    active_date = models.DateField()
-    active_time = models.TimeField()
-    duration = models.TimeField()
+    active_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
 
     def __str__(self):
         return self.title

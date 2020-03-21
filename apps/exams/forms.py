@@ -8,7 +8,7 @@ from apps.accounts.models import User
 class ExamCreationForm(forms.ModelForm):
     class Meta:
         model = Exams
-        fields = ('title', 'description','instructions','duration','students','active_date','active_time',)
+        fields = ('title', 'description','instructions','students',)
         help_texts = {
             'title': 'Name of the Examination',
             'description': 'Subjects',
