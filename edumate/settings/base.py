@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.classroom',
     'apps.pages',
+    'apps.exams'
 ]
 
 MIDDLEWARE = [
@@ -91,6 +92,8 @@ DATABASES = {
         default = config('DATABASE_URL')
     )
 }
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
