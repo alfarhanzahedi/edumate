@@ -28,7 +28,6 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', LandingPage.as_view()),
     path('classroom/', include('apps.classroom.urls')),
-    path('exam/', include('apps.exams.urls')),
 ]
 
 urlpatterns += [

@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.classroom',
     'apps.pages',
-    'apps.exams'
 ]
 
 MIDDLEWARE = [
