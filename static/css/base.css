@@ -18,6 +18,7 @@ body {
 /*
 Overriding default values of various CSS properties!
 */
+
 a:link {
   color: inherit;
   text-decoration: none;
@@ -54,14 +55,15 @@ textarea:focus {
 }
 
 input:-webkit-autofill {
-  -webkit-box-shadow:0 0 0 50px white inset !important;
+  -webkit-box-shadow: 0 0 0 50px white inset !important;
   -webkit-text-fill-color: #333;
 }
 
 input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 50px white inset, 0 0 0 0.2rem rgba(0, 210, 181, 0.25) !important;
+  -webkit-box-shadow: 0 0 0 50px white inset,
+    0 0 0 0.2rem rgba(0, 210, 181, 0.25) !important;
   -webkit-text-fill-color: #333;
-} 
+}
 
 /*
 CSS classes used throughout the website.
@@ -110,12 +112,12 @@ CSS classes used by the forms in most of the pages.
 
 .common-form label {
   margin-top: 5px;
-  float: left
+  float: left;
 }
 .common-form span {
   display: block;
   overflow: hidden;
-  padding: 0 4px 0 6px
+  padding: 0 4px 0 6px;
 }
 
 .common-form input {
@@ -141,4 +143,126 @@ CSS classes used by the forms in most of the pages.
 
 .common-form .help-text {
   margin: 50px 0px 0px -20px;
+}
+
+/*
+CSS overrides for CKEditor.
+*/
+
+.django-ckeditor-widget {
+  display: block !important;
+}
+
+div[id^="cke_id_"] {
+  width: 100% !important;
+}
+
+input[type="checkbox"] {
+  width: auto !important;
+}
+
+/*
+CSS classes for the switch based checkbox.
+*/
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cccccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #ffffff;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #00d2b5;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #00d2b5;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/*
+CSS overrides for Chosen.
+*/
+
+.chosen-container {
+  width: 100%;
+}
+
+.chosen-container-active .chosen-choices {
+  border-color: #00d2b5 !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 210, 181, 0.25) !important;
+}
+
+.search-field {
+  width: 100% !important;
+}
+
+.chosen-choices {
+  line-height: 1.5;
+  border: 1px solid #ced4da !important;
+  border-radius: 0.25rem;
+  background-image: none !important;
+}
+
+.chosen-search-input:focus {
+  box-shadow: none !important;
+}
+
+.chosen-container .chosen-results li.highlighted {
+  background-color: transparent !important;
+  background-image: none !important;
+  background-image: none !important;
+  color: #00d2b5 !important;
+  font-weight: 500;
+}
+
+.chosen-drop {
+  border: 1px solid #ced4da !important;
+  border-radius: 0.25rem;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
 }

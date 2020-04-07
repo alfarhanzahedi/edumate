@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% comment %}
+
+This template acts as the form required to create a exam.
+
+{% endcomment %}
+
+{% block meta %}
+{% endblock %}
+
+{% block title %}
+{% if update_view %} Update {% else %} Create {% endif %} Examination/Assignment | {{ classroom.title }} | Edumate
+{% endblock %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pages/css/feed.css' %}">
+
+<!-- Chosen CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" integrity="sha256-EH/CzgoJbNED+gZgymswsIOrM9XhIbdSJ6Hwro09WE4=" crossorigin="anonymous" />
+{% endblock %}
+
+{% block body %}
+<div class="row custom-row">
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/left_sidebar.html' %}
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="navigation-list-container">
+            <div class="navigation-list-header">
+                <div class="navigation-list-title">
+                    <span>[{{ classroom.title }}]{% if update_view %} Update {% else %} Create {% endif %} exam / assignment</span>
+                </div>
+            </div>
+            <div class="list-group">
+                <div>
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true"> &nbsp; &times;</span>
+                        </button>
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% load widget_tweaks %}
+                    <form class="list-group-item" method="POST"
+                    action="
+                    {% if update_view %}
+                        {% url 'exam_update' classroom_id=classroom.id exam_id=exam.id %}
+                    {% else %}
+                        {% url 'exam_create' classroom_id=classroom.id %}
+                    {% endif %}
+                    ">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ request.path }}" name="next" />
+                        {% for field in form.visible_fields %}
+                        <div class="form-label-group">
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+                            <div class="text-muted"> {{ field.help_text|safe }} </div>
+                            <br>
+                            {% if field.errors %}
+                            {% render_field field class="form-control is-invalid" %}
+                            <div class="error">
+                                {% for error in field.errors %}{{ error }}<br />{% endfor %}
+                            </div>
+                            {% else %}
+                            {% if field.field.widget.input_type  == 'checkbox' %}
+                            <label class="switch">
+                                <input type="checkbox" name="{{ field.name }}" id="{{ field.auto_id }}">
+                                <span class="slider round"></span>
+                            </label>
+                            {% else %}
+                                {% render_field field class="form-control" %}
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <button class="btn btn-primary text-uppercase font-bold" type="submit">{% if update_view %} UPDATE {% else %} CREATE {% endif %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% if classroom.details.teacher == user %}
+        {% include 'classroom/partials/code.html' %}
+        {% endif %}
+        {% include 'pages/partials/right_sidebar.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block post-js %}
+<!-- Chosen JS -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js" integrity="sha256-c4gVE6fn+JRKMRvqjoDp+tlG4laudNYrXI1GncbfAYY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.proto.min.js" integrity="sha256-caJ5d3++BXLzBy3MKsOiJWHlVgh8O3W61W/XxBN3u1I=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $("select").chosen({
+            no_results_text: "Oops, no such student found!",
+        });
+    });
+</script>
+{% endblock %}
+

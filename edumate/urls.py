@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from apps.pages.views import LandingPage
-
+from apps.exams.views import ExamJoinView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,10 +28,12 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', LandingPage.as_view()),
     path('classroom/', include('apps.classroom.urls')),
+    path('exams/join/', ExamJoinView.as_view(), name = 'exam_join'),
 ]
 
 urlpatterns += [
-    path('mdeditor/', include('mdeditor.urls'))
+    path('mdeditor/', include('mdeditor.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
 if settings.DEBUG:

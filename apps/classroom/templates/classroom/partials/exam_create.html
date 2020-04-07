@@ -1,0 +1,19 @@
+{% comment %}
+
+    This template acts as the container where the instructions to create a new
+    exam/assignment is specified.
+
+{% endcomment %}
+
+<div class="navigation-list-container">
+    <div class="navigation-list-header">
+        <div class="navigation-list-title">
+            <span>Create Exam / Assignment</span>
+        </div>
+    </div>
+    <div class="list-group">
+        <div class="list-group-item">
+            To create a new exam/assignment, use the portal <a href="{% url 'exam_create' classroom_id=classroom.details.id%}"><u>here</u></a>.
+        </div>
+    </div>
+</div>

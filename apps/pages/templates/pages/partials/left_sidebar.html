@@ -48,6 +48,27 @@
     </div>
 </div>
 
+<div class="navigation-list-container">
+    <div class="navigation-list-header">
+        <div class="navigation-list-title">
+            <span>Examinations / Assignments</span>
+        </div>
+    </div>
+    <div class="list-group">
+        {% if left_sidebar.exams.count > 0 %}
+            {% for exam in left_sidebar.exams %}
+                <a href="{% url 'exam_detail' classroom_id=exam.classroom.id exam_id=exam.id %}" class="list-group-item list-group-item-action">[{{exam.classroom.title}}] {{ exam.title }}</a>
+            {% endfor %}
+        {% else %}
+            {% if user.is_student %}
+                <span class="list-group-item"> You have not taken any examinations/assignments yet! </span>
+            {% else %}
+                <span class="list-group-item"> You have not created any examinations/assignments classrooms yet! </span>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
 {% if left_sidebar.classroom_create_form %}
 <div class="navigation-list-container">
     <div class="navigation-list-header">

@@ -28,4 +28,5 @@ urlpatterns = [
     path('<int:classroom_id>/post/<int:post_id>/delete/', ClassroomPostDeleteView.as_view(), name = 'classroom_post_delete'),
     path('<int:classroom_id>/post/<int:post_id>/comment/create/', ClassroomPostCommentCreateView.as_view(), name = 'classroom_post_comment_create'),
     path('<int:classroom_id>/post/<int:post_id>/comment/<int:comment_id>/delete/', ClassroomPostCommendDeleteView.as_view(), name = 'classroom_post_comment_delete'),
+    path('<int:classroom_id>/exams/', include('apps.exams.urls')),
 ]

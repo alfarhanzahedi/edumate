@@ -29,9 +29,12 @@ INSTALLED_APPS = [
 
     'widget_tweaks',
     'mdeditor',
+    'ckeditor',
+    'ckeditor_uploader',
 
     'apps.accounts',
     'apps.classroom',
+    'apps.exams',
     'apps.pages',
 ]
 
@@ -154,4 +157,18 @@ MDEDITOR_CONFIGS = {
         'lineWrapping': False,
         'lineNumbers': False,
     }   
+}
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'custom',
+        'toolbar_custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source']
+        ]
+    },
 }

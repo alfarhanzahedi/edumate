@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% comment %}
+
+    This template acts as the detail view of a exam. 
+
+{% endcomment %}
+
+{% block meta %}
+{% endblock %}
+
+{% block title %}
+{{ exam.title }} | Edumate
+{% endblock %}
+
+{% block css %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'pages/css/feed.css' %}">
+{% endblock %}
+
+{% block body %}
+<div class="row custom-row">
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/left_sidebar.html' %}
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="navigation-list-container" style="padding: 20px;">
+            <h5>
+                [{{ exam.classroom.title }}] {{ exam.title }}
+                {% if user == exam.classroom.teacher %}
+                <a href="{% url 'exam_update' classroom_id=exam.classroom.id exam_id=exam.id %}" title="Update examination / assignment." style="margin: 2px;">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <button class="btn btn-primary float-right" title="Add question." style="padding: 2px 8px;"> + </button>
+                {% endif %}
+            </h5>
+            <hr>
+            <div style="font-size: 12px;">
+                {{ exam.about|safe }}
+                <h6>Instructions: </h6>
+                {{ exam.instructions|safe }}
+                <hr>
+                <i class="far fa-clock"></i> 
+                {% if exam.is_open_exam %}
+                    The examination/assignment can be taken anytime between <b>{{ exam.start_time|date:"d/m/Y h:i A" }}</b> - <b>{{ exam.end_time|date:"d/m/Y h:i A" }}</b>.
+                    {% if exam.duration %}
+                        The duration of this examination/assignment is <b>{{ exam.duration }}</b> minutes.
+                    {% else %}
+                        There is no duration. Submissions can be made anytime between <b>{{ exam.start_time|date:"d/m/Y h:i A" }}</b> and <b>{{ exam.end_time|date:"d/m/Y h:i A" }}</b>.
+                    {% endif %}
+                {% else %}
+                    The examination/assignment starts at <b>{{ exam.start_time|date:"d/m/Y h:i A" }}</b> and ends at <b>{{ exam.end_time|date:"d/m/Y h:i A" }}</b>.<br>
+                {% endif %}
+                <hr>
+                {% if exam.is_resumable %}
+                    The examination/assignment is <b>resumable</b>. Once started, students can exit and return back anytime during the duration of the
+                    examination/assignment.
+                {% else %}
+                    The examination/assignment is <b>not resumable</b>. Once started, exit is considered as submission.
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/right_sidebar.html' %}
+        {% if exam.classroom.teacher == user %}
+            {% include 'exams/partials/code.html' %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

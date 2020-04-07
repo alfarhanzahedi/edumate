@@ -23,6 +23,9 @@
 <div class="row custom-row">
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
         {% include 'pages/partials/left_sidebar.html' %}
+        {% if classroom.details.teacher == user %}
+            {% include 'classroom/partials/exam_create.html' %}
+        {% endif %}
     </div>
     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
         <h5 class="classroom-title">

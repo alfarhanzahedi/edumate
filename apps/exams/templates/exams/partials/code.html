@@ -1,0 +1,30 @@
+{% comment %}
+
+    This template acts as container where the exam joining unique code is rendered.
+
+{% endcomment %}
+
+<div class="navigation-list-container">
+    <div class="navigation-list-header">
+        <div class="navigation-list-title">
+            <span>Examination / Assignment Code</span>
+        </div>
+    </div>
+    <div class="list-group">
+        <div class="list-group-item text-muted">
+            Share this unique code with your students. It will be required to take the examination / assignment!
+        </div>
+        <div class="list-group-item font-bolder text-center">
+            <span id="exam-code" style="letter-spacing: 5px; font-size: 14px;">{{ exam.unique_code }}</span>
+            <i id="copy-exam-code" class="far fa-copy cursor-pointer" title="Copy to clipboard."></i>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $("#copy-exam-code").on("click", function(e) {
+        copyToClipboard($("#exam-code"));
+    });
+});
+</script>
