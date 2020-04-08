@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% comment %}
+
+This template acts as the form required to create a question (of an exam).
+
+{% endcomment %}
+
+{% block meta %}
+{% endblock %}
+
+{% block title %}
+{% if update_view %} Update {% else %} Add {% endif %} question | [{{ exam.classroom.title }}] {{ exam.title }} | Edumate
+{% endblock %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pages/css/feed.css' %}">
+
+<!-- Chosen CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" integrity="sha256-EH/CzgoJbNED+gZgymswsIOrM9XhIbdSJ6Hwro09WE4=" crossorigin="anonymous" />
+{% endblock %}
+
+{% block body %}
+<div class="row custom-row">
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/left_sidebar.html' %}
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="navigation-list-container" style="padding: 20px;">
+            <h5>
+                [{{ exam.classroom.title }}] {{ exam.title }}
+            </h5>
+        </div>
+        <div class="navigation-list-container">
+            <div class="navigation-list-header">
+                <div class="navigation-list-title">
+                    <span>{% if update_view %} Update {% else %} Add {% endif %} question</span>
+                </div>
+            </div>
+            <div class="list-group">
+                <div>
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true"> &nbsp; &times;</span>
+                        </button>
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% load widget_tweaks %}
+                    <form id="question-form" class="list-group-item" method="POST" action="">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ request.path }}" name="next" />
+                        {% for field in form.visible_fields %}
+                        <div class="form-label-group">
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+                            <div class="text-muted"> {{ field.help_text|safe }} </div>
+                            <br>
+                            {% if field.errors %}
+                            {% render_field field class="form-control is-invalid" %}
+                            <div class="error">
+                                {% for error in field.errors %}{{ error }}<br />{% endfor %}
+                            </div>
+                            {% else %}
+                                {% render_field field class="form-control" %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <div id="mcq">
+                            Options
+                            <div class="text-muted"> Options for MCQs. Do not forget to select/mark the correct answer(s). </div><br>
+                            <div id="mcq-options"></div>
+                            <input id="mcq-option-input" class="form-control" type="text" placeholder="Type and hit enter to add an option..."><br>
+                            <button id="mcq-btn" class="btn btn-primary font-bold">Add option</button>
+                            <div id="mcq-error" class="error"></div>
+                        </div>
+                        <hr>
+                        <button class="btn btn-primary text-uppercase font-bold" type="submit">{% if update_view %} UPDATE {% else %} ADD {% endif %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% if classroom.details.teacher == user %}
+        {% include 'classroom/partials/code.html' %}
+        {% endif %}
+        {% include 'pages/partials/right_sidebar.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block post-js %}
+<!-- Chosen JS -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js" integrity="sha256-c4gVE6fn+JRKMRvqjoDp+tlG4laudNYrXI1GncbfAYY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.proto.min.js" integrity="sha256-caJ5d3++BXLzBy3MKsOiJWHlVgh8O3W61W/XxBN3u1I=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $("select").chosen({
+            no_results_text: "Oops, no question type found for: ",
+        });
+
+        /*
+            WARNING!! A ton of hacks ahead :P
+        */
+
+        let questionType = $("#id_type");
+
+        let options = [
+            {% for option in question.options.all %}
+                [
+                    "{{ option.body }}",
+                    {% if option.is_answer %}
+                    "checked"
+                    {% else %}
+                    "",
+                    {% endif %}
+                ],
+            {% endfor %}
+        ];
+
+        let type = "radio";
+        {% if question.type == '1' %}
+            type = "radio";
+        {% elif question.type == '2' %}
+            type = "checkbox";
+        {% endif %}
+    
+        let mcqRoot = $("#mcq");
+        let mcqErrorRoot = $("#mcq-error");
+        let optionsRoot = $("#mcq-options");
+        let optionsInput = $("#mcq-option-input");
+
+        function getOptionTemplate(option, type, checked) {
+            console.log(option, checked);
+            let templateString = `
+            <div>
+                <input type="${type}" name="option" value="${option}" id="id_${option}" style="vertical-align: middle" ${checked}>
+                <label for="id_${option}"> ${option} </label>
+                <a class="option-remove-btn float-right" style="cursor: pointer;"><i class="fas fa-times-circle"></i></a>
+            </div>
+            `;
+            return templateString;
+        }
+        
+        function renderOptions(options, type) {
+            optionsRoot.html("");
+
+            for (option of options) {
+                optionsRoot.append(getOptionTemplate(option[0], type, option[1]));
+            }
+        }
+
+        // Render options. This function call is required to render original options when
+        // the question update page is viewed! 
+        renderOptions(options, type);
+
+        $("#mcq-btn").on("click", function(e) {
+            e.preventDefault();
+            let optionValue = optionsInput.val().trim();
+
+            if (optionValue === "" || options.map(option => option[0]).includes(optionValue)) {
+                return;
+            }
+            
+            options.push([optionValue, ""]);
+            optionsRoot.append(getOptionTemplate(optionValue, type));
+            optionsInput.val("");
+        });
+
+        $(document).on("click", ".option-remove-btn", function(e) {
+            $(this).parent().remove();
+            options.splice(options.map(option => option[0]).indexOf($(this).prev().prev().val()), 1);
+        });
+
+        // Decide if options are to be displayed or not.
+        // Subjective type questions do not require options.
+        // Also, decide what "type" (radio or checkbox) is required for MCQs.
+        questionType.on("change", function(e) {
+            if (this.value == 1) {
+                type = "radio";
+                mcqRoot.show();
+            } else if (this.value == 2) {
+                type = "checkbox";
+                mcqRoot.show();
+            } else {
+                mcqRoot.hide();
+                return;
+            }
+
+            // Re-render upon proper decision.
+            renderOptions(options, type);
+        });
+
+        $("#question-form").on("submit", function(e) {
+
+            // Perform some validation before form submission.
+            if (questionType.val() != 3 && options.length < 2) {
+                mcqErrorRoot.html("");
+                mcqErrorRoot.append("Please provide atleast two options!");
+                e.preventDefault();
+                return;
+            }
+
+            if (questionType.val() != 3 && $("input[name=option]:checked").length < 1) {
+                mcqErrorRoot.html("");
+                mcqErrorRoot.append("Please select the correct answer(s).");
+                e.preventDefault();
+                return;
+            }
+
+            // Hack to pass all the options to the backend :P.
+            $(this).append(`
+                <input name="alloptions" value="${options.map(option => option[0])}" style="display: none;">
+            `);
+        });
+    });
+</script>
+{% endblock %}
+

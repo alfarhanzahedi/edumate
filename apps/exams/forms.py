@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.forms import ValidationError
 
 from .models import Exam
+from .models import Question
 
 
 class ExamCreationForm(forms.ModelForm):
@@ -86,3 +87,15 @@ class ExamJoinForm(forms.Form):
         except Exam.DoesNotExist:
             raise forms.ValidationError('The code is not associated with any examination/assignment!')
         return unique_code
+
+class ExamQuestionCreationForm(forms.ModelForm):
+
+    class Meta:
+        model = Question
+        fields = ('type', 'body', 'marks', 'negative_marks')
+        help_texts = {
+            'type': 'The type of the question.',
+            'body': 'The actual question body.',
+            'marks': 'The maximum marks for the question.',
+            'negative_marks': 'Any negative marks associated with the question.'
+        }

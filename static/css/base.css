@@ -157,8 +157,12 @@ div[id^="cke_id_"] {
   width: 100% !important;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"], input[type="radio"] {
   width: auto !important;
+}
+
+a[title="Browse Server"] {
+  display: none !important;
 }
 
 /*

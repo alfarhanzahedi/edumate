@@ -18,6 +18,9 @@ from django.urls import path
 from django.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.decorators.cache import never_cache
+
+from ckeditor_uploader import views as uploader_views
 
 from apps.pages.views import LandingPage
 from apps.exams.views import ExamJoinView
@@ -33,7 +36,8 @@ urlpatterns = [
 
 urlpatterns += [
     path('mdeditor/', include('mdeditor.urls')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('ckeditor/upload/', uploader_views.upload, name='ckeditor_upload'),
+    path('ckeditor/browse/', never_cache(uploader_views.browse), name='ckeditor_browse'),
 ]
 
 if settings.DEBUG:

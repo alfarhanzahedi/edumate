@@ -10,8 +10,10 @@ from apps.accounts.decorators import teacher_required
 from apps.pages.common_functions import get_sidebar_context
 from apps.classroom.models import Classroom
 from .models import Exam
+from .models import Question
 from .forms import  ExamCreationForm
 from .forms import ExamJoinForm
+from .forms import ExamQuestionCreationForm
 
 class ExamCreateView(View):
 
@@ -54,6 +56,7 @@ class ExamDetailView(View):
             raise Http404
         context = get_sidebar_context(request)
         context['exam'] = get_object_or_404(Exam.objects.select_related('classroom', 'classroom__teacher'), id = exam_id)
+        context['questions'] = Question.objects.filter(exam = context['exam']).prefetch_related('options')
         return render(request, 'exams/exam_detail.html', context)
 
 class ExamUpdateView(View):
@@ -118,3 +121,135 @@ class ExamJoinView(View):
         
         messages.error(request, f'The unique code is not associated with any examination/assignment!')
         return redirect(redirect_to)
+
+class ExamQuestionCreateView(View):
+
+    def get(self, request, classroom_id, exam_id):
+        exam = get_object_or_404(Exam.objects.select_related('classroom', 'classroom__teacher'), id = exam_id)
+
+        if request.user != exam.classroom.teacher or exam.classroom.id != int(classroom_id):
+            raise Http404
+
+        context = get_sidebar_context(request)
+        context['exam'] = exam
+        context['form'] = ExamQuestionCreationForm()
+        return render(request, 'exams/exam_question_create_form.html', context)
+
+    def post(self, request, classroom_id, exam_id):
+        exam = get_object_or_404(Exam.objects.select_related('classroom', 'classroom__teacher'), id = exam_id)
+
+        if request.user != exam.classroom.teacher or exam.classroom.id != int(classroom_id):
+            raise Http404
+        
+        form = ExamQuestionCreationForm(request.POST)
+
+        is_mcq = form.data.get('type') in [Question.MCQ_SOC, Question.MCQ_MOC]
+
+        is_form_valid = form.is_valid()
+        is_options_valid = True
+
+        if is_mcq:
+            if 'option' not in request.POST:
+                is_options_valid = False
+                messages.error(request, 'Please select the correct answer for the MCQ!')
+
+            all_options = request.POST['alloptions'].split(',')
+
+            if len(all_options) < 2:
+                is_options_valid = False
+                messages.error(request, 'Please provide at least two options for an MCQ!')
+
+        if not is_form_valid or not is_options_valid:
+            context = get_sidebar_context(request)
+            context['exam'] = exam
+            context['form'] = form
+            return render(request, 'exams/exam_question_create_form.html', context)
+        
+        question = form.save(commit = False)
+        question.exam = exam
+        question.save()
+
+        if is_mcq:
+            for option in all_options:
+                question.options.create(
+                    question = question,
+                    body = option,
+                    is_answer = (option in request.POST.getlist('option'))
+                )
+        messages.success(request, 'The question was successfully added.')
+        return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)
+
+class ExamQuestionUpdateView(View):
+
+    def get(self, request, classroom_id, exam_id, question_id):
+        exam = get_object_or_404(Exam.objects.select_related('classroom', 'classroom__teacher'), id = exam_id)
+        question = get_object_or_404(Question.objects.prefetch_related('options'), id = question_id)
+        if request.user != exam.classroom.teacher or exam.classroom.id != int(classroom_id):
+            raise Http404
+
+        context = get_sidebar_context(request)
+        context['exam'] = exam
+        context['form'] = ExamQuestionCreationForm(instance=question)
+        context['question'] = question
+        context['update_view'] = True
+        return render(request, 'exams/exam_question_create_form.html', context)
+
+    def post(self, request, classroom_id, exam_id, question_id):
+        exam = get_object_or_404(Exam.objects.select_related('classroom', 'classroom__teacher'), id = exam_id)
+
+        if request.user != exam.classroom.teacher or exam.classroom.id != int(classroom_id):
+            raise Http404
+        
+        question = get_object_or_404(Question, id = question_id)
+        form = ExamQuestionCreationForm(request.POST, instance = question)
+
+        is_mcq = form.data.get('type') in [Question.MCQ_SOC, Question.MCQ_MOC]
+
+        is_form_valid = form.is_valid()
+        is_options_valid = True
+
+        if is_mcq:
+            if 'option' not in request.POST:
+                is_options_valid = False
+                messages.error(request, 'Please select the correct answer for the MCQ!')
+
+            all_options = request.POST['alloptions'].split(',')
+
+            if len(all_options) < 2:
+                is_options_valid = False
+                messages.error(request, 'Please provide at least two options for an MCQ!')
+
+        if not is_form_valid or not is_options_valid:
+            context = get_sidebar_context(request)
+            context['exam'] = exam
+            context['form'] = form
+            context['question'] = question
+            context['update_view'] = True
+            return render(request, 'exams/exam_question_create_form.html', context)
+        
+        form.save()
+
+        question.options.all().delete()
+
+        if is_mcq:
+            for option in all_options:
+                question.options.create(
+                    question = question,
+                    body = option,
+                    is_answer = (option in request.POST.getlist('option'))
+                )
+
+        messages.success(request, 'The question was successfully updated.')
+        return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)
+
+class ExamQuestionDeleteView(View):
+
+    def post(self, request, classroom_id, exam_id, question_id):
+        exam = get_object_or_404(Exam.objects.select_related('classroom', 'classroom__teacher'), id = exam_id)
+
+        if request.user != exam.classroom.teacher or exam.classroom.id != int(classroom_id):
+            raise Http404
+        
+        get_object_or_404(Question, id = question_id).delete()
+        messages.success(request, 'The question was successfully deleted.')
+        return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)

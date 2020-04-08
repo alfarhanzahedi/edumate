@@ -31,7 +31,7 @@
                 <a href="{% url 'exam_update' classroom_id=exam.classroom.id exam_id=exam.id %}" title="Update examination / assignment." style="margin: 2px;">
                     <i class="fas fa-edit"></i>
                 </a>
-                <button class="btn btn-primary float-right" title="Add question." style="padding: 2px 8px;"> + </button>
+                <a href="{% url 'question_create' classroom_id=exam.classroom.id exam_id=exam.id %}" class="btn btn-primary float-right" title="Add question." style="padding: 2px 8px; color: #ffffff;"> + </a>
                 {% endif %}
             </h5>
             <hr>
@@ -59,6 +59,51 @@
                     The examination/assignment is <b>not resumable</b>. Once started, exit is considered as submission.
                 {% endif %}
             </div>
+        </div>
+        <div class="navigation-list-container" style="padding: 20px; font-size: 12px;">
+        <h5>Questions</h5>
+        <hr>
+        {% for question in questions %}
+            <div>
+                <b>Question {{ forloop.counter }} [{{ question.type_verbose }}]</b>
+                {% if user == exam.classroom.teacher %}
+                    <div class="float-right" style="display: inline;">
+                        <a href="{% url 'question_update' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" title="Update question." style="margin: 5px; display: inline;"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="{% url 'question_delete' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="student-remove-button" title="Delete question." style="margin: 5px;"><i class="fas fa-trash-alt"></i></button>
+                        </form>
+                    </div>
+                {% endif %}
+                {{ question.body|safe }}
+                {% if question.options.count > 0 %}
+                Options:
+                <ul>
+                {% for option in question.options.all %}
+                    <li>{{ option.body }} </li>
+                {% endfor %}
+                </ul>
+
+                Answer(s):
+                <ul>
+                {% for option in question.options.all %}
+                    {% if option.is_answer %}
+                    <li>{{ option.body }} </li>
+                    {% endif %}
+                {% endfor %}
+                </ul> 
+                {% endif %}
+                
+                <p>
+                    Maximum marks: {{ question.marks }} <br>
+                    Negative marks: {{ question.negative_marks }}
+                </p>
+                
+            </div>
+            <hr>
+        {% empty %}
+        <p> Questions will be visible here once you add some. </p>
+        {% endfor %}
         </div>
     </div>
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">

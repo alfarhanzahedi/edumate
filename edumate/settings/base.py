@@ -137,12 +137,12 @@ MDEDITOR_CONFIGS = {
     'default':{
         'width': '100%',
         'heigth': 500,
-        'toolbar': ["bold", "del", "italic", "quote", "|",
-                    "list-ul", "list-ol", "hr", "|",
-                    "link", "image", "code", "code-block", "table",
-                    "emoji", "||",
-                    "preview", "watch", "fullscreen"],
-        'upload_image_formats': ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+        'toolbar': ['bold', 'del', 'italic', 'quote', '|',
+                    'list-ul', 'list-ol', 'hr', '|',
+                    'link', 'image', 'code', 'code-block', 'table',
+                    'emoji', '||',
+                    'preview', 'watch', 'fullscreen'],
+        'upload_image_formats': ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'webp'],
         'image_folder': 'editor',
         'theme': 'default',
         'preview_theme': 'default',
@@ -159,16 +159,47 @@ MDEDITOR_CONFIGS = {
     }   
 }
 
+from ckeditor.configs import DEFAULT_CONFIG
+
 CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = 'pillow'
+CKEDITOR_THUMBNAIL_SIZE = (300, 300)
+CKEDITOR_IMAGE_QUALITY = 40
+CKEDITOR_BROWSE_SHOW_DIRS = True
+CKEDITOR_ALLOW_NONIMAGE_FILES = True
+
+CUSTOM_TOOLBAR = [
+    {
+        'name': 'document',
+        'items': [
+            'Styles', 'Format', 'Bold', 'Italic', 'Underline', 'Strike', '-',
+            'TextColor', 'BGColor',  '-',
+            'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock',
+        ],
+    },
+    {
+        'name': 'widgets',
+        'items': [
+            'Undo', 'Redo', '-',
+            'NumberedList', 'BulletedList', '-',
+            'Outdent', 'Indent', '-',
+            'Link', 'Unlink', '-',
+            'Image', 'Mathjax', 'CodeSnippet', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', '-',
+            'Blockquote', '-',
+            'ShowBlocks', 'Maximize',
+        ],
+    }
+]
 
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'custom',
-        'toolbar_custom': [
-            ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink'],
-            ['RemoveFormat', 'Source']
-        ]
+        'skin': 'moono-lisa',
+        'toolbar': CUSTOM_TOOLBAR,
+        'toolbarGroups': None,
+        'mathJaxLib': '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML',
+        'extraPlugins': ','.join(['image2', 'codesnippet', 'mathjax']),
+        'removePlugins': ','.join(['image']),
+        'codeSnippet_theme': 'xcode',
     },
 }
+
