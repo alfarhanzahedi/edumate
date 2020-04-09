@@ -18,11 +18,12 @@ class Exam(models.Model):
 
     is_open_exam = models.BooleanField(default = True)
     is_resumable = models.BooleanField(default = True)
+    is_published = models.BooleanField(default = False)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     duration = models.IntegerField(null = True, blank = True)
 
-    students = models.ManyToManyField(User, null = True, blank = True)
+    students = models.ManyToManyField(User)
     classroom = models.ForeignKey(Classroom, on_delete = models.CASCADE)
 
     def __str__(self):

@@ -122,6 +122,21 @@ class ExamJoinView(View):
         messages.error(request, f'The unique code is not associated with any examination/assignment!')
         return redirect(redirect_to)
 
+class ExamPublishView(View):
+
+    def post(self, request, classroom_id, exam_id):
+        exam = get_object_or_404(Exam.objects.select_related('classroom', 'classroom__teacher'), id = exam_id)
+
+        if request.user != exam.classroom.teacher or exam.classroom.id != int(classroom_id):
+            raise Http404
+        
+        exam.is_published = True
+        exam.save()
+
+        messages.success(request, 'Exam published successfully!')
+        return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)
+
+
 class ExamQuestionCreateView(View):
 
     def get(self, request, classroom_id, exam_id):

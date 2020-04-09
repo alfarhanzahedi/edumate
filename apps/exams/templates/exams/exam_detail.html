@@ -31,7 +31,13 @@
                 <a href="{% url 'exam_update' classroom_id=exam.classroom.id exam_id=exam.id %}" title="Update examination / assignment." style="margin: 2px;">
                     <i class="fas fa-edit"></i>
                 </a>
-                <a href="{% url 'question_create' classroom_id=exam.classroom.id exam_id=exam.id %}" class="btn btn-primary float-right" title="Add question." style="padding: 2px 8px; color: #ffffff;"> + </a>
+                {% if not exam.is_published %}
+                <form method="POST" action="{% url 'exam_publish' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right" style="margin-left: 5px;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" title="Publish exam." style="padding: 2px 8px;">Publish</button>
+                </form>
+                {% endif %}
+                <a href="{% url 'question_create' classroom_id=exam.classroom.id exam_id=exam.id %}" class="btn btn-primary float-right" title="Add question." style="padding: 2px 8px; color: #ffffff; font-size: 12px;"> + </a>
                 {% endif %}
             </h5>
             <hr>
