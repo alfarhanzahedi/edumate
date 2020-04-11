@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#007bff">
     {% load static %}
     <link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
-    <title>{% block title %} {% endblock %}</title>
+    <title>{{ submission.exam.title }} | {{ user.username }}</title>
 
     <!-- Bootstrap v4.0.0 -->
     <link rel="stylesheet" type="text/css" media="screen"
@@ -256,7 +256,7 @@
                 document.getElementById("exam-timer").innerHTML = days + " : " + hours + " : "
                     + minutes + " : " + seconds;
 
-                if (secondsLeft < 0) {
+                if (secondsLeft <= 0) {
                     clearInterval(x);
                     window.location = "{% url 'exam_detail' classroom_id=exam.classroom.id exam_id=exam.id %}";
                 }

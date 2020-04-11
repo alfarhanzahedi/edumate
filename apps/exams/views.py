@@ -24,6 +24,22 @@ from .forms import ExamJoinForm
 from .forms import ExamQuestionCreationForm
 from .forms import AnswerForm
 
+def get_exam_duration(exam):
+    duration = None
+    if not exam.is_open_exam:
+        if exam.duration:
+            duration = exam.duration * 60
+        else:
+            duration = (exam.end_time - exam.start_time).total_seconds()
+    else:
+        if not exam.duration:
+            duration = (exam.end_time - exam.start_time).total_seconds()
+        else:
+            duration = exam.duration * 60
+
+    return duration
+
+
 class ExamCreateView(View):
 
     def get(self, request, classroom_id):
@@ -57,6 +73,8 @@ class ExamCreateView(View):
         messages.success(request, f'Examination/Assignment - {exam.title} successfully created!')
         return redirect('exam_detail', classroom_id = classroom.id, exam_id = exam.id)
 
+
+
 class ExamDetailView(View):
 
     def get(self, request, classroom_id, exam_id):
@@ -67,11 +85,31 @@ class ExamDetailView(View):
         exam = get_object_or_404(Exam.objects.select_related('classroom', 'classroom__teacher'), id = exam_id)
         context['exam'] = exam
         context['has_exam_started'] = exam.start_time <= timezone.now()
-        if request.user == classroom.teacher or exam.end_time < timezone.now():
+        if request.user == classroom.teacher:
             context['questions'] = Question.objects.filter(exam = exam).prefetch_related('options')
 
         if request.user.is_student:
-            context['submission'] = Submission.objects.filter(exam = exam, student = request.user).first()
+            submission = Submission.objects.prefetch_related('exam', 'exam__questions', 'exam__questions__options', 'answers', 'answers__options').filter(exam = exam, student = request.user).first()
+            
+            if submission:
+                if (exam.is_over() or ((submission.started_at + timedelta(seconds = get_exam_duration(exam))) < timezone.now()))and not submission.is_submitted:
+                    submission.is_submitted = True
+                    submission.save()
+
+                questions_and_answer = {}
+
+                for question in submission.exam.questions.all():
+                    question_id = str(question.id)
+                    questions_and_answer[question_id] = {}
+                    questions_and_answer[question_id]['question'] = question
+                    questions_and_answer[question_id]['answer'] = None
+
+                for answer in submission.answers.all():
+                    question_id = str(answer.question.id)
+                    questions_and_answer[question_id]['answer'] = answer
+                
+                context['submission'] = submission
+                context['questions_and_answer'] = questions_and_answer
 
         return render(request, 'exams/exam_detail.html', context)
 
@@ -331,22 +369,6 @@ class ExamEndView(View):
         submission.save()
         return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)
 
-
-def get_exam_duration(exam):
-    duration = None
-    if not exam.is_open_exam:
-        if exam.duration:
-            duration = exam.duration * 60
-        else:
-            duration = (exam.end_time - exam.start_time).total_seconds()
-    else:
-        if not exam.duration:
-            duration = (exam.end_time - exam.start_time).total_seconds()
-        else:
-            duration = exam.duration * 60
-
-    return duration
-
 class SubmissionDetailView(View):
 
     def get(self, request, classroom_id, exam_id, submission_id):
@@ -356,7 +378,7 @@ class SubmissionDetailView(View):
 
         print(exam_duration)
 
-        if (submission.started_at + timedelta(minutes = exam_duration)) < timezone.now():
+        if (submission.started_at + timedelta(seconds = exam_duration)) < timezone.now():
             submission.is_submitted = True
             submission.save()
             messages.warning(request, 'You have already taken this examination/assignment!')

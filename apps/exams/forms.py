@@ -58,10 +58,15 @@ class ExamCreationForm(forms.ModelForm):
         end_time = cleaned_data.get('end_time')
         duration = cleaned_data.get('duration')
 
-        if start_time < timezone.now():
+        if not self.instance and start_time < timezone.now():
             self._errors['start_time'] = self.error_class(['The date/time cannot be set in the past!'])
             del cleaned_data['start_time']
         
+        if self.instance and self.instance.created_at > start_time:
+            self._errors['start_time'] = self.error_class(['The date/time cannot be past the time the examination/assignment was created!'])
+            del cleaned_data['start_time']
+        
+
         if end_time < start_time:
             self._errors['end_time'] = self.error_class(['End date and time cannot be earlier than start date and time!'])
             del cleaned_data['end_time']

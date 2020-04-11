@@ -270,3 +270,7 @@ CSS overrides for Chosen.
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
+
+.question-answer-body img {
+  width: 100% !important;
+}

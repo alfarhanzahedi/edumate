@@ -82,8 +82,8 @@
                 {% endif %}
             </div>
         </div>
-        {% if questions or user == exam.classroom.teacher %}
-            <div class="navigation-list-container" style="padding: 20px; font-size: 12px;">
+        {% if user == exam.classroom.teacher %}
+        <div class="navigation-list-container" style="padding: 20px; font-size: 12px;">
             <h5>Questions</h5>
             <hr>
             {% for question in questions %}
@@ -125,6 +125,68 @@
                         Negative marks: {{ question.negative_marks }}
                     </p>
                     
+                </div>
+                <hr>
+            {% empty %}
+            <p> Questions will be visible here once you add some. </p>
+            {% endfor %}
+        </div>
+        {% elif submission.is_submitted %}
+        <div class="navigation-list-container" style="padding: 20px; font-size: 12px;">
+            <h5>Your submission</h5>
+            <hr>
+            {% for _, question_and_answer in questions_and_answer.items %}
+                <div>
+                    <b>Question {{ forloop.counter }} [{{ question_and_answer.question.type_verbose }}]</b>
+                    {{ question_and_answer.question.body|safe }}
+                    {% if question_and_answer.question.options.count > 0 %}
+                        Options:
+                        <ul>
+                        {% for option in question_and_answer.question.options.all %}
+                            <li>{{ option.body }} </li>
+                        {% endfor %}
+                        </ul>
+                        {% if exam.is_over %}
+                            Correct Answer(s):
+                            <ul>
+                                {% for option in question_and_answer.question.options.all %}
+                                    {% if option.is_answer %}
+                                    <li>{{ option.body }} </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul> 
+                        {% endif %}
+                    {% endif %}
+                    {% if exam.is_over and question_and_answer.question.solution %}
+                        Solution/Explanation:
+                        <div class="question-answer-body">
+                        {{ question_and_answer.question.solution|safe }}
+                        </div>
+                    {% endif %}
+                    <p>
+                        Maximum marks: {{ question_and_answer.question.marks }} <br>
+                        Negative marks: {{ question_and_answer.question.negative_marks }}
+                    </p>
+                    <hr>
+                    Your answer:
+                    {% if question_and_answer.answer %}
+                        {% if question_and_answer.answer.body %}
+                        <div class="question-answer-body">
+                        {{ question_and_answer.answer.body|safe }}
+                        </div>
+                        {% else %}
+                        <ul>
+                            {% for option in question_and_answer.answer.options.all %}
+                                <li> {{ option.body }} </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    {% else %}
+                        <p>Not attempted!</p>
+                    {% endif %}       
+                    <p>
+                        Marks obtained: Not evaluated yet!
+                    </p>             
                 </div>
                 <hr>
             {% empty %}

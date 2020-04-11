@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils import timezone
 
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
@@ -36,6 +37,9 @@ class Exam(models.Model):
 
     def get_duration(self):
         pass
+
+    def is_over(self):
+        return self.end_time < timezone.now()
 
 class Option(models.Model):
     body = models.TextField()
