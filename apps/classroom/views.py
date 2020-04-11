@@ -160,12 +160,10 @@ class ClassroomPostCreateView(View):
                 classroom = Classroom.objects.get(id = classroom_id)
                 if not in_classroom(classroom, request.user):
                     raise Exception()
-                Post.objects.create(
-                    classroom = classroom,
-                    user = request.user,
-                    post_raw = form.cleaned_data.get('post_raw'),
-                    post_html = request.POST.get('html')
-                )
+                post = form.save(commit = False)
+                post.classroom = classroom
+                post.user = request.user
+                post.save()
                 messages.success(request, f'Post added successfully!')
             except Exception:
                 messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')

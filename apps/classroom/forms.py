@@ -34,7 +34,7 @@ class ClassroomPostCreateForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ('post_raw', )
+        fields = ('post', )
         help_texts = {
             'post': 'Keep it simple and brief!'
         }
