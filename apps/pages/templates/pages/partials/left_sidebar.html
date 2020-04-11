@@ -57,7 +57,16 @@
     <div class="list-group">
         {% if left_sidebar.exams.count > 0 %}
             {% for exam in left_sidebar.exams %}
-                <a href="{% url 'exam_detail' classroom_id=exam.classroom.id exam_id=exam.id %}" class="list-group-item list-group-item-action">[{{exam.classroom.title}}] {{ exam.title }}</a>
+                <a href="{% url 'exam_detail' classroom_id=exam.classroom.id exam_id=exam.id %}" class="list-group-item list-group-item-action">
+                    [{{exam.classroom.title}}] {{ exam.title }}
+                    {% if user.is_student %}
+                        {% if exam.submissions.all.0.is_submitted %}
+                            <span class="text-success text-right" title="Examination/Assignment already taken!"><i class="fas fa-check-circle"></i></span>
+                        {% else %}
+                            <span class="text-danger text-right" title="Examination/Assignment due!"><i class="fas fa-exclamation-circle"></i></span>
+                        {% endif %}
+                    {% endif %}
+                </a>
             {% endfor %}
         {% else %}
             {% if user.is_student %}

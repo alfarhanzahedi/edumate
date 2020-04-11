@@ -16,7 +16,7 @@ def get_sidebar_context(request):
         context['left_sidebar']['exams'] = Exam.objects.filter(classroom__in = context['left_sidebar']['classrooms']).select_related('classroom')
     elif request.user.is_student:
         context['left_sidebar']['classrooms'] = request.user.student_of_classrooms.all()
-        context['left_sidebar']['exams'] = request.user.exam_set.all().select_related('classroom')
+        context['left_sidebar']['exams'] = request.user.exam_set.all().select_related('classroom').prefetch_related('submissions')
     context['right_sidebar']['classroom_join_form'] = ClassroomJoinForm()
     context['right_sidebar']['exam_join_form'] = ExamJoinForm()
     return context

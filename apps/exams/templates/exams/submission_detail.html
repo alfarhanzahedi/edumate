@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Alfarhan Zahedi">
+    {% block meta %} {% endblock %}
+    <meta name="theme-color" content="#007bff">
+    <meta name="msapplication-navbutton-color" content="#007bff">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#007bff">
+    {% load static %}
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
+    <title>{% block title %} {% endblock %}</title>
+
+    <!-- Bootstrap v4.0.0 -->
+    <link rel="stylesheet" type="text/css" media="screen"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Font Awesome v5.5 -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    <!-- jQuery v3.3.1 -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <!-- KaTeX stylesheet(s) and JS -->
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+
+    {% load static %}
+    <!-- Base stylesheets -->
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/fonts.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/scroll-bar.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/footer.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'mdeditor/css/editormd.min.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'mdeditor/css/editormd.preview.css' %}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'pages/css/feed.css' %}">
+
+    <!-- Webpage specific stylesheet(s)-->
+    <style>
+        .container {
+            padding-top: 50px;
+            font-size: 12px;
+        }
+
+        .row {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .question-buttons {
+            padding-bottom: 20px;
+        }
+
+        .btn-submission {
+            cursor: pointer;
+            border-radius: 0.25rem;
+        }
+
+        .btn-submission:focus {
+            border-radius: 0.25rem;
+            outline: none;
+        }
+
+        .btn-incomplete {
+            border: 1px solid #cccccc;
+            background: transparent;
+        }
+
+        .btn-incomplete:focus {
+            border: 1px solid #cccccc;
+            background: #cccccc;
+        }
+
+        .btn-active {
+            border: 1px solid #cccccc;
+            background: #cccccc;
+        }
+
+        .btn-complete {
+            outline: none;
+            border: 1px solid #00ff00;
+            background-color: #00ff00;
+        }
+
+        a {
+            cursor: pointer;
+        }
+
+        #tabs {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        #tabs li {
+            float: left;
+            list-style: none;
+            margin: 10px 5px;
+        }
+
+        #tabs li {
+            margin-left: 0px;
+            margin-right: 8px;
+        }
+
+        #tabs li a {
+            padding: 5px 8px;
+        }
+
+        .list-group-item {
+            border: none;
+            padding: 0px;
+        }
+
+        .btn-question {
+            font-size: 12px;
+            color: #ffffff;
+            margin-top: 10px;
+            background-color: #000000 !important;
+            border: 1px solid #000000 !important;
+        }
+
+        .btn-question:focus {
+            font-size: 12px;
+            box-shadow: none !important;
+        }
+
+        .django-ckeditor-widget .cke {
+            width: 100% !important;
+        }
+
+        .message {
+            font-weight: bold;
+            padding: 10px 0px;
+            letter-spacing: 0.5px;
+        }
+    </style>
+    <!-- End of webpage specific stylesheet(s) -->
+
+    <script src="{% static 'js/helper.js' %}"></script>
+
+    <!-- Webpage specific JS -->
+    <!-- End of webpage specific JS-->
+</head>
+
+<body class="font-open-sans">
+    <div class="wrapper">
+        <div class="container">
+            <div class="row">
+                <h5>
+                    [{{exam.classroom.title}}] {{ exam.title }}
+                </h5>
+            </div>
+            <br>
+            <div class="row">
+                <h5 id="exam-timer">
+                </h5>
+            </div>
+            <div class="row">
+                <hr>
+            </div>
+            <div class="navigation-bar row">
+                <ul id="tabs">
+                    {% for _, question_and_answer in questions_and_answer.items %}
+                    <li>
+                        <a id="tab{{forloop.counter}}" class="
+                            btn-submission 
+                            {% if question_and_answer.answer %}
+                            btn-complete
+                            {% else %}
+                            btn-incomplete
+                            {% endif %}
+                            {% if forloop.counter == 1 %}
+                            btn-active
+                            {% endif %}
+                    ">
+                            {{ forloop.counter }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="row" style="padding-top: 20px;">
+                {% for _, question_and_answer in questions_and_answer.items %}
+                <div class="question-container" id="tab{{forloop.counter}}C">
+                    {% include 'exams/answer_form.html' with form=question_and_answer.form options=question_and_answer.question.options.all question=question_and_answer.question %}
+                </div>
+                {% endfor %}
+            </div>
+            <br>
+            <hr>
+            <div>
+                <form method="POST" action="{% url 'exam_end' classroom_id=exam.classroom.id exam_id=exam.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-submission btn-question font-bold" type="submit">END EXAMINATION / ASSIGNMENT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <script src="{% static 'js/helper.js' %}"></script>
+
+    <!-- Webpage specific JS -->
+    <script>
+        $(document).ready(function () {
+            $('#tabs li a:not(:first)').addClass('inactive');
+            $('.question-container').hide();
+            $('.question-container:first').show();
+
+            $('#tabs li a').click(function () {
+                $('#tabs li a').removeClass("btn-active");
+                $(this).addClass("btn-active");
+                var t = $(this).attr('id');
+                if ($(this).hasClass('inactive')) {
+                    $(".message").text("");
+                    $('#tabs li a').addClass('inactive');
+                    $(this).removeClass('inactive');
+
+                    $('.question-container').hide();
+                    $('#' + t + 'C').fadeIn('slow');
+                }
+            });
+
+        });
+
+        $(document).ready(function () {
+            let secondsLeft = {{ time_left }};
+
+        // Update the count down every 1 second
+            let x = setInterval(function () {
+
+                secondsLeft--;
+
+                var days = Math.floor(secondsLeft / (60 * 60 * 24));
+                var hours = Math.floor((secondsLeft % (60 * 60 * 24)) / (60 * 60));
+                var minutes = Math.floor((secondsLeft % (60 * 60)) / 60);
+                var seconds = Math.floor(secondsLeft % 60);
+
+
+                days = (days < 10) ? "0" + days : days;
+                hours = (hours < 10) ? "0" + hours : hours;
+                minutes = (minutes < 10) ? "0" + minutes : minutes;
+                seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+                document.getElementById("exam-timer").innerHTML = days + " : " + hours + " : "
+                    + minutes + " : " + seconds;
+
+                if (secondsLeft < 0) {
+                    clearInterval(x);
+                    window.location = "{% url 'exam_detail' classroom_id=exam.classroom.id exam_id=exam.id %}";
+                }
+            }, 1000);
+        });
+
+        $(document).ready(function () {
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            });
+
+            let questionForm = $(".question-form");
+
+            questionForm.on('submit', function (e) {
+                e.preventDefault();
+                let currentForm = $(this);
+                let activeButton = $(".btn-active");
+                let formButtonClicked = $(document.activeElement);
+                let formAction = formButtonClicked.attr("name");
+                let messageDiv = currentForm.find(".message");
+                let ckeditorInstanceId = currentForm.find("textarea").attr("id");
+
+                if (
+                    formButtonClicked.length &&
+                    currentForm.has(formButtonClicked) &&
+                    formButtonClicked.is('button[type="submit"], input[type="submit"], input[type="image"]') &&
+                    formButtonClicked.is('[name]')
+                ) {
+                    console.log(`${formAction} called!`);
+                }
+
+                let url = currentForm.attr("action");
+                let method = currentForm.attr("method");
+
+                if (ckeditorInstanceId != undefined) {
+                    CKEDITOR.instances[ckeditorInstanceId].updateElement();
+                }
+
+                currentForm.append(`<input name="${formAction}" value="" style="display: none;">`);
+
+                let dataToBeSubmitted = currentForm.serialize();
+
+                currentForm.find(`input[name="${formAction}"]`).remove();
+
+                $.ajax({
+                    method: method,
+                    url: url,
+                    data: dataToBeSubmitted
+                })
+                    .done(function (data, status) {
+                        if (formAction === "save") {
+                            activeButton.addClass("btn-complete");
+                        } else if (formAction == "clear") {
+                            activeButton.removeClass("btn-complete");
+                            activeButton.addClass("btn-incomplete");
+                            currentForm.trigger("reset");
+                            currentForm.find("input[type=\"radio\"]").prop("checked", false);
+                            currentForm.find("input[type=\"checkbox\"]").prop("checked", false);
+                            if (ckeditorInstanceId != undefined) {
+                                CKEDITOR.instances[ckeditorInstanceId].setData("");
+                            }
+                        }
+                        messageDiv.removeClass("text-danger");
+                        messageDiv.addClass("text-success");
+                        messageDiv.text(data.message);
+                    })
+                    .fail(function (data, status) {
+                        messageDiv.removeClass("text-success");
+                        messageDiv.addClass("text-danger");
+                        messageDiv.text(data.responseJSON.message);
+                    });
+            });
+        });
+    </script>
+    <!-- End of webpage specific JS -->
+</body>
+
+</html>

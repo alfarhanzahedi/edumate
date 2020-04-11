@@ -1,0 +1,38 @@
+{% load widget_tweaks %}
+<form class="question-form list-group-item" method="POST" action="{% url 'answer' classroom_id=exam.classroom.id exam_id=exam.id submission_id=submission.id question_id=question.id %}">
+    <h5>Question {{ forloop.counter }}</h5>
+    <p>
+        Marks: {{ question.marks }} <br>
+        Negative marks: {{ question.negative_marks }}
+    </p>
+    <p>{{ question_and_answer.question.body|safe }}</p>
+
+    {% csrf_token %}
+    {% if not question.is_mcq %}
+    <div class="form-label-group">
+        <div class="text-muted"> {{ form.body.help_text|safe }} </div>
+        <br>
+        {% render_field form.body id=question.id %}
+    </div>
+    {% else %}
+    <div class="form-label-group">
+        {% for option in options %}
+        <div>
+            <label for="option-{{ forloop.counter }}">
+                <input 
+                type="{% if question.type == '1' %}radio{% else %}checkbox{% endif %}" 
+                name="option" id="option-{{ question.id }}-{{ forloop.counter }}"
+                value="{{option.id}}"
+                {% if option in question_and_answer.answer.options.all %}
+                checked
+                {% endif %}
+                > {{ option.body }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="message"></div>
+    <button class="btn btn-question text-uppercase font-bold" type="submit" name="save">SAVE</button>
+    <button class="btn btn-question text-uppercase font-bold" type="submit" name="clear">CLEAR</button>
+</form>

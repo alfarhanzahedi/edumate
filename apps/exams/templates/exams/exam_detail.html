@@ -28,16 +28,32 @@
             <h5>
                 [{{ exam.classroom.title }}] {{ exam.title }}
                 {% if user == exam.classroom.teacher %}
-                <a href="{% url 'exam_update' classroom_id=exam.classroom.id exam_id=exam.id %}" title="Update examination / assignment." style="margin: 2px;">
-                    <i class="fas fa-edit"></i>
-                </a>
-                {% if not exam.is_published %}
-                <form method="POST" action="{% url 'exam_publish' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right" style="margin-left: 5px;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary" title="Publish exam." style="padding: 2px 8px;">Publish</button>
-                </form>
-                {% endif %}
-                <a href="{% url 'question_create' classroom_id=exam.classroom.id exam_id=exam.id %}" class="btn btn-primary float-right" title="Add question." style="padding: 2px 8px; color: #ffffff; font-size: 12px;"> + </a>
+                    <a href="{% url 'exam_update' classroom_id=exam.classroom.id exam_id=exam.id %}" title="Update examination / assignment." style="margin: 2px;">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    {% if not exam.is_published %}
+                        <form method="POST" action="{% url 'exam_publish' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right" style="margin-left: 5px;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary" title="Publish exam." style="padding: 2px 8px;">Publish</button>
+                        </form>
+                    {% endif %}
+                    <a href="{% url 'question_create' classroom_id=exam.classroom.id exam_id=exam.id %}" class="btn btn-primary float-right" title="Add question." style="padding: 2px 8px; color: #ffffff; font-size: 12px;"> + </a>
+                {% else %}
+                    {% if submission %}
+                        {% if submission.is_submitted %}
+                            <span class="text-success text-right" title="Examination/Assignment already taken!"><i class="fas fa-check-circle"></i></span>
+                        {% elif exam.is_resumable %}
+                            <form method="POST" action="{% url 'exam_resume' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right" style="margin-left: 5px;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary" title="Resume examination/assignment." style="padding: 2px 8px;">Resume</button>
+                            </form>
+                        {% endif %}
+                    {% elif has_exam_started %}
+                        <form method="POST" action="{% url 'exam_start' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right" style="margin-left: 5px;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary" title="Start examination/assignment." style="padding: 2px 8px;">Start</button>
+                        </form>
+                    {% endif %}
                 {% endif %}
             </h5>
             <hr>
@@ -66,51 +82,56 @@
                 {% endif %}
             </div>
         </div>
-        <div class="navigation-list-container" style="padding: 20px; font-size: 12px;">
-        <h5>Questions</h5>
-        <hr>
-        {% for question in questions %}
-            <div>
-                <b>Question {{ forloop.counter }} [{{ question.type_verbose }}]</b>
-                {% if user == exam.classroom.teacher %}
-                    <div class="float-right" style="display: inline;">
-                        <a href="{% url 'question_update' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" title="Update question." style="margin: 5px; display: inline;"><i class="fas fa-edit"></i></a>
-                        <form method="POST" action="{% url 'question_delete' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="student-remove-button" title="Delete question." style="margin: 5px;"><i class="fas fa-trash-alt"></i></button>
-                        </form>
-                    </div>
-                {% endif %}
-                {{ question.body|safe }}
-                {% if question.options.count > 0 %}
-                Options:
-                <ul>
-                {% for option in question.options.all %}
-                    <li>{{ option.body }} </li>
-                {% endfor %}
-                </ul>
-
-                Answer(s):
-                <ul>
-                {% for option in question.options.all %}
-                    {% if option.is_answer %}
-                    <li>{{ option.body }} </li>
-                    {% endif %}
-                {% endfor %}
-                </ul> 
-                {% endif %}
-                
-                <p>
-                    Maximum marks: {{ question.marks }} <br>
-                    Negative marks: {{ question.negative_marks }}
-                </p>
-                
-            </div>
+        {% if questions or user == exam.classroom.teacher %}
+            <div class="navigation-list-container" style="padding: 20px; font-size: 12px;">
+            <h5>Questions</h5>
             <hr>
-        {% empty %}
-        <p> Questions will be visible here once you add some. </p>
-        {% endfor %}
+            {% for question in questions %}
+                <div>
+                    <b>Question {{ forloop.counter }} [{{ question.type_verbose }}]</b>
+                    {% if user == exam.classroom.teacher %}
+                        <div class="float-right" style="display: inline;">
+                            <a href="{% url 'question_update' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" title="Update question." style="margin: 5px; display: inline;"><i class="fas fa-edit"></i></a>
+                            <form method="POST" action="{% url 'question_delete' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="student-remove-button" title="Delete question." style="margin: 5px;"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {{ question.body|safe }}
+                    {% if question.options.count > 0 %}
+                    Options:
+                    <ul>
+                    {% for option in question.options.all %}
+                        <li>{{ option.body }} </li>
+                    {% endfor %}
+                    </ul>
+
+                    Answer(s):
+                    <ul>
+                    {% for option in question.options.all %}
+                        {% if option.is_answer %}
+                        <li>{{ option.body }} </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul> 
+                    {% endif %}
+                    {% if question.solution %}
+                    Solution/Explanation:
+                    {{ question.solution|safe }}
+                    {% endif %}
+                    <p>
+                        Maximum marks: {{ question.marks }} <br>
+                        Negative marks: {{ question.negative_marks }}
+                    </p>
+                    
+                </div>
+                <hr>
+            {% empty %}
+            <p> Questions will be visible here once you add some. </p>
+            {% endfor %}
         </div>
+        {% endif %}
     </div>
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
         {% include 'pages/partials/right_sidebar.html' %}

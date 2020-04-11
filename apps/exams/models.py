@@ -23,7 +23,7 @@ class Exam(models.Model):
     end_time = models.DateTimeField()
     duration = models.IntegerField(null = True, blank = True)
 
-    students = models.ManyToManyField(User)
+    students = models.ManyToManyField(User, null = True, blank = True)
     classroom = models.ForeignKey(Classroom, on_delete = models.CASCADE)
 
     def __str__(self):
@@ -34,12 +34,15 @@ class Exam(models.Model):
             self.unique_code = get_random_string(6)
         return super().save(*args, **kwargs)
 
+    def get_duration(self):
+        pass
+
 class Option(models.Model):
     body = models.TextField()
     is_answer = models.BooleanField(default = False)
 
     def __str__(self):
-        return f'{self.body}'
+        return f'{self.id}'
 
 class Question(models.Model):
     MCQ_SOC = '1'
@@ -51,9 +54,10 @@ class Question(models.Model):
         (SUBJECTIVE,'Subjective')
     )
 
-    exam = models.ForeignKey(Exam, on_delete = models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete = models.CASCADE, related_name = 'questions')
     type = models.CharField(max_length = 1, choices = TYPES, default = MCQ_SOC)
     body = RichTextUploadingField()
+    solution = RichTextUploadingField(blank = True, null = True)
     options = models.ManyToManyField(Option)
     marks = models.FloatField(default = 0, validators = [MinValueValidator(0)])
     negative_marks = models.FloatField(default = 0.0, validators = [MinValueValidator(0.0)])
@@ -63,4 +67,38 @@ class Question(models.Model):
     
     def type_verbose(self):
         return dict(Question.TYPES)[self.type]
+    
+    def is_mcq(self):
+        return self.type in [self.MCQ_SOC, self.MCQ_MOC]
 
+class Submission(models.Model):
+    exam = models.ForeignKey(Exam, on_delete = models.CASCADE, related_name = 'submissions')
+    student = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'submissions')
+
+    started_at = models.DateTimeField(auto_now_add = True)
+    ended_at = models.DateTimeField(auto_now = True)
+
+    is_submitted = models.BooleanField(default = False)
+
+    class Meta:
+        unique_together = ('exam', 'student')
+    
+    def __str__(self):
+        return f'{self.id}'
+
+class Answer(models.Model):
+    submission = models.ForeignKey(Submission, on_delete = models.CASCADE, related_name = 'answers')
+    question = models.ForeignKey(Question, on_delete = models.CASCADE, related_name = 'answers')
+    student = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'answers')
+    body = RichTextUploadingField(blank = True, null = True)
+    options = models.ManyToManyField(Option)
+    marks = models.FloatField(default = 0.0)
+
+    created_at = models.DateTimeField(auto_now_add = True)
+    updated_at = models.DateTimeField(auto_now = True)
+
+    class Meta:
+        unique_together = ('question', 'student')
+    
+    def __str__(self):
+        return f'{self.id}'

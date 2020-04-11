@@ -4,7 +4,7 @@ from django.forms import ValidationError
 
 from .models import Exam
 from .models import Question
-
+from .models import Answer
 
 class ExamCreationForm(forms.ModelForm):
     DATETIME_INPUT_FORMATS = [
@@ -92,10 +92,17 @@ class ExamQuestionCreationForm(forms.ModelForm):
 
     class Meta:
         model = Question
-        fields = ('type', 'body', 'marks', 'negative_marks')
+        fields = ('type', 'body', 'solution','marks', 'negative_marks')
         help_texts = {
             'type': 'The type of the question.',
             'body': 'The actual question body.',
+            'solution': 'The solution to the question. If the question is an MCQ, explanations to solutions can be provided here.',
             'marks': 'The maximum marks for the question.',
             'negative_marks': 'Any negative marks associated with the question.'
         }
+
+class AnswerForm(forms.ModelForm):
+
+    class Meta:
+        model = Answer
+        fields = ('body',)
