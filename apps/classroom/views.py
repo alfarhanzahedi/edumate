@@ -210,23 +210,17 @@ class ClassroomPostUpdateView(View):
 
     @method_decorator(login_required)
     def post(self, request, classroom_id, post_id):
-        form = ClassroomPostCreateForm(request.POST)
+        classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
+        post = get_object_or_404(Post, id = post_id, classroom = classroom)
+
+        # ToDo: A better HTTP response for unauthorised users.
+        if post.user != request.user and classroom.teacher != request.user:
+            raise Http404
+
+        form = ClassroomPostCreateForm(request.POST, instance = post)
         if form.is_valid():
-            try:
-                classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
-                post = get_object_or_404(Post, id = post_id, classroom = classroom)
-                
-                # ToDo: A better HTTP response for unauthorised users.
-                if post.user != request.user and classroom.teacher != request.user:
-                    raise Http404
-                
-                post.post_raw = form.cleaned_data.get('post_raw')
-                post.post_html = request.POST.get('html')
-                post.save()
-                
-                messages.success(request, f'Post updated successfully!')
-            except Exception:
-                messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
+            form.save()
+            messages.success(request, f'Post updated successfully!')
             return redirect('classroom_post_detail', classroom_id = classroom_id, post_id = post_id)
 
         messages.error(request, f'Empty posts are not allowed!')

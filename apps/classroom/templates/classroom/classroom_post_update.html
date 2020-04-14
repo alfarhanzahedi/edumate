@@ -80,21 +80,4 @@ Update Post | {{ classroom.details.title }} | Edumate
         {% include 'pages/partials/right_sidebar.html' %}
     </div>
 </div>
-
-{% comment %}
-
-    A little hack to pass the Markdown and LaTex rendered post to the back-end.
-
-    ToDo: Get rid of this hack and find a method to render the posts in front-end!
-
-{% endcomment %}
-<script>
-    $("document").ready(function() {
-        $("#post-create-form").submit(function(){
-            let html = $(".editormd-preview")[0].innerHTML;
-            $("<input>").attr("type", "hidden").attr("name", "html").attr("value", html).appendTo("#post-create-form");
-            return true;
-        });
-    });
-</script>
 {% endblock %}

@@ -353,7 +353,6 @@ class ExamResumeView(View):
             raise Http404
 
         submission = get_object_or_404(Submission, exam = exam, student = request.user)
-        messages.success(request, f'Examination/assignment successfully submitted!')
         return redirect('submission_detail', classroom_id = classroom_id, exam_id = exam_id, submission_id = submission.id)
 
 class ExamEndView(View):
