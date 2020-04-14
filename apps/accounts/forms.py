@@ -36,14 +36,16 @@ class CustomUserChangeForm(UserChangeForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         try:
-            if User.objects.get(email = email).email == email:
+            if User.objects.get(email = email) == self.instance:
                 return email
         except User.DoesNotExist:
             return email
         raise forms.ValidationError('This email address is already in use.')
     
 class UserProfileChangeForm(forms.ModelForm):
-    
+    first_name = forms.CharField(max_length = 256, required = True)
+    last_name = forms.CharField(max_length = 256, required = True)
+
     class Meta:
         model = User
         fields = ('profile_picture', 'first_name', 'last_name', )

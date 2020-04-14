@@ -48,17 +48,17 @@ Update | {{ user.username }} | EduMate
                         {% csrf_token %}
                         {% for field in profile_change_form.visible_fields %}
                         <div class="form-label-group list-group-item">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                             {% if field.errors %}
-                                <label for="{{ field.id_for_label }}">{{ field.label }}: </label>
                                 <span>
                                     {% if field.name == 'profile_picture' %}
                                         {% if user.profile_picture %}
-                                            <img src="{{user.profile_picture.url}}" class="profile-pic" /><br>
+                                            <img src="{{user.profile_picture.url}}" class="profile-picture" /><br />
                                         {% endif %}
                                         <input type="file" name="profile_picture" accept="image/*" class="form-control" id="id_profile_picture">
                                         <span>&nbsp;</span>
                                     {% else %}
-                                    {% render_field field class="form-control is-invalid" %}                            
+                                        {% render_field field class="form-control is-invalid" %}                            
                                     {% endif %}
                                     <div class="error">
                                         {% for error in field.errors %}
@@ -67,11 +67,10 @@ Update | {{ user.username }} | EduMate
                                     </div>
                                 </span>                
                             {% else %}
-                                <label for="{{ field.id_for_label }}" style="display:inline;">{{ field.label }}: </label>
                                 <span>
                                 {% if field.name == 'profile_picture' %}
                                     {% if user.profile_picture %}
-                                        <img src="{{user.profile_picture.url}}" class="profile-pic" />
+                                        <img src="{{user.profile_picture.url}}" class="profile-picture" />
                                         <span>&nbsp;</span>
                                     {% endif %}
                                     <input type="file" name="profile_picture" accept="image/*" class="form-control" id="id_profile_picture">
@@ -83,7 +82,7 @@ Update | {{ user.username }} | EduMate
                         </div>
                         {% endfor %}
                         <div class="list-group-item">
-                            <button class="btn btn-sm btn-primary text-uppercase" name="user_profile_change_submit" type="submit">Update</button>
+                            <button class="btn btn-sm btn-primary text-uppercase font-bold" name="user_profile_change_submit" type="submit">Update</button>
                         </div>
                     </form>
                 </div>
@@ -121,10 +120,12 @@ Update | {{ user.username }} | EduMate
                                             {{ error }} <br/>
                                         {% endfor %}
                                     </div>
-                                    <div class="help-text">{{ field.help_text|safe }}</div>
+                                    {% if field.help_text %}
+                                        <div class="help-text">{{ field.help_text|safe }}</div>
+                                    {% endif %}
                                 </span>                
                             {% else %}
-                                <label for="{{ field.id_for_label }}" style="display:inline;">{{ field.label }}: </label>
+                                <label for="{{ field.id_for_label }}">{{ field.label }}: </label>
                                 <span>
                                     {% render_field field class="form-control" %}
                                     <div class="help-text">{{ field.help_text|safe }}</div>                    
@@ -133,7 +134,7 @@ Update | {{ user.username }} | EduMate
                         </div>
                         {% endfor %}
                         <div class="list-group-item">
-                            <button class="btn btn-sm btn-primary text-uppercase" name="user_password_change_submit" type="submit">Update</button>
+                            <button class="btn btn-sm btn-primary text-uppercase font-bold" name="user_password_change_submit" type="submit">Update</button>
                         </div>
                     </form>
                 </div>

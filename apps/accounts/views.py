@@ -20,6 +20,7 @@ from django.core.paginator import EmptyPage
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
+from smtplib import SMTPException
 
 from apps.pages.common_functions import get_sidebar_context
 from apps.classroom.models import Post
@@ -36,7 +37,7 @@ class SignUp(View):
     def get(self, request):
         form = CustomUserCreationForm()
         return render(request, 'accounts/registration/signup.html', {'form': form})
-    
+
     def post(self, request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -61,6 +62,7 @@ class SignUp(View):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
+
             user.email_user(subject, '', html_message = message,  from_email = 'EduMate Support<support@edumate.com>')
             return render(request, 'accounts/registration/account_activation_sent.html')
         return render(request, 'accounts/registration/signup.html', {'form': form})
@@ -96,8 +98,12 @@ class UserProfileView(View):
 
         post_list = None
         if required_user == request.user:
+            # If the user is visiting their profile, then show all the posts made by them in all the classes.
             post_list = Post.objects.select_related('user', 'classroom').filter(user = required_user).order_by('-updated_at')
         else:
+            # If the user is visiting someone else's profile, say As, then show the posts made by A only in the classrooms where:
+            # - the current user is the teacher, or
+            # - the current user is a fellow classmate.
             post_list = Post.objects.distinct().select_related('user', 'classroom').filter(Q(user = required_user) & (Q(classroom__students__in = [request.user]) | Q(classroom__teacher = request.user))).order_by('-updated_at')
 
         page = request.GET.get('page', 1)
@@ -136,29 +142,39 @@ class UserProfileChangeView(View):
         if 'user_profile_change_submit' in request.POST:
             profile_change_form = UserProfileChangeForm(request.POST, request.FILES, instance = request.user, request = request)
             user = request.user
+
             if profile_change_form.is_valid():
                 updated_information = profile_change_form.save(commit = False)
+
                 user.first_name = updated_information.first_name
                 user.last_name = updated_information.last_name
                 user.profile_picture = updated_information.profile_picture
                 user.save()
+
                 messages.success(request, 'Your information was updated successfully!')
                 return redirect('user_profile', username = request.user.username)
-        
+
+            # If the form is not valid, generate the appropriate context.
             context = get_sidebar_context(request)
             context['profile_change_form'] = profile_change_form
             context['password_change_form'] = PasswordChangeForm(request.user)
-        
+            messages.error(request, 'Please correct the errors mentioned below and try again!')
+
         elif 'user_password_change_submit' in request.POST:
             password_change_form = PasswordChangeForm(request.user, request.POST)
+
             if password_change_form.is_valid():
                 user = password_change_form.save()
+
                 update_session_auth_hash(request, user)
+
                 messages.success(request, 'Your password was successfully updated!')
                 return redirect('user_profile', username = request.user.username)
-            
+
+            # If the form is not valid, generate the appropriate context.
             context = get_sidebar_context(request)
             context['password_change_form'] = password_change_form
             context['profile_change_form'] = UserProfileChangeForm(instance = request.user)
-        
+            messages.error(request, 'Please correct the errors mentioned below and try again!')
+
         return render(request, 'accounts/user_profile_change.html', context)
