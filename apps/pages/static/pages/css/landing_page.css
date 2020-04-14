@@ -11,20 +11,20 @@ Author: Jatin Pandey
 }
 
 .img-absolute {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    top: 50%;
-    width: 700px !important;
-    -webkit-transform: translateY(-50%) translateX(30%);
-    -ms-transform: translateY(-50%) translateX(30%);
-    transform: translateY(-50%) translateX(5%);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  top: 50%;
+  width: 700px !important;
+  -webkit-transform: translateY(-50%) translateX(30%);
+  -ms-transform: translateY(-50%) translateX(30%);
+  transform: translateY(-50%) translateX(5%);
 }
 
 @media (max-width: 991px) {
-    .img-absolute {
-        display: none;
-    }
+  .img-absolute {
+    display: none;
+  }
 }
 
 .site-blocks-cover h1 {
@@ -40,13 +40,6 @@ Author: Jatin Pandey
   font-weight: 300;
 }
 
-.btn:not(:disabled):not(.disabled) {
-  cursor: pointer;
-}
-
-.btn {
-  font-size: 16px;
-  border-radius: 8px;
-  padding: 10px 30px;
-  color: #ffffff !important;
+.site-blocks-cover a {
+  color: #ffffff;
 }

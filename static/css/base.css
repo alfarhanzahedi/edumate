@@ -297,11 +297,3 @@ CSS overrides for Chosen.
 .question-answer-body img {
   width: 100% !important;
 }
-
-.classroom-post a {
-  text-decoration: underline !important;
-}
-
-.classroom-post a:visited {
-  text-decoration: underline !important;
-}

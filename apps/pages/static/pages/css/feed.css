@@ -108,7 +108,6 @@ CSS for posts in feed and classrooms.
 .timeline-header {
   display: flex;
   flex-direction: row;
-  height: 60px;
   padding: 16px;
 }
 
@@ -126,6 +125,10 @@ CSS for posts in feed and classrooms.
   margin-left: 8px;
   margin-top: 2px;
   margin-bottom: 0;
+}
+
+.timeline-header-banner {
+  width: 100%;
 }
 
 .flex-vertical {
@@ -154,6 +157,25 @@ CSS for posts in feed and classrooms.
 .timeline-card-content-image {
   width: 100%;
   height: auto;
+}
+
+.classroom-post .post {
+  padding: 10px 30px;
+  font-size: 12px;
+}
+
+.classroom-post .options {
+  display: inline-block;
+  width: 100%;
+  margin-top: 7px;
+}
+
+.classroom-post .post a {
+  text-decoration: underline !important;
+}
+
+.classroom-post .post a:visited {
+  text-decoration: underline !important;
 }
 
 /*
@@ -190,27 +212,16 @@ CSS overrides for pagination.
 }
 
 /*
-CSS overrides for 'editormd' editor.
-*/
-.editormd-toolbar {
-  position: absolute !important;
-}
-
-.CodeMirror-placeholder {
-  color: transparent !important;
-}
-
-/*
 Miscellaneous!
 */
 .classroom-description {
-    font-size: 15px;
+  font-size: 15px;
 }
 
 button.student-remove-button {
-    margin: 0px; 
-    padding: 0px; 
-    border: 0px;
-    cursor: pointer;
-    background: white; 
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  cursor: pointer;
+  background: white;
 }

@@ -4,6 +4,13 @@
     different pages of the website - feed, classroom, user profile, etc.
 
 {% endcomment %}
+
+
+{% comment %}
+    
+    The following block adds a 'User Detail' card to the left sidebar.
+
+{% endcomment %}
 {% if not request.path == '/accounts/'|add:user.username|add:'/' %}
 <div class="profile-card">
     <div class="float-left">
@@ -27,6 +34,15 @@
 </div>
 {% endif %}
 
+
+{% comment %}
+    
+    The following block adds a 'My Classes' card to the left sidebar.
+
+    If the authenticated user is a teacher, the card contains the classes that the user has created.
+    If the authenticated user is a student, the card contains the classes that the user is a part of.
+
+{% endcomment %}
 <div class="navigation-list-container">
     <div class="navigation-list-header">
         <div class="navigation-list-title">
@@ -48,6 +64,15 @@
     </div>
 </div>
 
+
+{% comment %}
+    
+    The following block adds a 'Examinations/Assignments' card to the left sidebar.
+
+    If the authenticated user is a teacher, the card contains the examinations/assignments that the user has created.
+    If the authenticated user is a student, the card contains the examinations/assignments that the user has taken or is required to take.
+
+{% endcomment %}
 <div class="navigation-list-container">
     <div class="navigation-list-header">
         <div class="navigation-list-title">
@@ -78,6 +103,13 @@
     </div>
 </div>
 
+
+{% comment %}
+    
+    The following block adds a 'Create Classroom' form card to the left sidebar.
+    This form is available only of the user is a teacher.
+
+{% endcomment %}
 {% if left_sidebar.classroom_create_form %}
 <div class="navigation-list-container">
     <div class="navigation-list-header">

@@ -6,7 +6,7 @@
 
 {% endcomment %}
 
-<article class="timeline-card">
+<article class="classroom-post timeline-card">
     <header class="timeline-header">
         <div>
             <a href="{% url 'user_profile' username=post.user.username %}">
@@ -18,7 +18,7 @@
             {% endif %}
             </a>		
         </div>
-        <div class="flex-vertical">
+        <div class="timeline-header-banner flex-vertical">
             <div class="timeline-header-profile-name">
                 <a href="/accounts/{{ post.user.username }}"> {{ post.user.first_name }} {{ post.user.last_name }} </a>
                 <span>&nbsp;</span> <i class="fas fa-angle-right"></i> <span>&nbsp;</span>
@@ -29,15 +29,15 @@
             </div>
             
         </div>
-        <div style="position: absolute; right: 30px; margin-top: 7px;">
-            <a href="{% url 'classroom_post_detail' classroom_id=post.classroom.id post_id=post.id %}" title="External link to post." style="margin: 2px;">
+        <div class="options text-right">
+            <a href="{% url 'classroom_post_detail' classroom_id=post.classroom.id post_id=post.id %}" title="External link to post." class="mr-1">
                 <i class="fas fa-external-link-alt"></i>
             </a>
             {% if post.classroom.teacher == user or post.user == user %}
-                <a href="{% url 'classroom_post_update' classroom_id=post.classroom.id post_id=post.id %}" title="Update post." style="margin: 2px;">
+                <a href="{% url 'classroom_post_update' classroom_id=post.classroom.id post_id=post.id %}" title="Update post." class="mr-1">
                     <i class="fas fa-edit"></i>                
                 </a>
-                <form action="{% url 'classroom_post_delete' classroom_id=post.classroom.id post_id=post.id %}" method="POST" style="display:inline; margin: 2px;">
+                <form action="{% url 'classroom_post_delete' classroom_id=post.classroom.id post_id=post.id %}" method="POST" class="d-inline mr-1">
                     {% csrf_token %}
                     <input type="hidden" value="{{ request.path }}" name="next"/>
                     <button type="submit" class="student-remove-button" title="Delete post.">
@@ -49,7 +49,7 @@
     </header>
     <hr class="custom-ruler">
     <section class="timeline-card-content">
-        <div class="classroom-post" style="padding: 10px 30px; font-size: 12px;">
+        <div class="post">
             {{ post.post|safe }}
         </div>
     </section>

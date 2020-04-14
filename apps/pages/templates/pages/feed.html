@@ -32,30 +32,40 @@ Edumate
             The following 'if' block contains the logic for displaying the navigation bar 
             to access the various different 'pages' of posts.
         {% endcomment %}
+
         {% if feed.posts.has_other_pages %}
         <div class="pagination-div font-bold">
             <ul class="pagination">
                 {% if feed.posts.has_previous %}
-                    <li><a class="page-link" href="?page={{ feed.posts.previous_page_number }}">&laquo;</a></li>
+                    <li>
+                        <a href="?page={{ feed.posts.previous_page_number }}" class="page-link">&laquo;</a>
+                    </li>
                 {% else %}
                     <li><span class="page-link disabled">&laquo;</span></li>
                 {% endif %}
                 {% for i in feed.posts.paginator.page_range %}
                     {% if feed.posts.number == i %}
-                        <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                        <li class="active page-item">
+                            <span class="page-link">{{ i }} <span class="sr-only">(current)</span></span>
+                        </li>
                     {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        <li class="page-item">
+                            <a href="?page={{ i }}" class="page-link">{{ i }}</a>
+                        </li>
                     {% endif %}
                 {% endfor %}
                 {% if feed.posts.has_next %}
-                    <li><a class="page-link" href="?page={{ feed.posts.next_page_number }}">&raquo;</a></li>
+                    <li>
+                        <a href="?page={{ feed.posts.next_page_number }}" class="page-link">&raquo;</a>
+                    </li>
                 {% else %}
-                    <li><span class="page-link disabled">&raquo;</span></li>
+                    <li>
+                        <span class="page-link disabled">&raquo;</span>
+                    </li>
                 {% endif %}
             </ul>
         </div>
         {% endif %}
-
     </div>
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
         {% include 'pages/partials/right_sidebar.html' %}
