@@ -22,7 +22,7 @@
             <div class="timeline-header-profile-name">
                 <a href="/accounts/{{ post.user.username }}"> {{ post.user.first_name }} {{ post.user.last_name }} </a>
                 <span>&nbsp;</span> <i class="fas fa-angle-right"></i> <span>&nbsp;</span>
-                <a href="{% url 'classroom_detail' id=post.classroom.id %}"> {{ post.classroom.title }} </a>
+                <a href="{% url 'classroom_detail' classroom_id=post.classroom.id %}"> {{ post.classroom.title }} </a>
             </div>
             <div class="timeline-header-time">
                 <span class="timeline-header-timestamp">{{ post.updated_at }}</span>

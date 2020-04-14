@@ -11,9 +11,6 @@
         </div>
     </div>
     <div class="list-group">
-        {% if classroom.students.count == 0 %}
-            <span class="list-group-item text-muted">No students have joined the classroom yet!</span>
-        {% endif %}
         {% for student in classroom.students %}
             <div class="list-group-item">
                 <div class="float-left">
@@ -21,7 +18,7 @@
                 </div>
                 {% if classroom.permissions.can_remove_users %}
                     <div class="float-right">
-                        <form action="{% url 'classroom_student_remove' id=classroom.details.id username=student.username %}" method="POST">
+                        <form action="{% url 'classroom_student_remove' classroom_id=classroom.details.id username=student.username %}" method="POST">
                         {% csrf_token %}
                         <button type="submit" class="student-remove-button" title="Remove {{ student.first_name }} {{ student.last_name }}">
                             <i class="fas fa-times-circle"></i>                
@@ -30,9 +27,8 @@
                     </div>
                 {% endif %}
             </div>
+        {% empty %}
+            <span class="list-group-item text-muted">No students have joined the classroom yet!</span>
         {% endfor %}
-        {% if classroom.students.count > 5 %}
-            <a href="" class="list-group-item">View all students</a>
-        {% endif %}
     </div>
 </div>

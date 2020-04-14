@@ -34,25 +34,32 @@ class ClassroomCreateView(View):
     def post(self, request):
         redirect_to = request.POST.get('next', '/')
         form = ClassroomCreationForm(request.POST)
+
         if form.is_valid():
             classroom = form.save(commit = False)
+            
             classroom.unique_code = uuid.uuid4().hex[:6]
             classroom.teacher = user = request.user
             classroom.save()
-            return redirect('classroom_detail', id = classroom.id)
+
+            return redirect('classroom_detail', classroom_id = classroom.id)
+
+        messages.error(request, 'Invalid classroom name or description. Please try again!')
         return redirect(redirect_to)
 
 class ClassroomDetailView(View):
 
     @method_decorator(login_required)
-    def get(self, request, id):
-        classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = id)
+    def get(self, request, classroom_id):
+        classroom = get_object_or_404(Classroom.objects.select_related('teacher').prefetch_related('students'), id = classroom_id)
+
         if not in_classroom(classroom, request.user):
             raise Http404
+
         context = get_sidebar_context(request)
         context['classroom'] = {}
         context['classroom']['details'] = classroom
-        context['classroom']['students'] = classroom.students.prefetch_related().all()[:5]
+        context['classroom']['students'] = classroom.students.all()
         context['classroom']['permissions'] = {}
         context['classroom']['permissions']['can_remove_users'] = (classroom.teacher == request.user)
         context['classroom']['permissions']['can_remove_posts'] = (classroom.teacher == request.user)
@@ -62,7 +69,7 @@ class ClassroomDetailView(View):
         post_list = Post.objects.select_related('user').filter(classroom = classroom).order_by('-updated_at')
         page = request.GET.get('page', 1)
 
-        paginator = Paginator(post_list, 2)
+        paginator = Paginator(post_list, 5)
         try:
             posts = paginator.page(page)
         except PageNotAnInteger:
@@ -89,6 +96,7 @@ class ClassroomUpdateView(View):
         context['classroom']['permissions']['can_remove_posts'] = (classroom.teacher == request.user)
         context['classroom']['forms'] = {}
         context['classroom']['forms']['classroom_create_form'] = ClassroomCreationForm(instance = classroom)
+
         return render(request, 'classroom/classroom_update.html', context)
 
     @method_decorator(login_required)
@@ -97,18 +105,18 @@ class ClassroomUpdateView(View):
 
         # ToDo: A better HTTP response for unauthorised users.
         if classroom.teacher != request.user:
-            raise Http404
+            messages.error(request, 'You are not allowed to perform this action!')
 
         form = ClassroomCreationForm(request.POST)
+
         if form.is_valid():
-            try:
-                updated_classroom = form.save(commit = False)
-                classroom.title = updated_classroom.title
-                classroom.description = updated_classroom.description
-                classroom.save()
-                messages.success(request, f'Classroom updated successfully!')
-            except Exception:
-                messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
+            updated_classroom = form.save(commit = False)
+
+            classroom.title = updated_classroom.title
+            classroom.description = updated_classroom.description
+            classroom.save()
+
+            messages.success(request, f'Classroom updated successfully!')
             return redirect('classroom_detail', id = classroom_id)
 
         return redirect('classroom_update', classroom_id = classroom_id)
@@ -121,57 +129,72 @@ class ClassroomJoinView(View):
     @method_decorator(login_required)
     def post(self, request):
         redirect_to = request.POST.get('next', '/')
+
         form = ClassroomJoinForm(request.POST)
+
         if form.is_valid():
             unique_code = form.cleaned_data.get('unique_code')
+
             classroom = Classroom.objects.prefetch_related('students').get(unique_code = unique_code)
+
             if in_classroom(classroom, request.user):
                 messages.success(request, f'You are already a member of the classroom - {classroom.title}.')
-                return redirect('classroom_detail', id = classroom.id)    
+                return redirect('classroom_detail', classroom_id = classroom.id)    
+
             classroom.students.add(request.user)
             classroom.save()
+
             messages.success(request, f'You have been added to classroom - {classroom.title}. You now have access to all its conversations and notes!')
-            return redirect('classroom_detail', id = classroom.id)
+            return redirect('classroom_detail', classroom_id = classroom.id)
+
         messages.error(request, f'The unique code is not associated with any classroom!')
         return redirect(redirect_to)
 
 class ClassroomStudentRemoveView(View):
 
     @method_decorator(login_required)
-    def post(self, request, id, username):
-        try:
-            user = User.objects.get(username = username)
-            classroom = Classroom.objects.get(id = id)
-            if classroom.teacher != request.user:
-                raise Exception()
-            Classroom.objects.get(id = id).students.remove(user)
-            messages.success(request, f'\'{user.first_name} {user.last_name}\' was removed from the classroom successfully!')
-        except Exception:
-            messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
-        return redirect('classroom_detail', id = id)
+    def post(self, request, classroom_id, username):
+
+        user = get_object_or_404(User, username = username)
+        classroom = get_object_or_404(Classroom, id = classroom_id)
+
+        # If the user is not the class teacher of the classroom under consideration,
+        # redirect to landing page with appropriate error message!
+        if classroom.teacher != request.user:
+            messages.error(request, 'You are not allowed to perform this action!')
+            return redirect('/')
+
+        classroom.students.remove(user)
+        
+        messages.success(request, f'\'{user.first_name} {user.last_name}\' was removed from the classroom successfully!')        
+        return redirect('classroom_detail', id = classroom_id)
 
 class ClassroomPostCreateView(View):
     
     @method_decorator(login_required)
     def post(self, request, classroom_id):
         form = ClassroomPostCreateForm(request.POST)
+        
         if form.is_valid():
-            try:
-                classroom = Classroom.objects.get(id = classroom_id)
-                if not in_classroom(classroom, request.user):
-                    raise Exception()
-                post = form.save(commit = False)
-                post.classroom = classroom
-                post.user = request.user
-                post.save()
-                messages.success(request, f'Post added successfully!')
-            except Exception:
-                messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
-            return redirect('classroom_detail', id = classroom_id)
+            classroom = get_object_or_404(Classroom, id = classroom_id)
+
+            # If the user is not the class teacher or one of the students of the classroom under consideration,
+            # redirect to landing page with appropriate error message!
+            if not in_classroom(classroom, request.user):
+                messages.error(request, 'You are not allowed to perform this action!')
+                return redirect('/')
+
+            post = form.save(commit = False)
+
+            post.classroom = classroom
+            post.user = request.user
+            post.save()
+
+            messages.success(request, f'Post added successfully!')
+            return redirect('classroom_detail', classroom_id = classroom_id)
 
         messages.error(request, f'Empty posts are not allowed!')
-        return redirect('classroom_detail', id = classroom_id)
-
+        return redirect('classroom_detail', classroom_id = classroom_id)
 
 class ClassroomPostDetailView(View):
 
@@ -179,14 +202,17 @@ class ClassroomPostDetailView(View):
     def get(self, request, classroom_id, post_id):
         classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
         post = get_object_or_404(Post, id = post_id, classroom = classroom)
+
         if not in_classroom(classroom, request.user):
             raise Http404
+
         context = get_sidebar_context(request)
         context['classroom'] = {}
         context['classroom']['details'] = classroom
         context['classroom']['permissions'] = {}
         context['classroom']['permissions']['can_remove_posts'] = (classroom.teacher == request.user)
         context['post'] = post
+
         return render(request, 'classroom/classroom_post_detail.html', context)
 
 class ClassroomPostUpdateView(View):
@@ -196,6 +222,9 @@ class ClassroomPostUpdateView(View):
         classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
         post = get_object_or_404(Post, id = post_id, classroom = classroom)
         
+        if post.user != request.user and classroom.teacher != request.user:
+            raise Http404
+
         context = get_sidebar_context(request)
         context['classroom'] = {}
         context['classroom']['details'] = classroom
@@ -203,8 +232,8 @@ class ClassroomPostUpdateView(View):
         context['classroom']['permissions']['can_remove_posts'] = (classroom.teacher == request.user)
         context['classroom']['forms'] = {}
         context['classroom']['forms']['post_create_form'] = ClassroomPostCreateForm(instance = post)
-
         context['post'] = post
+
         return render(request, 'classroom/classroom_post_update.html', context)
 
 
@@ -213,11 +242,12 @@ class ClassroomPostUpdateView(View):
         classroom = get_object_or_404(Classroom.objects.select_related('teacher'), id = classroom_id)
         post = get_object_or_404(Post, id = post_id, classroom = classroom)
 
-        # ToDo: A better HTTP response for unauthorised users.
         if post.user != request.user and classroom.teacher != request.user:
-            raise Http404
+            messages.error(request, 'You are not allowed to perform this action!')
+            return redirect('/')
 
         form = ClassroomPostCreateForm(request.POST, instance = post)
+
         if form.is_valid():
             form.save()
             messages.success(request, f'Post updated successfully!')
@@ -230,18 +260,16 @@ class ClassroomPostDeleteView(View):
     
     @method_decorator(login_required)
     def post(self, request, classroom_id, post_id):
-        redirect_to = request.POST.get('next', '/')
-        try:
-            classroom = Classroom.objects.get(id = classroom_id)
-            post = Post.objects.get(id = post_id)
-            if post.user == request.user or classroom.teacher == request.user:
-                post.delete()
-                messages.success(request, f'The post was deleted successfully!')
-                return redirect(redirect_to)
-            raise Exception()
-        except Exception:
-            messages.error(request, f'An unexpected error occurred. Contact support at support@edumate.com.')
-        return redirect(redirect_to)
+        classroom = get_object_or_404(Classroom, id = classroom_id)
+        post = get_object_or_404(Post, id = post_id)
+
+        if post.user == request.user or classroom.teacher == request.user:
+            post.delete()
+            messages.success(request, f'The post was deleted successfully!')
+            return redirect('classroom_detail', classroom_id = classroom_id)
+
+        messages.error(request, 'You are not allowed to perform this action!')
+        return redirect('classroom_detail', classroom_id = classroom_id)
 
 class ClassroomPostCommentCreateView(View):
     pass

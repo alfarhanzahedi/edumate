@@ -225,3 +225,8 @@ button.student-remove-button {
   cursor: pointer;
   background: white;
 }
+
+.code {
+  letter-spacing: 5px;
+  font-size: 14px;
+}

@@ -52,7 +52,7 @@
     <div class="list-group">
         {% if left_sidebar.classrooms.count > 0 %}
             {% for classroom in left_sidebar.classrooms %}
-                <a href="{% url 'classroom_detail' id=classroom.id %}" class="list-group-item list-group-item-action">{{ classroom.title }}</a>
+                <a href="{% url 'classroom_detail' classroom_id=classroom.id %}" class="list-group-item list-group-item-action">{{ classroom.title }}</a>
             {% endfor %}
         {% else %}
             {% if user.is_student %}
