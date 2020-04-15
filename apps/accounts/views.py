@@ -32,6 +32,8 @@ from .forms import CustomUserCreationForm
 from .forms import UserProfileChangeForm
 from .tokens import account_activation_token
 from .constants import Role
+from .helpers import get_user
+from .helpers import invalidate_cache_for__get_user
 
 class SignUp(View):
     def get(self, request):
@@ -71,7 +73,7 @@ class Activate(View):
     def get(self, request, uidb64, token):
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(pk=uid)
+            user = User.objects.get(pk = uid)
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         if user is not None and account_activation_token.check_token(user, token):
@@ -88,10 +90,14 @@ class UserProfileView(View):
     @method_decorator(login_required)
     def get(self, request, username):
         required_user = None
-        try:
-            required_user = User.objects.get(username = username)
-        except User.DoesNotExist:
-            raise Http404
+
+        if username != request.user.username:
+            try:
+                required_user = get_user(username)
+            except User.DoesNotExist:
+                raise Http404
+        else:
+            required_user = request.user
 
         context = get_sidebar_context(request)
         context['context_user'] = required_user
@@ -99,12 +105,34 @@ class UserProfileView(View):
         post_list = None
         if required_user == request.user:
             # If the user is visiting their profile, then show all the posts made by them in all the classes.
-            post_list = Post.objects.select_related('user', 'classroom').filter(user = required_user).order_by('-updated_at')
+            post_list = Post.objects.select_related('user', 'classroom', 'classroom__teacher') \
+                                    .only(
+                                        'post',
+                                        'updated_at',
+                                        'user__username',
+                                        'user__first_name',
+                                        'user__last_name',
+                                        'user__profile_picture',
+                                        'classroom__title',
+                                        'classroom__teacher__id'
+                                    ) \
+                                    .filter(user = required_user).order_by('-updated_at')
         else:
             # If the user is visiting someone else's profile, say As, then show the posts made by A only in the classrooms where:
             # - the current user is the teacher, or
             # - the current user is a fellow classmate.
-            post_list = Post.objects.distinct().select_related('user', 'classroom').filter(Q(user = required_user) & (Q(classroom__students__in = [request.user]) | Q(classroom__teacher = request.user))).order_by('-updated_at')
+            post_list = Post.objects.distinct().select_related('user', 'classroom', 'classroom__teacher') \
+                                               .only(
+                                                    'post',
+                                                    'updated_at',
+                                                    'user__username',
+                                                    'user__first_name',
+                                                    'user__last_name',
+                                                    'user__profile_picture',
+                                                    'classroom__title',
+                                                    'classroom__teacher__id'
+                                                ) \
+                                               .filter(Q(user = required_user) & (Q(classroom__students__in = [request.user]) | Q(classroom__teacher = request.user))).order_by('-updated_at')
 
         page = request.GET.get('page', 1)
 
@@ -144,12 +172,9 @@ class UserProfileChangeView(View):
             user = request.user
 
             if profile_change_form.is_valid():
-                updated_information = profile_change_form.save(commit = False)
+                profile_change_form.save()
 
-                user.first_name = updated_information.first_name
-                user.last_name = updated_information.last_name
-                user.profile_picture = updated_information.profile_picture
-                user.save()
+                invalidate_cache_for__get_user(username)
 
                 messages.success(request, 'Your information was updated successfully!')
                 return redirect('user_profile', username = request.user.username)
@@ -167,6 +192,7 @@ class UserProfileChangeView(View):
                 user = password_change_form.save()
 
                 update_session_auth_hash(request, user)
+                invalidate_cache_for__get_user(username)
 
                 messages.success(request, 'Your password was successfully updated!')
                 return redirect('user_profile', username = request.user.username)

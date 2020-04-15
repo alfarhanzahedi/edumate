@@ -11,7 +11,7 @@ class User(AbstractUser):
     is_student = models.BooleanField(default = False)
     is_teacher = models.BooleanField(default = False)
 
-    profile_picture = models.ImageField(upload_to = upload_directory_path, null = True)
+    profile_picture = models.ImageField(upload_to = upload_directory_path, null = True, blank = True)
     email_verified = models.BooleanField(default = False)
 
     def __str__(self):

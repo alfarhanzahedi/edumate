@@ -207,7 +207,7 @@ class ClassroomJoinView(View):
 class ClassroomStudentRemoveView(View):
 
     @method_decorator(login_required)
-    def post(self, request, classroom_id, student_id):
+    def post(self, request, classroom_id, student_username):
 
         classroom = get_object_or_404(Classroom.objects.select_related('teacher').only('id', 'teacher__id'), id = classroom_id)
 
@@ -217,7 +217,7 @@ class ClassroomStudentRemoveView(View):
             messages.error(request, 'You are not allowed to perform this action!')
             return redirect('/')
 
-        user = get_object_or_404(User, id = student_id)
+        user = get_object_or_404(User, username = student_username)
 
         classroom.students.remove(user)
 
