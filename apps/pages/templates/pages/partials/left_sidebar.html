@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="list-group">
-        {% if left_sidebar.classrooms.count > 0 %}
+        {% if left_sidebar.classrooms %}
             {% for classroom in left_sidebar.classrooms %}
                 <a href="{% url 'classroom_detail' classroom_id=classroom.id %}" class="list-group-item list-group-item-action">{{ classroom.title }}</a>
             {% endfor %}
@@ -80,7 +80,7 @@
         </div>
     </div>
     <div class="list-group">
-        {% if left_sidebar.exams.count > 0 %}
+        {% if left_sidebar.exams %}
             {% for exam in left_sidebar.exams %}
                 <a href="{% url 'exam_detail' classroom_id=exam.classroom.id exam_id=exam.id %}" class="list-group-item list-group-item-action">
                     [{{exam.classroom.title}}] {{ exam.title }}

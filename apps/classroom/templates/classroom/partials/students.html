@@ -18,7 +18,7 @@
                 </div>
                 {% if classroom.permissions.can_remove_users %}
                     <div class="float-right">
-                        <form action="{% url 'classroom_student_remove' classroom_id=classroom.details.id username=student.username %}" method="POST">
+                        <form action="{% url 'classroom_student_remove' classroom_id=classroom.details.id student_id=student.id %}" method="POST">
                         {% csrf_token %}
                         <button type="submit" class="student-remove-button" title="Remove {{ student.first_name }} {{ student.last_name }}">
                             <i class="fas fa-times-circle"></i>                

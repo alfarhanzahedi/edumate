@@ -30,7 +30,7 @@ Update Post | {{ classroom.details.title }} | Edumate
                     <span>Update Classroom</span>
                     <span>&nbsp;</span>
                     (
-                    <a href="{% url 'classroom_detail' id=classroom.details.id %}"> {{ classroom.details.title }} </a>
+                    <a href="{% url 'classroom_detail' classroom_id=classroom.details.id %}"> {{ classroom.details.title }} </a>
                     )
                 </div>
             </div>
@@ -72,6 +72,8 @@ Update Post | {{ classroom.details.title }} | Edumate
         </div>
     </div>
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'classroom/partials/teacher.html' %}
+        {% include 'classroom/partials/students.html' %}
         {% if classroom.details.teacher == user %}
             {% include 'classroom/partials/code.html' %}
         {% endif %}

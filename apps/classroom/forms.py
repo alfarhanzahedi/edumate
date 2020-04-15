@@ -22,14 +22,6 @@ class ClassroomJoinForm(forms.Form):
                     help_text = 'The unique code shared by your teacher.'
                 )
 
-    def clean_unique_code(self):
-        unique_code = self.cleaned_data.get('unique_code')
-        try:
-            Classroom.objects.get(unique_code = unique_code)
-        except Classroom.DoesNotExist:
-            raise forms.ValidationError('The code is not associated with any classroom!')
-        return unique_code
-
 class ClassroomPostCreateForm(forms.ModelForm):
 
     class Meta:
