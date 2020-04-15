@@ -2,6 +2,7 @@ from django.views import View
 from django.db.models import Q
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_encode
@@ -32,8 +33,6 @@ from .forms import CustomUserCreationForm
 from .forms import UserProfileChangeForm
 from .tokens import account_activation_token
 from .constants import Role
-from .helpers import get_user
-from .helpers import invalidate_cache_for__get_user
 
 class SignUp(View):
     def get(self, request):
@@ -92,10 +91,7 @@ class UserProfileView(View):
         required_user = None
 
         if username != request.user.username:
-            try:
-                required_user = get_user(username)
-            except User.DoesNotExist:
-                raise Http404
+            required_user = get_object_or_404(User, username = username)
         else:
             required_user = request.user
 
@@ -174,8 +170,6 @@ class UserProfileChangeView(View):
             if profile_change_form.is_valid():
                 profile_change_form.save()
 
-                invalidate_cache_for__get_user(username)
-
                 messages.success(request, 'Your information was updated successfully!')
                 return redirect('user_profile', username = request.user.username)
 
@@ -192,7 +186,6 @@ class UserProfileChangeView(View):
                 user = password_change_form.save()
 
                 update_session_auth_hash(request, user)
-                invalidate_cache_for__get_user(username)
 
                 messages.success(request, 'Your password was successfully updated!')
                 return redirect('user_profile', username = request.user.username)

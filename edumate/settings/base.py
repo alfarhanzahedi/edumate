@@ -28,9 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'widget_tweaks',
-    'mdeditor',
     'ckeditor',
     'ckeditor_uploader',
+    'cachalot',
 
     'apps.accounts',
     'apps.classroom',
