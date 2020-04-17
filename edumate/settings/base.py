@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'ckeditor',
     'ckeditor_uploader',
-    'cachalot',
 
     'apps.accounts',
     'apps.classroom',

@@ -8,18 +8,19 @@ from ckeditor_uploader.fields import RichTextUploadingField
 
 from apps.accounts.models import User
 from apps.classroom.models import Classroom
+from .constant import EXAM_UNIQUE_CODE_LENGTH
 
 class Exam(models.Model):
     title = models.CharField(max_length = 256)
     about = RichTextField(null = True, blank = True)
     instructions = RichTextField(null = True, blank = True)
-    unique_code = models.CharField(max_length = 6, unique = True)
+    unique_code = models.CharField(max_length = EXAM_UNIQUE_CODE_LENGTH, unique = True)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
 
     is_open_exam = models.BooleanField(default = True)
     is_resumable = models.BooleanField(default = True)
-    is_published = models.BooleanField(default = False)
+    is_published = models.BooleanField(default = False, db_index = True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     duration = models.IntegerField(null = True, blank = True)
@@ -32,13 +33,28 @@ class Exam(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.unique_code:
-            self.unique_code = get_random_string(6)
+            self.unique_code = get_random_string(EXAM_UNIQUE_CODE_LENGTH)
         return super().save(*args, **kwargs)
 
-    def get_duration(self):
-        pass
+    def adjusted_duration(self):
+        duration = None
+        if not self.is_open_exam:
+            if self.duration:
+                duration = self.duration * 60
+            else:
+                duration = (self.end_time - self.start_time).total_seconds()
+        else:
+            if not self.duration:
+                duration = (self.end_time - self.start_time).total_seconds()
+            else:
+                duration = self.duration * 60
 
-    def is_over(self):
+        return duration
+
+    def has_started(self):
+        return self.start_time <= timezone.now()
+    
+    def has_ended(self):
         return self.end_time < timezone.now()
 
 class Option(models.Model):

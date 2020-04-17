@@ -24,52 +24,63 @@
         {% include 'pages/partials/left_sidebar.html' %}
     </div>
     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-        <div class="navigation-list-container" style="padding: 20px;">
-            <h5>
+        <div class="navigation-list-container p-4 size-12">
+            <h5 class="d-inline">
                 [{{ exam.classroom.title }}] {{ exam.title }}
+            </h5>
+            <div class="d-lg-inline d-m-block d-sm-block d-xs-block">
                 {% if user == exam.classroom.teacher %}
-                    <a href="{% url 'exam_update' classroom_id=exam.classroom.id exam_id=exam.id %}" title="Update examination / assignment." style="margin: 2px;">
-                        <i class="fas fa-edit"></i>
+                    <a href="{% url 'exam_update' classroom_id=exam.classroom.id exam_id=exam.id %}" title="Update examination / assignment." class="ml-2">
+                        <i class="fas fa-edit size-16"></i>
                     </a>
                     {% if not exam.is_published %}
-                        <form method="POST" action="{% url 'exam_publish' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right" style="margin-left: 5px;">
+                        <form method="POST" action="{% url 'exam_publish' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right ml-1">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-primary" title="Publish exam." style="padding: 2px 8px;">Publish</button>
+                            <button type="submit" class="btn btn-primary btn-exam" title="Publish exam.">Publish</button>
                         </form>
                     {% endif %}
-                    <a href="{% url 'question_create' classroom_id=exam.classroom.id exam_id=exam.id %}" class="btn btn-primary float-right" title="Add question." style="padding: 2px 8px; color: #ffffff; font-size: 12px;"> + </a>
+                    <a href="{% url 'question_create' classroom_id=exam.classroom.id exam_id=exam.id %}" class="btn btn-primary btn-exam float-right text-white size-12" title="Add question."> + </a>
                 {% else %}
                     {% if submission %}
                         {% if submission.is_submitted %}
-                            <span class="text-success text-right" title="Examination/Assignment already taken!"><i class="fas fa-check-circle"></i></span>
+                            <span class="text-success text-right size-16" title="Examination/Assignment already taken!"><i class="fas fa-check-circle"></i></span>
                         {% elif exam.is_resumable %}
-                            <form method="POST" action="{% url 'exam_resume' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right" style="margin-left: 5px;">
+                            <form method="POST" action="{% url 'exam_resume' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-primary" title="Resume examination/assignment." style="padding: 2px 8px;">Resume</button>
+                                <button type="submit" class="btn btn-primary btn-exam" title="Resume examination/assignment.">Resume</button>
                             </form>
                         {% endif %}
-                    {% elif has_exam_started %}
-                        <form method="POST" action="{% url 'exam_start' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right" style="margin-left: 5px;">
+                    {% elif exam.has_started %}
+                        <form method="POST" action="{% url 'exam_start' classroom_id=exam.classroom.id exam_id=exam.id %}" class="float-right">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-primary" title="Start examination/assignment." style="padding: 2px 8px;">Start</button>
+                            <button type="submit" class="btn btn-primary btn-exam" title="Start examination/assignment.">Start</button>
                         </form>
+                    {% elif exam.has_ended %}
+                        <span class="text-success text-right" title="Examination/Assignment missed!"><i class="fas fa-exclamation-circle"></i></span>
                     {% endif %}
                 {% endif %}
-            </h5>
+            </div>
             <hr>
-            <div style="font-size: 12px;">
+            <div>
                 {{ exam.about|safe }}
                 <h6>Instructions: </h6>
                 {{ exam.instructions|safe }}
                 <hr>
-                <i class="far fa-clock"></i> 
+                <i class="far fa-clock"></i>
+
+                {% comment %}
+                    Render the appropriate message depending on the type of the exam.
+                {% endcomment %}
+
                 {% if exam.is_open_exam %}
                     The examination/assignment can be taken anytime between <b>{{ exam.start_time|date:"d/m/Y h:i A" }}</b> - <b>{{ exam.end_time|date:"d/m/Y h:i A" }}</b>.
+                    
                     {% if exam.duration %}
                         The duration of this examination/assignment is <b>{{ exam.duration }}</b> minutes.
                     {% else %}
                         There is no duration. Submissions can be made anytime between <b>{{ exam.start_time|date:"d/m/Y h:i A" }}</b> and <b>{{ exam.end_time|date:"d/m/Y h:i A" }}</b>.
                     {% endif %}
+                
                 {% else %}
                     The examination/assignment starts at <b>{{ exam.start_time|date:"d/m/Y h:i A" }}</b> and ends at <b>{{ exam.end_time|date:"d/m/Y h:i A" }}</b>.<br>
                 {% endif %}
@@ -82,44 +93,64 @@
                 {% endif %}
             </div>
         </div>
+
+        {% comment %}
+            Render the following block for teachers.
+            The block will contain all the questions, their answers, and the options to update and delete questions.
+        {% endcomment %}
+
         {% if user == exam.classroom.teacher %}
-        <div class="navigation-list-container" style="padding: 20px; font-size: 12px;">
+        <div class="navigation-list-container p-4 size-12">
             <h5>Questions</h5>
             <hr>
+
             {% for question in questions %}
                 <div>
                     <b>Question {{ forloop.counter }} [{{ question.type_verbose }}]</b>
+
+                    {% comment %}
+                        Show the options to update and delete questions to the teacher of the classroom only!
+                    {% endcomment %}
+
                     {% if user == exam.classroom.teacher %}
-                        <div class="float-right" style="display: inline;">
-                            <a href="{% url 'question_update' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" title="Update question." style="margin: 5px; display: inline;"><i class="fas fa-edit"></i></a>
-                            <form method="POST" action="{% url 'question_delete' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" style="display: inline;">
+                        <div class="float-right d-inline">
+                            <a href="{% url 'question_update' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" title="Update question." class="mr-2 d-inline"><i class="fas fa-edit"></i></a>
+                            <form method="POST" action="{% url 'question_delete' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" class="d-inline">
                                 {% csrf_token %}
-                                <button type="submit" class="student-remove-button" title="Delete question." style="margin: 5px;"><i class="fas fa-trash-alt"></i></button>
+                                <button type="submit" class="student-remove-button" title="Delete question." class="m-1"><i class="fas fa-trash-alt"></i></button>
                             </form>
                         </div>
                     {% endif %}
-                    {{ question.body|safe }}
-                    {% if question.options.count > 0 %}
-                    Options:
-                    <ul>
-                    {% for option in question.options.all %}
-                        <li>{{ option.body }} </li>
-                    {% endfor %}
-                    </ul>
 
-                    Answer(s):
-                    <ul>
-                    {% for option in question.options.all %}
-                        {% if option.is_answer %}
-                        <li>{{ option.body }} </li>
-                        {% endif %}
-                    {% endfor %}
-                    </ul> 
+                    {{ question.body|safe }}
+
+                    {% comment %}
+                        If the question is an MCQ, then render the options.
+                    {% endcomment %}
+
+                    {% if question.options.count > 0 %}
+                        Options:
+                        <ul>
+                        {% for option in question.options.all %}
+                            <li>{{ option.body }} </li>
+                        {% endfor %}
+                        </ul>
+
+                        Answer(s):
+                        <ul>
+                        {% for option in question.options.all %}
+                            {% if option.is_answer %}
+                                <li>{{ option.body }} </li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul> 
                     {% endif %}
+
                     {% if question.solution %}
-                    Solution/Explanation:
-                    {{ question.solution|safe }}
+                        Solution/Explanation:
+                        {{ question.solution|safe }}
                     {% endif %}
+
                     <p>
                         Maximum marks: {{ question.marks }} <br>
                         Negative marks: {{ question.negative_marks }}
@@ -130,15 +161,25 @@
             {% empty %}
             <p> Questions will be visible here once you add some. </p>
             {% endfor %}
+
         </div>
+
+        {% comment %}
+            Render the following block for students.
+            The block will contain the details of their submission for the exam, but only after submission has been made.
+        {% endcomment %}
+
         {% elif submission.is_submitted %}
-        <div class="navigation-list-container" style="padding: 20px; font-size: 12px;">
+        <div class="navigation-list-container p-4 size-12">
             <h5>Your submission</h5>
             <hr>
+
             {% for _, question_and_answer in questions_and_answer.items %}
                 <div>
                     <b>Question {{ forloop.counter }} [{{ question_and_answer.question.type_verbose }}]</b>
+
                     {{ question_and_answer.question.body|safe }}
+
                     {% if question_and_answer.question.options.count > 0 %}
                         Options:
                         <ul>
@@ -146,7 +187,12 @@
                             <li>{{ option.body }} </li>
                         {% endfor %}
                         </ul>
-                        {% if exam.is_over %}
+
+                        {% comment %}
+                            Show the correct answer only when the exam has ended for all users.
+                        {% endcomment %}                
+
+                        {% if exam.has_ended %}
                             Correct Answer(s):
                             <ul>
                                 {% for option in question_and_answer.question.options.all %}
@@ -156,50 +202,62 @@
                                 {% endfor %}
                             </ul> 
                         {% endif %}
+
                     {% endif %}
-                    {% if exam.is_over and question_and_answer.question.solution %}
+
+                    {% comment %}
+                        Show the solution/explanation to the correct answer only when the exam has ended for all users.
+                    {% endcomment %}            
+
+                    {% if exam.has_ended and question_and_answer.question.solution %}
                         Solution/Explanation:
                         <div class="question-answer-body">
-                        {{ question_and_answer.question.solution|safe }}
+                            {{ question_and_answer.question.solution|safe }}
                         </div>
                     {% endif %}
+
                     <p>
                         Maximum marks: {{ question_and_answer.question.marks }} <br>
                         Negative marks: {{ question_and_answer.question.negative_marks }}
                     </p>
                     <hr>
+                    
+                    {% comment %}
+                        Show the answer submitted by the user.
+                    {% endcomment %}            
+
                     Your answer:
                     {% if question_and_answer.answer %}
                         {% if question_and_answer.answer.body %}
-                        <div class="question-answer-body">
-                        {{ question_and_answer.answer.body|safe }}
-                        </div>
-                        {% else %}
-                        <ul>
-                            {% for option in question_and_answer.answer.options.all %}
-                                <li> {{ option.body }} </li>
-                            {% endfor %}
-                        </ul>
+                            <div class="question-answer-body">
+                                {{ question_and_answer.answer.body|safe }}
+                            </div>
+                            {% else %}
+                            <ul>
+                                {% for option in question_and_answer.answer.options.all %}
+                                    <li> {{ option.body }} </li>
+                                {% endfor %}
+                            </ul>
                         {% endif %}
                     {% else %}
                         <p>Not attempted!</p>
-                    {% endif %}       
+                    {% endif %}      
                     <p>
                         Marks obtained: Not evaluated yet!
                     </p>             
                 </div>
                 <hr>
-            {% empty %}
-            <p> Questions will be visible here once you add some. </p>
             {% endfor %}
+
         </div>
         {% endif %}
     </div>
+
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-        {% include 'pages/partials/right_sidebar.html' %}
         {% if exam.classroom.teacher == user %}
             {% include 'exams/partials/code.html' %}
         {% endif %}
+        {% include 'pages/partials/right_sidebar.html' %}
     </div>
 </div>
 {% endblock %}

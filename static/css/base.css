@@ -105,7 +105,6 @@ CSS classes used throughout the website.
 
 .error {
   padding-top: 0.6rem;
-  padding-left: 1.4rem;
   font-size: 12px;
   color: #777777;
   color: #ff0000;
@@ -130,6 +129,18 @@ CSS classes used throughout the website.
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.size-12 {
+  font-size: 12px !important;
+}
+
+.size-16 {
+  font-size: 16px !important;
+}
+
+.btn-exam {
+  padding: 2px 8px !important;
 }
 
 /*
@@ -164,7 +175,7 @@ CSS classes used by the forms in most of the pages.
 
 .common-form .help-text,
 .common-form .error {
-  margin: 30px 0px 0px -20px;
+  margin: 30px 0px 0px 0px;
 }
 
 /*

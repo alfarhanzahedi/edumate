@@ -15,14 +15,14 @@ class ExamCreationForm(forms.ModelForm):
         input_formats = DATETIME_INPUT_FORMATS,
         label = 'Start date and time',
         help_text = 'Start date and time for the examination/assignment. <br>' +
-                    'The input format should be DD-MM-YYYY HH:MM. Example: 12-03-2020 10:00. <br>'+
+                    'The input format should be YYYYY-MM-DD HH:MM. Example: 2020-03-13 10:00. <br>'+
                     '24-hour format is to be followed.' 
     )
     end_time = forms.DateTimeField(
         input_formats = DATETIME_INPUT_FORMATS,
         label = 'End date and time',
         help_text = 'End date and time for the examination/assignment. <br>' +
-                    'The input format should be DD-MM-YYYY HH:MM. Example: 12-03-2020 13:00. <br>'+
+                    'The input format should be YYYY-MM-DD HH:MM. Example: 2020-03-14 13:00. <br>'+
                     '24-hour format is to be followed.'
     )
 
@@ -58,20 +58,29 @@ class ExamCreationForm(forms.ModelForm):
         end_time = cleaned_data.get('end_time')
         duration = cleaned_data.get('duration')
 
-        if not self.instance and start_time < timezone.now():
+        # If the provided start and end datetime are invalid (i.e. not in the required format),
+        # ignore further checking and return cleaned_data.
+        # This is required to avoid errors down the line as start_time and end_time are set to None
+        # if the input is invalid.
+        if not start_time or not end_time:
+            return cleaned_data
+
+        # If self.instance is not set i.e. the form submitted requires the creation of the exam and not updation.
+        if not self.instance.pk and start_time < timezone.now():
             self._errors['start_time'] = self.error_class(['The date/time cannot be set in the past!'])
             del cleaned_data['start_time']
         
-        # if self.instance and self.instance.created_at > start_time:
-        #     self._errors['start_time'] = self.error_class(['The date/time cannot be past the time the examination/assignment was created!'])
-        #     del cleaned_data['start_time']
-        
+        # If the form requires the updation of an exam and the update is changing the start_time of
+        # the exam to a datetime which is past the time the exam was created, raise an error!
+        if self.instance.pk and self.instance.created_at > start_time:
+            self._errors['start_time'] = self.error_class(['The date/time cannot be past the time the examination/assignment was created!'])
+            del cleaned_data['start_time']
 
         if end_time < start_time:
             self._errors['end_time'] = self.error_class(['End date and time cannot be earlier than start date and time!'])
             del cleaned_data['end_time']
         
-        if duration and (duration > ((end_time - start_time).total_seconds() // 60)):
+        if duration and (duration * 60 > (end_time - start_time).total_seconds()):
             self._errors['duration'] = self.error_class(['The duration does not match with the difference between start and end date and time.'])
             del cleaned_data['duration']
         
@@ -84,14 +93,6 @@ class ExamJoinForm(forms.Form):
                     required = True,
                     help_text = 'The unique code shared by your teacher.'
                 )
-
-    def clean_unique_code(self):
-        unique_code = self.cleaned_data.get('unique_code')
-        try:
-            Exam.objects.get(unique_code = unique_code)
-        except Exam.DoesNotExist:
-            raise forms.ValidationError('The code is not associated with any examination/assignment!')
-        return unique_code
 
 class ExamQuestionCreationForm(forms.ModelForm):
 

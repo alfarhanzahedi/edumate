@@ -35,13 +35,13 @@ This template acts as the form required to create a exam.
             </div>
             <div class="list-group">
                 <div>
-                    {% if form.non_field_errors %}
+                    {% if exam_creation_form.non_field_errors %}
                     <div class="alert alert-danger" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true"> &nbsp; &times;</span>
                         </button>
-                        {% for error in form.non_field_errors %}
-                        {{ error }}
+                        {% for error in exam_creation_form.non_field_errors %}
+                            {{ error }}
                         {% endfor %}
                     </div>
                     {% endif %}
@@ -56,7 +56,7 @@ This template acts as the form required to create a exam.
                     ">
                         {% csrf_token %}
                         <input type="hidden" value="{{ request.path }}" name="next" />
-                        {% for field in form.visible_fields %}
+                        {% for field in exam_creation_form.visible_fields %}
                         <div class="form-label-group">
                             <label for="{{ field.id_for_label }}">
                                 {{ field.label }}
@@ -64,19 +64,21 @@ This template acts as the form required to create a exam.
                             <div class="text-muted"> {{ field.help_text|safe }} </div>
                             <br>
                             {% if field.errors %}
-                            {% render_field field class="form-control is-invalid" %}
-                            <div class="error">
-                                {% for error in field.errors %}{{ error }}<br />{% endfor %}
-                            </div>
+                                {% render_field field class="form-control is-invalid" %}
+                                <div class="error">
+                                    {% for error in field.errors %}
+                                        {{ error }}<br />
+                                    {% endfor %}
+                                </div>
                             {% else %}
-                            {% if field.field.widget.input_type  == 'checkbox' %}
-                            <label class="switch">
-                                <input type="checkbox" name="{{ field.name }}" id="{{ field.auto_id }}">
-                                <span class="slider round"></span>
-                            </label>
-                            {% else %}
-                                {% render_field field class="form-control" %}
-                            {% endif %}
+                                {% if field.field.widget.input_type  == 'checkbox' %}
+                                <label class="switch">
+                                    <input type="checkbox" name="{{ field.name }}" id="{{ field.auto_id }}" {% if field.value == True %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                                {% else %}
+                                    {% render_field field class="form-control" %}
+                                {% endif %}
                             {% endif %}
                         </div>
                         {% endfor %}
@@ -87,9 +89,6 @@ This template acts as the form required to create a exam.
         </div>
     </div>
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-        {% if classroom.details.teacher == user %}
-        {% include 'classroom/partials/code.html' %}
-        {% endif %}
         {% include 'pages/partials/right_sidebar.html' %}
     </div>
 </div>
@@ -102,7 +101,7 @@ This template acts as the form required to create a exam.
 <script>
     $(document).ready(function() {
         $("select").chosen({
-            no_results_text: "Oops, no such student found!",
+            no_results_text: "Oops, no such student found with username - ",
         });
     });
 </script>
