@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'ckeditor',
     'ckeditor_uploader',
+    'cacheops',
 
     'apps.accounts',
     'apps.classroom',
@@ -177,13 +178,14 @@ CKEDITOR_CONFIGS = {
 }
 
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config('CACHE_LOCATION'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
-        },
-        'KEY_PREFIX': 'edumate'
-    }
+CACHEOPS_REDIS = config('CACHE_LOCATION')
+
+CACHEOPS_DEFAULTS = {
+    'timeout': 2 * 24 * 60 * 60
+}
+
+CACHEOPS = {
+    'accounts.*': {'ops': 'all'},
+    'classroom.*': {'ops': 'all'},
+    'exams.*': {'ops': 'all'},
 }
