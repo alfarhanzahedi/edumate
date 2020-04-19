@@ -126,6 +126,7 @@ class ExamDetailView(View):
         # If the user is the teacher, fetch the questions!
         if request.user == exam.classroom.teacher:
             context['questions'] = Question.objects.filter(exam = exam).prefetch_related('options')
+            context['submissions'] = Submission.objects.filter(exam = exam, is_submitted = True).select_related('student')
 
         # If the user is a student, fetch their submission!
         if request.user.is_student:
@@ -768,3 +769,79 @@ class AnswerView(View):
             answer.options.add(*option_ids)
 
         return JsonResponse({'status': 'success', 'message': 'Answer added successfully!'})
+
+class SubmissionEvaluateView(View):
+
+    def get(self, request, classroom_id, exam_id, submission_id):
+        submission = get_object_or_404(
+            Submission.objects.select_related('student').prefetch_related(
+                'exam',
+                'exam__classroom',
+                'exam__questions',
+                'exam__questions__options',
+                'answers',
+                'answers__question',
+                'answers__options'
+            ),
+            id = submission_id
+        )
+
+        if submission.exam.id != int(exam_id) or submission.exam.classroom.id != int(classroom_id):
+            raise Http404
+
+        # Fetch all the questions of the exams and the answers that have been 'saved' by the user/student.
+        questions_and_answer = {}
+
+        for question in submission.exam.questions.all():
+            question_id = str(question.id)
+
+            questions_and_answer[question_id] = {}
+            questions_and_answer[question_id]['question'] = question
+            questions_and_answer[question_id]['answer'] = None
+    
+        for answer in submission.answers.all():
+            question_id = str(answer.question.id)
+
+            questions_and_answer[question_id]['answer'] = answer
+
+        context = get_sidebar_context(request)
+        context['submission'] = submission
+        context['submissions'] = context['submissions'] = Submission.objects.filter(exam = submission.exam, is_submitted = True).select_related('student')
+        context['questions_and_answer'] = questions_and_answer
+
+        return render(request, 'exams/submission_detail_teacher.html', context)
+
+class AnswerEvaluateView(View):
+
+    def post(self, request, classroom_id, exam_id, submission_id, question_id):
+        submission = get_object_or_404(
+            Submission.objects.select_related('exam', 'exam__classroom', 'exam__classroom__teacher', 'student'),
+            id = submission_id
+        )
+
+        question = get_object_or_404(
+            Question.objects.select_related('exam'),
+            id = question_id
+        )
+
+        if request.user != submission.exam.classroom.teacher or submission.exam.classroom.id != classroom_id or submission.exam.id != exam_id or question.exam.id != exam_id:
+            raise Http404
+
+        try:
+            marks = float(request.POST.get('marks'))
+        except TypeError:
+            return JsonResponse({'status': 'fail', 'message': 'Marks should be an integer/decimal.'}, status = 400)
+
+        if marks < 0:
+            return JsonResponse({'status': 'fail', 'message': 'Marks should be greater than or equal to 0.'}, status = 400)
+
+        if marks > question.marks:
+            return JsonResponse({'status': 'fail', 'message': 'Marks cannot be greater than the maximum scorable marks.'}, status = 400)
+
+        answer = get_object_or_404(Answer, question = question, student = submission.student)
+
+        answer.marks = marks
+        answer.is_evaluated = True
+        answer.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Marks saved successfully.'})

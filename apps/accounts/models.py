@@ -16,6 +16,9 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE, primary_key = True)

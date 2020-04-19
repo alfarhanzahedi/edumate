@@ -11,7 +11,9 @@ from .views import ExamStartView
 from .views import ExamResumeView
 from .views import ExamEndView
 from .views import SubmissionDetailView
+from .views import SubmissionEvaluateView
 from .views import AnswerView
+from .views import AnswerEvaluateView
 
 urlpatterns = [
     path('create/', ExamCreateView.as_view(), name = 'exam_create'),
@@ -25,5 +27,7 @@ urlpatterns = [
     path('<int:exam_id>/resume/', ExamResumeView.as_view(), name = 'exam_resume'),
     path('<int:exam_id>/end/', ExamEndView.as_view(), name = 'exam_end'),
     path('<int:exam_id>/submission/<int:submission_id>/', SubmissionDetailView.as_view(), name = 'submission_detail'),
+    path('<int:exam_id>/submission/<int:submission_id>/evaluate/', SubmissionEvaluateView.as_view(), name = 'submission_evaluate'),
     path('<int:exam_id>/submission/<int:submission_id>/question/<int:question_id>/answer/', AnswerView.as_view(), name = 'answer'),
+    path('<int:exam_id>/submission/<int:submission_id>/question/<int:question_id>/evaluate/', AnswerEvaluateView.as_view(), name = 'answer_evaluate'),
 ]

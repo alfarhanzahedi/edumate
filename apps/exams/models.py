@@ -99,6 +99,7 @@ class Submission(models.Model):
     ended_at = models.DateTimeField(auto_now = True)
 
     is_submitted = models.BooleanField(default = False)
+    is_evaluated = models.BooleanField(default = False)
 
     class Meta:
         unique_together = ('exam', 'student')
@@ -112,7 +113,9 @@ class Answer(models.Model):
     student = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'answers')
     body = RichTextUploadingField(blank = True, null = True)
     options = models.ManyToManyField(Option)
+
     marks = models.FloatField(default = 0.0)
+    is_evaluated = models.BooleanField(default = False)
 
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)

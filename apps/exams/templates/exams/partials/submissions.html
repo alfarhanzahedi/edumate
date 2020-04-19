@@ -1,0 +1,21 @@
+{% comment %}
+
+    This template acts as container where the list of submissions made by the
+    students is rendered.
+
+{% endcomment %}
+
+<div class="navigation-list-container">
+    <div class="navigation-list-header">
+        <div class="navigation-list-title">
+            <span>Submissions</span>
+        </div>
+    </div>
+    <div class="list-group">
+        {% for submission in submissions %}
+            <a href="{% url 'submission_evaluate' classroom_id=exam.classroom.id exam_id=exam.id submission_id=submission.id %}" class="list-group-item list-group-item-action">{{ submission.student.first_name }} {{ submission.student.last_name }}</a>
+        {% empty %}
+            <span class="list-group-item text-muted">No students have made a submission yet!</span>
+        {% endfor %}
+    </div>
+</div>

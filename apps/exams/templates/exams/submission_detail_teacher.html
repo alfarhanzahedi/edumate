@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% comment %}
+
+    This template acts as the submission evaluation page.
+
+{% endcomment %}
+
+{% block meta %}
+{% endblock %}
+
+{% block title %}
+{{ submission.student.full_name }}'s Submission | {{ exam.title }} | Edumate
+{% endblock %}
+
+{% block body %}
+<div class="row custom-row">
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'pages/partials/left_sidebar.html' %}
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="navigation-list-container p-4 size-12">
+            <h5 class="d-inline">
+                [{{ submission.exam.classroom.title }}] {{ submission.exam.title }}
+                <hr/>
+                <b>{{ submission.student.full_name }}'s</b> Submission
+            </h5>
+            <div class="d-lg-inline d-m-block d-sm-block d-xs-block">
+                
+            </div>
+        </div>
+
+        {% comment %}
+            Render the following block for teachers.
+            The block will contain all the questions, their answers, and the options to update and delete questions.
+        {% endcomment %}
+
+        <div class="navigation-list-container p-4 size-12">
+            {% for _, question_and_answer in questions_and_answer.items %}
+               <b>
+                   Question {{ forloop.counter }} [{{ question_and_answer.question.type_verbose }}]
+                   {% if question_and_answer.answer.is_evaluated %}
+                        <span class="text-success"> (evaluated) </span>
+                   {% else %}
+                        <span id="evaluated-message-{{question_and_answer.question.id}}" class="text-danger"> (not evaluated) </span>
+                   {% endif %}
+
+               </b>
+
+                    {{ question_and_answer.question.body|safe }}
+
+                    {% if question_and_answer.question.options.count > 0 %}
+                        Options:
+                        <ul>
+                        {% for option in question_and_answer.question.options.all %}
+                            <li>{{ option.body }} </li>
+                        {% endfor %}
+                        </ul>            
+
+                        Correct Answer(s):
+                        <ul>
+                            {% for option in question_and_answer.question.options.all %}
+                                {% if option.is_answer %}
+                                <li>{{ option.body }} </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul> 
+
+                    {% endif %}         
+
+                    {% if question_and_answer.question.solution %}
+                        Solution/Explanation:
+                        <div class="question-answer-body">
+                            {{ question_and_answer.question.solution|safe }}
+                        </div>
+                    {% endif %}
+
+                    <p>
+                        Maximum marks: {{ question_and_answer.question.marks }} <br>
+                        Negative marks: {{ question_and_answer.question.negative_marks }}
+                    </p>
+                    <hr>
+                    
+                    {% comment %}
+                        Show the answer submitted by the student.
+                    {% endcomment %}            
+
+                    <b>{{ submission.student.full_name }}'s</b> answer:
+                    {% if question_and_answer.answer %}
+                        {% if question_and_answer.answer.body %}
+                            <div class="question-answer-body">
+                                {{ question_and_answer.answer.body|safe }}
+                            </div>
+                            {% else %}
+                            <ul>
+                                {% for option in question_and_answer.answer.options.all %}
+                                    <li> {{ option.body }} </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% else %}
+                        <p>Not attempted!</p>
+                    {% endif %}      
+                    <form data-question-id = "{{ question_and_answer.question.id }}" class="answer-evaluate-form" method="POST" action="{% url 'answer_evaluate' classroom_id=submission.exam.classroom.id exam_id=submission.exam.id submission_id=submission.id question_id=question_and_answer.question.id %}">
+                        <div class="form-label-group d-inline">
+                            <label for="answer-marks-{{question_and_answer.question.id}}" class="d-block">Marks obtained: </label>
+                            <input type="number" name="marks" step="0.1" value="{{question_and_answer.answer.marks}}" id="answer-marks-{{question_and_answer.question.id}}" class="form-control d-inline" style="width: 50%;">
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2 ml-1"> <i class="fas fa-check"></i> </button>
+                        <div class="message font-weight-bold"></div>
+                    </form>
+                    <hr/>       
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        {% include 'exams/partials/submissions.html' with exam=submission.exam %}
+        {% include 'pages/partials/right_sidebar.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block post-js %}
+<script>
+    $(document).ready(function () {
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        });
+
+        $(".answer-evaluate-form").on("submit", function(e) {
+            e.preventDefault();
+            
+            let currentForm = $(this);
+            let url = currentForm.attr("action");
+            let method = currentForm.attr("method");
+            let messageDiv = currentForm.find(".message");
+            let questionID = currentForm.attr("data-question-id");
+            let evaluatedMessageDiv = $("#evaluated-message-" + questionID);
+
+            // Submitted the form via AJAX.
+            $.ajax({
+                method: method,
+                url: url,
+                data: currentForm.serialize()
+            })
+            .done(function (data, status) {
+                messageDiv.removeClass("text-danger");
+                messageDiv.addClass("text-success");
+                messageDiv.text(data.message);
+
+                evaluatedMessageDiv.removeClass("text-danger");
+                evaluatedMessageDiv.addClass("text-success");
+                evaluatedMessageDiv.text("(evaluated)");
+            })
+            .fail(function (data, status) {
+                currentForm.trigger("reset");
+                messageDiv.removeClass("text-success");
+                messageDiv.addClass("text-danger");
+                messageDiv.text(data.responseJSON.message);
+            });
+        });
+    });
+</script>
+{% endblock %}
