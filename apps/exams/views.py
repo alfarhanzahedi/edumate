@@ -24,6 +24,8 @@ from .forms import  ExamCreationForm
 from .forms import ExamJoinForm
 from .forms import ExamQuestionCreationForm
 from .forms import AnswerForm
+from .tasks import evaluate_single_submission
+from .tasks import evaluate_all_submissions
 
 def time_left(submission):
     # If the exam has ended or has not started yet, simply return -1.
@@ -811,6 +813,34 @@ class SubmissionEvaluateView(View):
 
         return render(request, 'exams/submission_detail_teacher.html', context)
 
+    def post(self, request, classroom_id, exam_id, submission_id):
+        submission = get_object_or_404(
+            Submission.objects.select_related('student').prefetch_related(
+                'exam',
+                'exam__classroom',
+                'exam__classroom__teacher'
+            ),
+            id = submission_id,
+            is_submitted = True
+        )
+
+        if request.user != submission.exam.classroom.teacher or submission.exam.id != int(exam_id) or submission.exam.classroom.id != int(classroom_id):
+            raise Http404
+        
+        try:
+            response = evaluate_single_submission.delay(
+                submission.exam.classroom.teacher.id,
+                submission.student.id,
+                submission.exam.id,
+                submission_id
+            )
+        except Exception:
+            messages.error(request, 'An internal server error ocurred! Please try again later.')
+            return redirect('submission_evaluate', classroom_id = classroom_id, exam_id = exam_id, submission_id = submission_id)
+
+        messages.success(request, 'You will be emailed once the submission has been evaluated!')
+        return redirect('submission_evaluate', classroom_id = classroom_id, exam_id = exam_id, submission_id = submission_id)
+
 class AnswerEvaluateView(View):
 
     def post(self, request, classroom_id, exam_id, submission_id, question_id):
@@ -827,14 +857,14 @@ class AnswerEvaluateView(View):
         if request.user != submission.exam.classroom.teacher or submission.exam.classroom.id != classroom_id or submission.exam.id != exam_id or question.exam.id != exam_id:
             raise Http404
 
+        if question.is_mcq():
+            return JsonResponse({'status': 'fail', 'message': 'MCQs cannot be evaluated manually.'}, status = 0)
+
         try:
             marks = float(request.POST.get('marks'))
         except TypeError:
             return JsonResponse({'status': 'fail', 'message': 'Marks should be an integer/decimal.'}, status = 400)
-
-        if marks < 0:
-            return JsonResponse({'status': 'fail', 'message': 'Marks should be greater than or equal to 0.'}, status = 400)
-
+            
         if marks > question.marks:
             return JsonResponse({'status': 'fail', 'message': 'Marks cannot be greater than the maximum scorable marks.'}, status = 400)
 
@@ -845,3 +875,27 @@ class AnswerEvaluateView(View):
         answer.save()
 
         return JsonResponse({'status': 'success', 'message': 'Marks saved successfully.'})
+
+
+class ExamEvaluateView(View):
+
+    def post(self, request, classroom_id, exam_id):
+        exam = get_object_or_404(
+            Exam.objects.select_related('classroom', 'classroom__teacher'),
+            id = exam_id
+        )
+
+        if request.user != exam.classroom.teacher or exam.classroom.id != int(classroom_id):
+            raise Http404
+        
+        try:
+            response = evaluate_all_submissions.delay(
+                request.user.id,
+                exam.id
+            )
+        except Exception:
+            messages.error(request, 'An internal server error ocurred! Please try again later.')
+            return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)
+
+        messages.success(request, 'You will be emailed once all the submissions have been evaluated!')
+        return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)

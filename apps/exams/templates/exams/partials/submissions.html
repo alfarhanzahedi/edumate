@@ -17,5 +17,11 @@
         {% empty %}
             <span class="list-group-item text-muted">No students have made a submission yet!</span>
         {% endfor %}
+        <span class="list-group-item">
+            <form method="POST" action="{% url 'exam_evaluate' classroom_id=exam.classroom.id exam_id=exam.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-exam mb-0 font-weight-bold">Evaluate All Submissions</button>
+            </form>
+        </span>
     </div>
 </div>

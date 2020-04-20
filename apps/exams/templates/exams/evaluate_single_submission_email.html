@@ -1,0 +1,29 @@
+{% comment %}
+
+This template acts as the email when the evaluation of a single submission is complete.
+
+{% endcomment %}
+
+{% autoescape off %}
+<!DOCTYPE html>
+<html>
+
+<body>
+    <div
+        style="font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif !important;">
+        <h2 style="text-align: center;">EduMate</h2>
+        <br />
+        <p>
+            <h3>Hey {{ teacher.first_name }}, </h3>
+            This is just to inform you that the evaluation for {{ student.full_name }}'s submission for {{ exam.title }} is complete.
+        </p>
+        <br />
+        <p>
+            Best,<br />
+            The EduMate Team 😎 <br />
+        </p>
+    </div>
+</body>
+
+</html>
+{% endautoescape %}

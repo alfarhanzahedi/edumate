@@ -25,7 +25,7 @@ class Exam(models.Model):
     end_time = models.DateTimeField()
     duration = models.IntegerField(null = True, blank = True)
 
-    students = models.ManyToManyField(User, null = True, blank = True)
+    students = models.ManyToManyField(User, blank = True)
     classroom = models.ForeignKey(Classroom, on_delete = models.CASCADE)
 
     def __str__(self):
@@ -112,7 +112,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete = models.CASCADE, related_name = 'answers')
     student = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'answers')
     body = RichTextUploadingField(blank = True, null = True)
-    options = models.ManyToManyField(Option)
+    options = models.ManyToManyField(Option, blank = True)
 
     marks = models.FloatField(default = 0.0)
     is_evaluated = models.BooleanField(default = False)
