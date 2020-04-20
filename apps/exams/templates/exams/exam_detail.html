@@ -58,10 +58,11 @@
             <hr>
             <div>
                 {{ exam.about|safe }}
-                <h6>Instructions: </h6>
-                {{ exam.instructions|safe }}
                 <hr>
-                <i class="far fa-clock"></i>
+                <h6>Instructions </h6>
+                {{ exam.instructions|safe }}
+                <hr>                
+                <h6>Timings </h6>
 
                 {% comment %}
                     Render the appropriate message depending on the type of the exam.
@@ -79,13 +80,18 @@
                 {% else %}
                     The examination/assignment starts at <b>{{ exam.start_time|date:"d/m/Y h:i A" }}</b> and ends at <b>{{ exam.end_time|date:"d/m/Y h:i A" }}</b>.<br>
                 {% endif %}
-                <hr>
+                <br>
+                <br>
                 {% if exam.is_resumable %}
                     The examination/assignment is <b>resumable</b>. Once started, students can exit and return back anytime during the duration of the
                     examination/assignment.
                 {% else %}
                     The examination/assignment is <b>not resumable</b>. Once started, exit is considered as submission.
                 {% endif %}
+                <hr>
+                <h6>Marks</h6>
+                Total questions: <b> {{ exam.total_questions }}</b>. <br>
+                Total marks: <b>{{ exam.total_marks }}</b>. <br>
             </div>
         </div>
 
@@ -97,67 +103,63 @@
         {% if user == exam.classroom.teacher %}
         <div class="navigation-list-container p-4 size-12">
             <h5>Questions</h5>
-            <hr>
-
-            {% for question in questions %}
-                <div>
-                    <b>Question {{ forloop.counter }} [{{ question.type_verbose }}]</b>
-
-                    {% comment %}
-                        Show the options to update and delete questions to the teacher of the classroom only!
-                    {% endcomment %}
-
-                    {% if user == exam.classroom.teacher %}
-                        <div class="float-right d-inline">
-                            <a href="{% url 'question_update' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" title="Update question." class="mr-2 d-inline"><i class="fas fa-edit"></i></a>
-                            <form method="POST" action="{% url 'question_delete' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="student-remove-button" title="Delete question." class="m-1"><i class="fas fa-trash-alt"></i></button>
-                            </form>
-                        </div>
-                    {% endif %}
-
-                    {{ question.body|safe }}
-
-                    {% comment %}
-                        If the question is an MCQ, then render the options.
-                    {% endcomment %}
-
-                    {% if question.options.count > 0 %}
-                        Options:
-                        <ul>
-                        {% for option in question.options.all %}
-                            <li>{{ option.body }} </li>
-                        {% endfor %}
-                        </ul>
-
-                        Answer(s):
-                        <ul>
-                        {% for option in question.options.all %}
-                            {% if option.is_answer %}
-                                <li>{{ option.body }} </li>
-                            {% endif %}
-                        {% endfor %}
-                        </ul> 
-                    {% endif %}
-
-                    {% if question.solution %}
-                        Solution/Explanation:
-                        {{ question.solution|safe }}
-                    {% endif %}
-
-                    <p>
-                        Maximum marks: {{ question.marks }} <br>
-                        Negative marks: {{ question.negative_marks }}
-                    </p>
-                    
-                </div>
-                <hr>
-            {% empty %}
-            <p> Questions will be visible here once you add some. </p>
-            {% endfor %}
-
         </div>
+        {% for question in questions %}
+            <div class="navigation-list-container p-4 size-12">
+                <b>Question {{ forloop.counter }} [{{ question.type_verbose }}]</b>
+
+                {% comment %}
+                    Show the options to update and delete questions to the teacher of the classroom only!
+                {% endcomment %}
+
+                {% if user == exam.classroom.teacher %}
+                    <div class="float-right d-inline">
+                        <a href="{% url 'question_update' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" title="Update question." class="mr-2 d-inline"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="{% url 'question_delete' classroom_id=exam.classroom.id exam_id=exam.id question_id=question.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="student-remove-button" title="Delete question." class="m-1"><i class="fas fa-trash-alt"></i></button>
+                        </form>
+                    </div>
+                {% endif %}
+
+                {{ question.body|safe }}
+
+                {% comment %}
+                    If the question is an MCQ, then render the options.
+                {% endcomment %}
+
+                {% if question.options.count > 0 %}
+                    Options:
+                    <ul>
+                    {% for option in question.options.all %}
+                        <li>{{ option.body }} </li>
+                    {% endfor %}
+                    </ul>
+
+                    Answer(s):
+                    <ul>
+                    {% for option in question.options.all %}
+                        {% if option.is_answer %}
+                            <li>{{ option.body }} </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul> 
+                {% endif %}
+
+                {% if question.solution %}
+                    Solution/Explanation:
+                    {{ question.solution|safe }}
+                {% endif %}
+
+                <p>
+                    Maximum marks: {{ question.marks }} <br>
+                    Negative marks: {{ question.negative_marks }}
+                </p>
+                
+            </div>
+        {% empty %}
+        <p> Questions will be visible here once you add some. </p>
+        {% endfor %}
 
         {% comment %}
             Render the following block for students.
@@ -167,84 +169,100 @@
         {% elif submission.is_submitted %}
         <div class="navigation-list-container p-4 size-12">
             <h5>Your submission</h5>
-            <hr>
-
-            {% for _, question_and_answer in questions_and_answer.items %}
-                <div>
-                    <b>Question {{ forloop.counter }} [{{ question_and_answer.question.type_verbose }}]</b>
-
-                    {{ question_and_answer.question.body|safe }}
-
-                    {% if question_and_answer.question.options.count > 0 %}
-                        Options:
-                        <ul>
-                        {% for option in question_and_answer.question.options.all %}
-                            <li>{{ option.body }} </li>
-                        {% endfor %}
-                        </ul>
-
-                        {% comment %}
-                            Show the correct answer only when the exam has ended for all users.
-                        {% endcomment %}                
-
-                        {% if exam.has_ended %}
-                            Correct Answer(s):
-                            <ul>
-                                {% for option in question_and_answer.question.options.all %}
-                                    {% if option.is_answer %}
-                                    <li>{{ option.body }} </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul> 
-                        {% endif %}
-
-                    {% endif %}
-
-                    {% comment %}
-                        Show the solution/explanation to the correct answer only when the exam has ended for all users.
-                    {% endcomment %}            
-
-                    {% if exam.has_ended and question_and_answer.question.solution %}
-                        Solution/Explanation:
-                        <div class="question-answer-body">
-                            {{ question_and_answer.question.solution|safe }}
-                        </div>
-                    {% endif %}
-
-                    <p>
-                        Maximum marks: {{ question_and_answer.question.marks }} <br>
-                        Negative marks: {{ question_and_answer.question.negative_marks }}
-                    </p>
-                    <hr>
-                    
-                    {% comment %}
-                        Show the answer submitted by the user.
-                    {% endcomment %}            
-
-                    Your answer:
-                    {% if question_and_answer.answer %}
-                        {% if question_and_answer.answer.body %}
-                            <div class="question-answer-body">
-                                {{ question_and_answer.answer.body|safe }}
-                            </div>
-                            {% else %}
-                            <ul>
-                                {% for option in question_and_answer.answer.options.all %}
-                                    <li> {{ option.body }} </li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    {% else %}
-                        <p>Not attempted!</p>
-                    {% endif %}      
-                    <p>
-                        Marks obtained: Not evaluated yet!
-                    </p>             
-                </div>
-                <hr>
-            {% endfor %}
-
+            {% if submission.is_evaluated and exam.has_ended %}
+            <p class="text-success font-weight-bold">
+                Your submission has been evaluated! <br>
+                Your score: {{ submission.marks }} / {{ exam.total_marks }}
+            </p>
+            {% else %}
+            <p class="text-danger font-weight-bold">
+                Total marks and marks obtained in each answer will be visible once the examination/assignment is over and your submission has been evaluated!
+            </p>
+            {% endif %}
         </div>
+
+        {% for _, question_and_answer in questions_and_answer.items %}
+            <div class="navigation-list-container p-4 size-12">
+                <b>Question {{ forloop.counter }} [{{ question_and_answer.question.type_verbose }}]</b>
+
+                {{ question_and_answer.question.body|safe }}
+
+                {% if question_and_answer.question.options.count > 0 %}
+                    Options:
+                    <ul>
+                    {% for option in question_and_answer.question.options.all %}
+                        <li>{{ option.body }} </li>
+                    {% endfor %}
+                    </ul>
+
+                    {% comment %}
+                        Show the correct answer only when the exam has ended for all users.
+                    {% endcomment %}                
+
+                    {% if exam.has_ended %}
+                        Correct Answer(s):
+                        <ul>
+                            {% for option in question_and_answer.question.options.all %}
+                                {% if option.is_answer %}
+                                <li>{{ option.body }} </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul> 
+                    {% endif %}
+
+                {% endif %}
+
+                {% comment %}
+                    Show the solution/explanation to the correct answer only when the exam has ended for all users.
+                {% endcomment %}            
+
+                {% if exam.has_ended and question_and_answer.question.solution %}
+                    Solution/Explanation:
+                    <div class="question-answer-body">
+                        {{ question_and_answer.question.solution|safe }}
+                    </div>
+                {% endif %}
+
+                <p>
+                    Maximum marks: {{ question_and_answer.question.marks }} <br>
+                    Negative marks: {{ question_and_answer.question.negative_marks }}
+                </p>
+                <hr>
+                
+                {% comment %}
+                    Show the answer submitted by the user.
+                {% endcomment %}            
+
+                {% if question_and_answer.answer %}
+                    <b>Your answer</b>:
+                    {% if question_and_answer.answer.body %}
+                        <div class="question-answer-body">
+                            {{ question_and_answer.answer.body|safe }}
+                        </div>
+                        {% else %}
+                        <ul>
+                            {% for option in question_and_answer.answer.options.all %}
+                                <li> {{ option.body }} </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% else %}
+                    <p>You did not attempt this question!</p>
+                {% endif %}
+
+                {% if submission.is_evaluated and exam.has_ended %}
+                <p>
+                    <b>Marks obtained</b>: 
+                    {% if question_and_answer.answer %}
+                        {{ question_and_answer.answer.marks }}
+                    {% else %}
+                        0.0
+                    {% endif %}
+                </p>
+                {% endif %}
+
+            </div>
+        {% endfor %}
         {% endif %}
     </div>
 

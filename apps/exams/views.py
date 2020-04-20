@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.utils import timezone
 from django.db import IntegrityError
 from django.db.models import Prefetch
+from django.db.models import Sum
+from django.db.models import Count
 from django.http.response import JsonResponse
 
 from datetime import timedelta
@@ -115,7 +117,10 @@ class ExamDetailView(View):
 
     def get(self, request, classroom_id, exam_id):
         exam = get_object_or_404(
-            Exam.objects.select_related('classroom', 'classroom__teacher'),
+            Exam.objects.select_related('classroom', 'classroom__teacher').annotate(
+                total_marks = Sum('questions__marks'),
+                total_questions = Count('questions')
+            ),
             id = exam_id
         )
 
@@ -803,7 +808,7 @@ class SubmissionEvaluateView(View):
             questions_and_answer[question_id] = {}
             questions_and_answer[question_id]['question'] = question
             questions_and_answer[question_id]['answer'] = None
-    
+
         for answer in submission.answers.all():
             question_id = str(answer.question.id)
 
@@ -881,7 +886,6 @@ class AnswerEvaluateView(View):
         answer.save()
 
         return JsonResponse({'status': 'success', 'message': 'Marks saved successfully.'})
-
 
 class ExamEvaluateView(View):
 

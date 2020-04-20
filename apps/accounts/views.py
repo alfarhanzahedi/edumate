@@ -67,7 +67,7 @@ class SignUp(View):
                 'token': account_activation_token.make_token(user),
             })
             try:
-                user.email_user(subject, '', html_message = message,  from_email = 'EduMate Support<support@edumate.com>')
+                user.email_user(subject, '', html_message = message,  from_email = 'EduMate Support<no-reply@edumate.com>')
                 logger.info(f'Activation email sent to user - {user.username}.')
             except (ConnectionRefusedError, SMTPException) as e:
                 logger.exception(f'Activation email could not be sent to user - {user.username}! Exception - {e}.')

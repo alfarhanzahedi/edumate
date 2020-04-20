@@ -33,6 +33,24 @@
             </div>
         </div>
 
+        <div class="navigation-list-container p-4 size-12">
+            <b>Note</b>
+            <ul>
+                <li>Subjective questions are to be evaluated by you.</li>
+                <li>MCQs will be evaluated automatically when you submit this submission or all submissions for evaluation.</li>
+                <li>If the marks for any MCQ question is changed, the submission would need to be re-evaluated.</li>
+                <li>The evaluation will be visible to the students once the examination/assignment is over and all of their answers have been evaluated.</li>
+                <li>You will need to submit the submission for evaluation at least once for the total marks to be calculated.</li>
+            </ul>
+            For any queries contact: <b><a href="mailto:alfarhanzahedi@gmail.com">alfarhanzahedi@gmail.com</a>.</b>
+        </div>
+
+        <div class="navigation-list-container p-4 size-12">
+            <h6 class="d-lg-inline d-m-block d-sm-block d-xs-block">
+                Marks obtained: {% if submission.marks %} {{ submission.marks }} {% else %} Not evaluated yet! {% endif %}
+            </h6>
+        </div>
+
         {% comment %}
             Render the following block for teachers.
             The block will contain all the questions, their answers, and the options to update and delete questions.
@@ -42,7 +60,9 @@
             <div class="navigation-list-container p-4 size-12">
                 <b>
                    Question {{ forloop.counter }} [{{ question_and_answer.question.type_verbose }}]
-                   {% if question_and_answer.answer.is_evaluated %}
+                   {% if not question_and_answer.answer %}
+                        <span class="text-danger"> (not attempted) </span>
+                   {% elif question_and_answer.answer.is_evaluated %}
                         <span class="text-success"> (evaluated) </span>
                    {% else %}
                         <span id="evaluated-message-{{question_and_answer.question.id}}" class="text-danger"> (not evaluated) </span>
@@ -88,8 +108,8 @@
                         Show the answer submitted by the student.
                     {% endcomment %}            
 
-                    <b>{{ submission.student.full_name }}'s</b> answer:
                     {% if question_and_answer.answer %}
+                        <b>{{ submission.student.full_name }}'s</b> answer:
                         {% if question_and_answer.answer.body %}
                             <div class="question-answer-body">
                                 {{ question_and_answer.answer.body|safe }}
@@ -102,17 +122,19 @@
                             </ul>
                         {% endif %}
                     {% else %}
-                        <p>Not attempted!</p>
+                        <p><b>{{ submission.student.full_name }}</b> did not attempt this question.</p>
                     {% endif %}
-                    <b>Marks obtained: {{ question_and_answer.answer.marks }}</b>
-                    {% if not question_and_answer.question.is_mcq %}
-                    <form data-question-id = "{{ question_and_answer.question.id }}" class="answer-evaluate-form" method="POST" action="{% url 'answer_evaluate' classroom_id=submission.exam.classroom.id exam_id=submission.exam.id submission_id=submission.id question_id=question_and_answer.question.id %}">
-                        <div class="form-label-group d-inline">
-                            <input type="number" name="marks" step="0.1" value="{{question_and_answer.answer.marks}}" id="answer-marks-{{question_and_answer.question.id}}" class="form-control d-inline" style="width: 50%;">
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-2 ml-1"> <i class="fas fa-check"></i> </button>
-                        <div class="message font-weight-bold"></div>
-                    </form>
+                    {% if question_and_answer.answer %}
+                        <b>Marks obtained: {{ question_and_answer.answer.marks }}</b>
+                        {% if not question_and_answer.question.is_mcq %}
+                            <form data-question-id = "{{ question_and_answer.question.id }}" class="answer-evaluate-form" method="POST" action="{% url 'answer_evaluate' classroom_id=submission.exam.classroom.id exam_id=submission.exam.id submission_id=submission.id question_id=question_and_answer.question.id %}">
+                                <div class="form-label-group d-inline">
+                                    <input type="number" name="marks" step="0.1" value="{{question_and_answer.answer.marks}}" id="answer-marks-{{question_and_answer.question.id}}" class="form-control d-inline" style="width: 50%;">
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-2 ml-1"> <i class="fas fa-check"></i> </button>
+                                <div class="message font-weight-bold"></div>
+                            </form>
+                        {% endif %}
                     {% endif %}
                 </div>
             {% endfor %}

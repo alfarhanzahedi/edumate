@@ -104,7 +104,7 @@ class ExamQuestionCreationForm(forms.ModelForm):
             'body': 'The actual question body.',
             'solution': 'The solution to the question. If the question is an MCQ, explanations to solutions can be provided here.',
             'marks': 'The maximum marks for the question.',
-            'negative_marks': 'Any negative marks associated with the question.'
+            'negative_marks': 'Any negative marks associated with the question. Does not effect subjective type questions.'
         }
 
 class AnswerForm(forms.ModelForm):

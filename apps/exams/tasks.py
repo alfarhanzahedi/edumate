@@ -25,10 +25,9 @@ def evaluate_single_submission_helper(submission_id):
         'answers__options'
     ).get(id = submission_id)
     
-    for answer in submission.answers.all():
-        if answer.is_evaluated:
-            continue
+    total_marks_obtained = 0
 
+    for answer in submission.answers.all():
         if answer.question.is_mcq():
 
             correct_option_ids = [option.id for option in answer.question.options.all() if option.is_answer == True]
@@ -42,10 +41,14 @@ def evaluate_single_submission_helper(submission_id):
             # Ignore for subjective questions as they are to be evaluated by the teacher.
             pass
 
+        total_marks_obtained += answer.marks
+
         answer.is_evaluated = True
         answer.save()
     
     submission.is_evaluated = True
+    submission.marks = total_marks_obtained
+    print(total_marks_obtained)
     submission.save()
 
     logger.info(f'Submission evaluation complete for - {submission_id}.')
@@ -99,7 +102,7 @@ def evaluate_single_submission(teacher_id, student_id, exam_id, submission_id):
         mail.send_mail(
             subject,
             plain_message,
-            'admin@edumate.com',
+            'no-reply@edumate.com',
             [teacher.email],
             html_message = html_message,
             fail_silently = False
@@ -146,7 +149,7 @@ def evaluate_all_submissions(teacher_id, exam_id):
         send_mail(
             subject,
             plain_message,
-            'admin@edumate.com',
+            'no-reply@edumate.com',
             [teacher.email],
             html_message = html_message,
             fail_silently = False

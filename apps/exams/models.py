@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 from django.utils.crypto import get_random_string
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
@@ -100,6 +101,8 @@ class Submission(models.Model):
 
     is_submitted = models.BooleanField(default = False)
     is_evaluated = models.BooleanField(default = False)
+
+    marks = models.FloatField(blank = True, null = True)
 
     class Meta:
         unique_together = ('exam', 'student')
