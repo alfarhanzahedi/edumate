@@ -10,6 +10,7 @@ from django.db.models import Prefetch
 from django.http.response import JsonResponse
 
 from datetime import timedelta
+import logging
 
 from apps.accounts.models import User
 from apps.accounts.decorators import teacher_required
@@ -26,6 +27,8 @@ from .forms import ExamQuestionCreationForm
 from .forms import AnswerForm
 from .tasks import evaluate_single_submission
 from .tasks import evaluate_all_submissions
+
+logger = logging.getLogger(__name__)
 
 def time_left(submission):
     # If the exam has ended or has not started yet, simply return -1.
@@ -834,7 +837,10 @@ class SubmissionEvaluateView(View):
                 submission.exam.id,
                 submission_id
             )
-        except Exception:
+            logger.info(f'Job scheduled for evaluating a single submission (evaluate_single_submission) for submission - {submission_id}.')
+        except Exception as e:
+            logger.exception(f'Could not schedule job for evaluating a single submission (evaluate_single_submission) for submission - {submission_id}. Exception - {e}')
+
             messages.error(request, 'An internal server error ocurred! Please try again later.')
             return redirect('submission_evaluate', classroom_id = classroom_id, exam_id = exam_id, submission_id = submission_id)
 
@@ -893,7 +899,10 @@ class ExamEvaluateView(View):
                 request.user.id,
                 exam.id
             )
-        except Exception:
+            logger.info(f'Job scheduled for evaluating all submissions (evaluate_all_submissions) for exam - {exam_id}.')
+        except Exception as e:
+            logger.exception(f'Could not schedule job for evaluating all submissions (evaluate_all_submissions) for exam - {exam_id}. Exception - {e}')
+
             messages.error(request, 'An internal server error ocurred! Please try again later.')
             return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)
 

@@ -140,3 +140,6 @@ dmypy.json
 
 # Visual Studio Code project settings
 .vscode/
+
+# Logs
+logs/

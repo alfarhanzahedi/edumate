@@ -22,6 +22,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
 from smtplib import SMTPException
+import logging
 
 from apps.pages.common_functions import get_sidebar_context
 from apps.classroom.models import Post
@@ -33,6 +34,8 @@ from .forms import CustomUserCreationForm
 from .forms import UserProfileChangeForm
 from .tokens import account_activation_token
 from .constants import Role
+
+logger = logging.getLogger(__name__)
 
 class SignUp(View):
     def get(self, request):
@@ -54,7 +57,7 @@ class SignUp(View):
                 user.is_teacher = True
                 Teacher.objects.create(user = user)
             user.save()
-            
+
             current_site = get_current_site(request)
             subject = 'Activate your EduMate account'
             message = render_to_string('accounts/registration/account_activation_email.html', {
@@ -63,8 +66,12 @@ class SignUp(View):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
+            try:
+                user.email_user(subject, '', html_message = message,  from_email = 'EduMate Support<support@edumate.com>')
+                logger.info(f'Activation email sent to user - {user.username}.')
+            except (ConnectionRefusedError, SMTPException) as e:
+                logger.exception(f'Activation email could not be sent to user - {user.username}! Exception - {e}.')
 
-            user.email_user(subject, '', html_message = message,  from_email = 'EduMate Support<support@edumate.com>')
             return render(request, 'accounts/registration/account_activation_sent.html')
         return render(request, 'accounts/registration/signup.html', {'form': form})
 
@@ -184,6 +191,8 @@ class UserProfileChangeView(View):
 
             if password_change_form.is_valid():
                 user = password_change_form.save()
+
+                logger.info(f'Password changed for user - {user.username}.')
 
                 update_session_auth_hash(request, user)
 
