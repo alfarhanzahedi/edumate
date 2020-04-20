@@ -362,13 +362,7 @@ class ClassroomPostDeleteView(View):
     @method_decorator(login_required)
     def post(self, request, classroom_id, post_id):
         post = get_object_or_404(
-                   Post.objects.select_related('user', 'classroom', 'classroom__teacher').only(
-                       'post',
-                       'updated_at',
-                       'user__id',
-                       'classroom__title',
-                       'classroom__teacher__id'
-                   ),
+                   Post.objects.select_related('user', 'classroom', 'classroom__teacher'),
                    id = post_id,
                    classroom__id = classroom_id
                )
