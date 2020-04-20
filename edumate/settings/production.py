@@ -1,3 +1,5 @@
+from kombu.utils.url import safequote
+
 from .base import *
 
 # Static files (CSS, JavaScript, Images)
@@ -18,3 +20,13 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY')
 EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+
+AZURE_STORAGE_KEY = config('AZURE_STORAGE_KEY')
+AZURE_STORAGE_ACCOUNT = config('AZURE_STORAGE_ACCOUNT')
+
+BROKER_URL = "azurestoragequeues://:" + safequote(f'{AZURE_STORAGE_KEY}@{AZURE_STORAGE_ACCOUNT}', safe = "=@")
+
+BROKER_TRANSPORT_OPTIONS = {
+    'polling_interval': 10,
+    'visibility_timeout': 3600
+}

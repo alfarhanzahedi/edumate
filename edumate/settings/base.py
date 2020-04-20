@@ -190,18 +190,6 @@ CACHEOPS = {
     'exams.*': {'ops': 'all'},
 }
 
-from kombu.utils.url import safequote
-
-AZURE_STORAGE_KEY = config('AZURE_STORAGE_KEY')
-AZURE_STORAGE_ACCOUNT = config('AZURE_STORAGE_ACCOUNT')
-
-BROKER_URL = "azurestoragequeues://:" + safequote(f'{AZURE_STORAGE_KEY}@{AZURE_STORAGE_ACCOUNT}', safe = "=@")
-
-BROKER_TRANSPORT_OPTIONS = {
-    'polling_interval': 100,
-    'visibility_timeout': 3600
-}
-
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
