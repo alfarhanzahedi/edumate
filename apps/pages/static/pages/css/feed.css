@@ -142,6 +142,7 @@ CSS for posts in feed and classrooms.
   margin-left: 8px;
   padding: 0;
 }
+
 .timeline-card-content {
   margin-top: 6px;
 }
@@ -176,6 +177,11 @@ CSS for posts in feed and classrooms.
 
 .classroom-post .post a:visited {
   text-decoration: underline !important;
+}
+
+.post img {
+  width: 100% !important;
+  height: auto !important;
 }
 
 /*

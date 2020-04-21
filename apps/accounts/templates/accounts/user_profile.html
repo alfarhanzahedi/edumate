@@ -28,7 +28,7 @@ This template acts as the profile page for a context_user of the website.
             <div class="dashboard-header">
                 <div class="profile-picture-container">
                     {% if context_user.profile_picture %}
-                    <img class="profile-picture" src="/media/{{ context_user.profile_picture }}">
+                    <img class="profile-picture" src="{{ context_user.profile_picture.url }}">
                     {% else %}
                     <img class="profile-picture" src="{% static 'img/default_avatar.jpg' %}">
                     {% endif %}

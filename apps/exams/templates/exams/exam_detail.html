@@ -91,7 +91,14 @@
                 <hr>
                 <h6>Marks</h6>
                 Total questions: <b> {{ exam.total_questions }}</b>. <br>
-                Total marks: <b>{{ exam.total_marks }}</b>. <br>
+                Total marks: 
+                <b>
+                    {% if exam.total_marks %}
+                    {{ exam.total_marks }}
+                    {% else %}
+                    0.0
+                    {% endif %}
+                </b>. <br>
             </div>
         </div>
 

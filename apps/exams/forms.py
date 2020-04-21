@@ -8,7 +8,7 @@ from .models import Answer
 
 class ExamCreationForm(forms.ModelForm):
     DATETIME_INPUT_FORMATS = [
-       '%Y-%m-%d %H:%M:%S'
+       '%Y-%m-%d %H:%M'
     ]
 
     start_time = forms.DateTimeField(
@@ -16,14 +16,17 @@ class ExamCreationForm(forms.ModelForm):
         label = 'Start date and time',
         help_text = 'Start date and time for the examination/assignment. <br>' +
                     'The input format should be YYYYY-MM-DD HH:MM. Example: 2020-03-13 10:00. <br>'+
-                    '24-hour format is to be followed.' 
+                    '24-hour format is to be followed.',
+        widget=forms.TextInput(attrs={'placeholder': '2020-03-13 10:00'})
+
     )
     end_time = forms.DateTimeField(
         input_formats = DATETIME_INPUT_FORMATS,
         label = 'End date and time',
         help_text = 'End date and time for the examination/assignment. <br>' +
                     'The input format should be YYYY-MM-DD HH:MM. Example: 2020-03-14 13:00. <br>'+
-                    '24-hour format is to be followed.'
+                    '24-hour format is to be followed.',
+        widget=forms.TextInput(attrs={'placeholder': '2020-03-13 10:00'})
     )
 
     class Meta:
