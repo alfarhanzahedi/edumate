@@ -173,7 +173,7 @@
             The block will contain the details of their submission for the exam, but only after submission has been made.
         {% endcomment %}
 
-        {% elif submission.is_submitted %}
+        {% elif user.is_student and submission.is_submitted %}
         <div class="navigation-list-container p-4 size-12">
             <h5>Your submission</h5>
             {% if submission.is_evaluated and exam.has_ended %}

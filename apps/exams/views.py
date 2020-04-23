@@ -108,6 +108,9 @@ class ExamCreateView(View):
         exam.classroom = classroom
         exam.save()
 
+        # Save the 'students' field.
+        form.save_m2m()
+
         messages.success(request, f'Examination/Assignment - \'{exam.title}\' successfully created!')
         return redirect('exam_detail', classroom_id = classroom.id, exam_id = exam.id)
 
@@ -141,6 +144,7 @@ class ExamDetailView(View):
         # If the user is a student, fetch their submission!
         if request.user.is_student:
             submission = Submission.objects.filter(exam = exam, student = request.user).first()
+            context['submission'] = submission
 
             if submission:
                 if time_left(submission) < 0 and not submission.is_submitted:
@@ -282,7 +286,7 @@ class ExamPublishView(View):
         exam.is_published = True
         exam.save()
 
-        messages.success(request, 'Exam published successfully!')
+        messages.success(request, 'Examination/assignment published successfully!')
         return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)
 
 
@@ -575,7 +579,7 @@ class ExamStartView(View):
         try:
             submission = Submission.objects.create(exam = exam, student = request.user)
         except IntegrityError:
-            messages.warning(f'You cannot start the examination/assignment again!')
+            messages.warning(request, f'You cannot start the examination/assignment again!')
             return redirect('exam_detail', classroom_id = classroom_id, exam_id = exam_id)
 
         return redirect('submission_detail', classroom_id = classroom_id, exam_id = exam_id, submission_id = submission.id)
