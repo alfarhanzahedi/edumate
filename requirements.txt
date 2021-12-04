@@ -33,7 +33,7 @@ kombu==4.6.8
 Markdown==3.1.1
 msrest==0.6.13
 oauthlib==3.1.0
-Pillow==6.2.1
+Pillow==8.3.2
 pycparser==2.19
 python-dateutil==2.8.1
 python-decouple==3.1
